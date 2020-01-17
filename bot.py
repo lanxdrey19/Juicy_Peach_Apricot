@@ -634,4 +634,5 @@ client.loop.create_task(copy_pasta())
 client.loop.create_task(happy_feelings())
 client.loop.create_task(current_weather())
 
+
 client.run('YOUR_DISCORD_BOT_TOKEN_GOES_HERE')
