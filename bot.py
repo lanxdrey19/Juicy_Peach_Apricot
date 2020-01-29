@@ -5,6 +5,11 @@ from discord.ext import commands, tasks
 from itertools import cycle
 import asyncio
 import pyowm
+import math
+
+
+
+
 
 client = commands.Bot(command_prefix = '.')
 status = cycle(['Milkshake (Korean Ver.)', 'Always Be Your Girl (너의 소녀가 되어줄게)', 'Snowman(스노우맨)', 'Hue', 'Colors', 'Bon Bon Chocolat', 'Oopsie My Bad', 'Woowa',  'Tiki-Taka (99%)', 'Beautiful Days (그 시절 우리가 사랑했던 우리) '])
@@ -36,6 +41,10 @@ async def on_message(message):
     coolWords8 = ["Question:", "Compatibility:"]
     coolWords9 = ["hug", ".cheerup "]
     coolWords10 = [".match"]
+    coolWords11 = ["bye","Bye","BYE"]
+    coolWords12 = ["!cd", "!ww"]
+
+
 
     for word in coolWords5:
         if message.content.count(word) > 0:
@@ -48,6 +57,7 @@ async def on_message(message):
             emoji2 = '❌'
             await message.add_reaction(emoji)
             await message.add_reaction(emoji2)
+
 
     if message.author == client.user:
         return
@@ -66,7 +76,7 @@ async def on_message(message):
 
     for word in coolWords3:
         if message.content.count(word) > 0:
-            await message.channel.send(f'>>> Hello there {message.author.mention}! I am Sad Bot\nType **.commands** for the list of all commands\nFeel free to make suggestions in the **#suggestions** channel')
+            await message.channel.send(f'>>> Hello there {message.author.mention}! I am Sad Bot\nType **.commands** for the list of all commands\nFeel free to make suggestions in the **#suggestions** channel\n\nhttps://thumbs.gfycat.com/PhonySelfishArrowana.webp')
             emoji = '👋'
             # or '\U0001f44d' or '👍'
             await message.add_reaction(emoji)
@@ -97,6 +107,18 @@ async def on_message(message):
             emoji = '😍'
             await message.add_reaction(emoji)
 
+    for word in coolWords11:
+        if message.content.count(word) > 0:
+            await message.channel.send(f'>>> https://www.youtube.com/watch?v=4gX_p1VkgA4')
+            await message.channel.send(f">>> Bye bye {message.author.mention}\n\nhttps://gfycat.com/BetterFondHumpbackwhale")
+            emoji = '👋'
+            # or '\U0001f44d' or '👍'
+            await message.add_reaction(emoji)
+
+    for word in coolWords12:
+        if message.content.count(word) > 0:
+            await message.channel.send(">>> Your free trial of Kokobot has ended. However, Sadbot will always be free. Use Sadbot today!\n\n https://scontent.fakl6-1.fna.fbcdn.net/v/t1.15752-9/82462694_272856383692002_507557532571533312_n.jpg?_nc_cat=105&_nc_ohc=T61ibjd8r44AX_9ZXSp&_nc_ht=scontent.fakl6-1.fna&oh=c8467554b6b0be0dc27bfee1e38cab98&oe=5E9F6FBF")
+
     await client.process_commands(message)
 
 
@@ -113,6 +135,7 @@ async def on_member_remove(member):
 @client.command()
 async def ping(ctx):
     await ctx.send(f'>>> Pong!\nLatency: {round(client.latency * 1000)} ms')
+
 
 
 @client.command()
@@ -165,7 +188,7 @@ async def dice(ctx):
 
 @client.command()
 async def commands(ctx):
-    await ctx.send('```css\n.8ball - Ask it a question (Will not work if no arguments are entered)\n\n.cheerup - Try this one if you are feeling down\n\n.dice - Rolls die\n\n.examszn - Get some words of wisdom from the bot if you are feeling stressed for your upcoming exams\n\n.hug - Try this one on someone. Remember to tag them when using this command\n\n.idolquest begin - Uploads yourself into the Idol Quest Database. Do this first if you want to play Idol Quest\n\n.idolquest compete - Compete against the top kpop idols to gain points\n\n.idolquest improvelist - See whether you have enough points to improve your various talents\n\n.improve {skill} - Use your points to improve your talent (For example, type .improve dancing)\n\n.match - Ship yourself with your crush (Will not work if no arguments are entered)\n\n.ping - Checks latency\n\n```')
+    await ctx.send('```css\nGeneral Commands:\n\n.8ball - Ask it a question (Will not work if no arguments are entered)\n\n.about - Details of Sadbot\n\n.cheerup - Try this one if you are feeling down\n\n.dice - Rolls die\n\n.examszn - Get some words of wisdom from the bot if you are feeling stressed for your upcoming exams\n\n.hug - Try this one on someone. Remember to tag them when using this command\n\n.match - Ship yourself with your crush (Will not work if no arguments are entered)\n\n.piglatin {your message} - Convert your message to Pig Latin\n\n.ping - Checks latency\n\n.stanloona {your message} - Convert your message to let others know you really stan LOONA\n\nGame Commands:\n\n.idolguess commands - For Guess the Idol Game commands\n\n.idolquest commands - For Idol Quest Game commands\n\n.avalon commands - For Avalon Game commands```')
 
 
 @client.command()
@@ -173,9 +196,1119 @@ async def examszn(ctx):
     await ctx.send('>>> https://scontent.fakl6-1.fna.fbcdn.net/v/t1.15752-9/82079945_572354906648893_1092284134119702528_n.jpg?_nc_cat=103&_nc_ohc=w3g7WNcR28cAX-LNRS2&_nc_ht=scontent.fakl6-1.fna&oh=412aa5675422f10f2ad536699e319b2e&oe=5E8F79B7')
 
 
+@client.command(aliases=['sl'])
+async def stanloona(ctx,*,arg):
+    temp = arg.split()
+    big_message = ""
+    for thing in temp:
+        med_message = " Stan " + thing + " Loona "
+        big_message = big_message + med_message
+    await ctx.send(f">>> {big_message}")
+
+@client.command(aliases=['pl'])
+async def piglatin(ctx,*,arg):
+    temp = arg.split()
+    big_message = ""
+    for thing in temp:
+        med_message = thing[-1]  + thing[:-1] + "e"
+        big_message = big_message + " " + med_message + " "
+    await ctx.send(f">>> {big_message}")
+
+
+@client.command()
+async def about(ctx):
+    await ctx.send(">>> https://gfycat.com/AchingLeanFalcon\n\nVersion: 0.3.2.3\nLatest Additions: Idol Guessing game and a few trivial commands\nNext Version: 0.3.3.0\nFuture Additions: TBA\nOwner: keed talk to 'em#2206\n\nSadbot has been made with lots of love!")
+
+rounds_array = [ [2,2,2,3,3,3] , [3,3,3,4,4,4], [2,4,3,4,4,4] , [3,3,4,5,5,5], [3,4,4,5,5,5]]
+avalon_players_mention = []
+game_phase = []
+no_votes = []
+fail_votes = []
+mission_participants = []
+has_voted = []
+game_score = []
+
+mission_lock = []
+
+turn_index = []
+current_index = []
+hammer_index = []
+lady_index = []
+lady_use = []
+
+deciders = []
+
+avalon_roles5 = ['Loyal', 'Percival', 'Merlin','Morgana', 'Assassin']
+avalon_roles6 = ['Loyal', 'Loyal', 'Percival', 'Merlin', 'Morgana', 'Assassin']
+avalon_roles7 = ['Loyal', 'Loyal', 'Percival', 'Merlin', 'Morgana', 'Assassin', 'Mordred']
+avalon_roles8 = ['Loyal', 'Loyal', 'Loyal', 'Percival', 'Merlin', 'Morgana', 'Assassin', 'Mordred']
+avalon_roles9 = ['Loyal', 'Loyal', 'Loyal', 'Loyal','Percival', 'Merlin', 'Morgana', 'Assassin', 'Mordred']
+avalon_roles10 = ['Loyal', 'Loyal', 'Loyal', 'Loyal', 'Percival', 'Merlin', 'Morgana', 'Assassin','Mordred','Lackey']
+
+@client.command()
+async def choose(ctx,*,message):
+
+    if mission_lock == 1:
+        await ctx.send("The people that have been chosen can not be changed")
+        return
+
+    temp = message.split()
+
+    y_axis = len(game_score)
+    x_axis = len(avalon_players_mention) - 5
+
+
+    some_message = ""
+
+    for things in temp:
+
+        mission_participants.append(things)
+        some_message = some_message + f"{things}\n"
+
+    people_needed = rounds_array[y_axis][x_axis]
+    if (len(temp) == people_needed) and (ctx.author.mention == avalon_players_mention[current_index[0]]):
+        await ctx.send(f">>> {some_message}\nhave been chosen for this mission. Type **.avalon no** to vote no for the mission or type **.avalon yes** to let this mission to continue ")
+    else:
+        await ctx.send(f"Sorry... It is either not your turn or you entered the wrong number of people...")
+
+
+
+
+
+@client.command()
+async def lady(ctx, index : discord.Member):
+
+    if len(lady_use) < 1:
+        if ctx.author.mention == index.mention:
+            if len(game_score) >= 2 and len(avalon_players_mention) == len(avalon_roles5):
+                if avalon_roles5[avalon_players_mention.index(index.mention)] == "Morgana" or avalon_roles5[avalon_players_mention.index(index.mention)] == "Assassin":
+                    await ctx.author.send(f">>> {index.mention} is bad")
+                else:
+                    await ctx.author.send(f">>> {index.mention} is good")
+                lady_index.pop(0)
+                lady_index.append(index.mention)
+                lady_use.append(1)
+                await ctx.send(f"{index.mention} now has the lady of the lake")
+            elif len(game_score) >= 2 and len(avalon_players_mention) == len(avalon_roles6):
+                if avalon_roles6[avalon_players_mention.index(index.mention)] == "Morgana" or avalon_roles6[avalon_players_mention.index(index.mention)] == "Assassin":
+                    await ctx.author.send(f">>> {index.mention} is bad")
+                else:
+                    await ctx.author.send(f">>> {index.mention} is good")
+                lady_index.pop(0)
+                lady_index.append(index.mention)
+                lady_use.append(1)
+                await ctx.send(f"{index.mention} now has the lady of the lake")
+            elif len(game_score) >= 2 and len(avalon_players_mention) == len(avalon_roles7):
+
+                if avalon_roles7[avalon_players_mention.index(index.mention)] == "Morgana" or avalon_roles7[avalon_players_mention.index(index.mention)] == "Assassin" or avalon_roles7[avalon_players_mention.index(index.mention)] == "Mordred":
+                    await ctx.author.send(f">>> {index.mention} is bad")
+                else:
+                    await ctx.author.send(f">>> {index.mention} is good")
+                lady_index.pop(0)
+                lady_index.append(index.mention)
+                lady_use.append(1)
+                await ctx.send(f"{index.mention} now has the lady of the lake")
+            elif len(game_score) >= 2 and len(avalon_players_mention) == len(avalon_roles8):
+                if avalon_roles8[avalon_players_mention.index(index.mention)] == "Morgana" or avalon_roles8[avalon_players_mention.index(index.mention)] == "Assassin" or avalon_roles8[avalon_players_mention.index(index.mention)] == "Mordred":
+                    await ctx.author.send(f">>> {index.mention} is bad")
+                else:
+                    await ctx.author.send(f">>> {index.mention} is good")
+                lady_index.pop(0)
+                lady_index.append(index.mention)
+                lady_use.append(1)
+                await ctx.send(f"{index.mention} now has the lady of the lake")
+            elif len(game_score) >= 2 and len(avalon_players_mention) == len(avalon_roles9):
+                if avalon_roles9[avalon_players_mention.index(index.mention)] == "Morgana" or avalon_roles9[avalon_players_mention.index(index.mention)] == "Assassin" or avalon_roles9[avalon_players_mention.index(index.mention)] == "Mordred":
+                    await ctx.author.send(f">>> {index.mention} is bad")
+                else:
+                    await ctx.author.send(f">>> {index.mention} is good")
+                lady_index.pop(0)
+                lady_index.append(index.mention)
+                lady_use.append(1)
+                await ctx.send(f"{index.mention} now has the lady of the lake")
+            elif len(game_score) >= 2 and len(avalon_players_mention) == len(avalon_roles10):
+                if avalon_roles10[avalon_players_mention.index(index.mention)] == "Morgana" or avalon_roles10[avalon_players_mention.index(index.mention)] == "Assassin" or avalon_roles10[avalon_players_mention.index(index.mention)] == "Mordred" or avalon_roles10[avalon_players_mention.index(index.mention)] == "Lackey":
+                    await ctx.author.send(f">>> {index.mention} is bad")
+                else:
+                    await ctx.author.send(f">>> {index.mention} is good")
+                lady_index.pop(0)
+                lady_index.append(index.mention)
+                lady_use.append(1)
+                await ctx.send(f"{index.mention} now has the lady of the lake")
+        else:
+            await ctx.send("You do not have the lady of the lake")
+    else:
+        await ctx.send("The lady of the lake has already been used this round")
+
+
+@client.command()
+async def merlin(ctx, member: discord.Member):
+
+    if len(game_phase) == 2:
+
+        if len(avalon_roles5) == len(avalon_players_mention):
+
+
+            if avalon_roles5[avalon_players_mention.index(member.mention)] == 'Merlin':
+
+                await ctx.send(">>> **Bad people win**")
+                avalon_players_mention.clear()
+                game_phase.clear()
+                no_votes.clear()
+                fail_votes.clear()
+                mission_participants.clear()
+                has_voted.clear()
+                game_score.clear()
+                turn_index.clear()
+                current_index.clear()
+                hammer_index.clear()
+                lady_index.clear()
+                deciders.clear()
+                mission_lock.clear()
+
+            else:
+
+                await ctx.send(">>> **Good people win**")
+                avalon_players_mention.clear()
+                game_phase.clear()
+                no_votes.clear()
+                fail_votes.clear()
+                mission_participants.clear()
+                has_voted.clear()
+                game_score.clear()
+                turn_index.clear()
+                current_index.clear()
+                hammer_index.clear()
+                lady_index.clear()
+                deciders.clear()
+                mission_lock.clear()
+
+
+        elif len(avalon_roles6) == len(avalon_players_mention):
+            if avalon_roles6[avalon_players_mention.index(member.mention)] == 'Merlin':
+                await ctx.send(">>> **Bad people win**")
+                avalon_players_mention.clear()
+                game_phase.clear()
+                no_votes.clear()
+                fail_votes.clear()
+                mission_participants.clear()
+                has_voted.clear()
+                game_score.clear()
+                turn_index.clear()
+                current_index.clear()
+                hammer_index.clear()
+                lady_index.clear()
+                deciders.clear()
+                mission_lock.clear()
+
+            else:
+                await ctx.send(">>> **Good people win**")
+                avalon_players_mention.clear()
+                game_phase.clear()
+                no_votes.clear()
+                fail_votes.clear()
+                mission_participants.clear()
+                has_voted.clear()
+                game_score.clear()
+                turn_index.clear()
+                current_index.clear()
+                hammer_index.clear()
+                lady_index.clear()
+                deciders.clear()
+                mission_lock.clear()
+
+        elif len(avalon_roles7) == len(avalon_players_mention):
+            if avalon_roles7[avalon_players_mention.index(member.mention)] == 'Merlin':
+                await ctx.send(">>> **Bad people win**")
+                avalon_players_mention.clear()
+                game_phase.clear()
+                no_votes.clear()
+                fail_votes.clear()
+                mission_participants.clear()
+                has_voted.clear()
+                game_score.clear()
+                turn_index.clear()
+                current_index.clear()
+                hammer_index.clear()
+                lady_index.clear()
+                deciders.clear()
+                mission_lock.clear()
+
+            else:
+                await ctx.send(">>> **Good people win**")
+                avalon_players_mention.clear()
+                game_phase.clear()
+                no_votes.clear()
+                fail_votes.clear()
+                mission_participants.clear()
+                has_voted.clear()
+                game_score.clear()
+                turn_index.clear()
+                current_index.clear()
+                hammer_index.clear()
+                lady_index.clear()
+                deciders.clear()
+                mission_lock.clear()
+
+        elif len(avalon_roles8) == len(avalon_players_mention):
+            if avalon_roles8[avalon_players_mention.index(member.mention)] == 'Merlin':
+                await ctx.send(">>> **Bad people win**")
+                avalon_players_mention.clear()
+                game_phase.clear()
+                no_votes.clear()
+                fail_votes.clear()
+                mission_participants.clear()
+                has_voted.clear()
+                game_score.clear()
+                turn_index.clear()
+                current_index.clear()
+                hammer_index.clear()
+                lady_index.clear()
+                deciders.clear()
+                mission_lock.clear()
+
+            else:
+                await ctx.send(">>> **Good people win**")
+                avalon_players_mention.clear()
+                game_phase.clear()
+                no_votes.clear()
+                fail_votes.clear()
+                mission_participants.clear()
+                has_voted.clear()
+                game_score.clear()
+                turn_index.clear()
+                current_index.clear()
+                hammer_index.clear()
+                lady_index.clear()
+                deciders.clear()
+                mission_lock.clear()
+
+        elif len(avalon_roles9) == len(avalon_players_mention):
+            if avalon_roles9[avalon_players_mention.index(member.mention)] == 'Merlin':
+                await ctx.send(">>> **Bad people win**")
+                avalon_players_mention.clear()
+                game_phase.clear()
+                no_votes.clear()
+                fail_votes.clear()
+                mission_participants.clear()
+                has_voted.clear()
+                game_score.clear()
+                turn_index.clear()
+                current_index.clear()
+                hammer_index.clear()
+                lady_index.clear()
+                deciders.clear()
+                mission_lock.clear()
+
+            else:
+                await ctx.send(">>> **Good people win**")
+                avalon_players_mention.clear()
+                game_phase.clear()
+                no_votes.clear()
+                fail_votes.clear()
+                mission_participants.clear()
+                has_voted.clear()
+                game_score.clear()
+                turn_index.clear()
+                current_index.clear()
+                hammer_index.clear()
+                lady_index.clear()
+                deciders.clear()
+                mission_lock.clear()
+
+        elif len(avalon_roles10) == len(avalon_players_mention):
+            if avalon_roles10[avalon_players_mention.index(member.mention)] == 'Merlin':
+                await ctx.send(">>> **Bad people win**")
+                avalon_players_mention.clear()
+                game_phase.clear()
+                no_votes.clear()
+                fail_votes.clear()
+                mission_participants.clear()
+                has_voted.clear()
+                game_score.clear()
+                turn_index.clear()
+                current_index.clear()
+                hammer_index.clear()
+                lady_index.clear()
+                deciders.clear()
+                mission_lock.clear()
+
+            else:
+                await ctx.send(">>> **Good people win**")
+                avalon_players_mention.clear()
+                game_phase.clear()
+                no_votes.clear()
+                fail_votes.clear()
+                mission_participants.clear()
+                has_voted.clear()
+                game_score.clear()
+                turn_index.clear()
+                current_index.clear()
+                hammer_index.clear()
+                lady_index.clear()
+                deciders.clear()
+                mission_lock.clear()
+
+        else:
+            await ctx.send(">>> This command is not valid for now...")
+    else:
+        await ctx.send(">>> This command is not valid for now...")
+
+@client.command()
+async def avalon(ctx, reply):
+
+    if reply == 'commands':
+        await ctx.send("```css\n\n.avalon join - Join Avalon Matchmaking\n\n.avalon start - Commences an Avalon game\n\n.avalon myrole - Your Avalon role will be sent to you via a direct message from Sadbot\n\n.choose {participants} - Nominate who you want to go undertake the current mission. Remember to tag them when using this command\n\n.avalon yes - Vote yes to approve of the mission participants\n\n.avalon no - Vote no to not approve of the mission participants\n\n.avalon pass - Pass the mission\n\n.avalon fail - Fail the mission\n\n.lady {person you want to find the alliance of} - Checks the role of the person using the Lady of the Lake. Remember to tag them when using this command\n\n.merlin {person who you think is Merlin} - The bad people to win the game if they guess who the Merlin is correctly. Remember to tag them when using this command```")
+
+
+    elif reply == 'join':
+
+        if len(game_phase) <= 0:
+            for name in avalon_players_mention:
+                if name == ctx.author.mention:
+                    await ctx.send(f'>>> {ctx.author.mention}, you have already joined matchmaking... ')
+                    return
+
+            if len(avalon_players_mention) == 10:
+                await ctx.send(f">>> Sorry. Ten people is the maximum number of players for Avalon")
+                return
+
+            avalon_players_mention.append(ctx.author.mention)
+            current_players = len(avalon_players_mention)
+
+            await ctx.send(f'>>> You have joined the game {ctx.author.mention}\n\nCurrent number of players: {current_players} ')
+
+        elif len(game_phase) > 0:
+            await ctx.send(f">>> Game has already started. Wait for the next game")
+            return
+
+    elif reply == 'leave':
+        if len(game_phase) <= 0:
+            for name in avalon_players_mention:
+                if name == ctx.author.mention:
+                    avalon_players_mention.remove(name)
+                    await ctx.send(f'>>> You have left Avalon matchmaking {ctx.author.mention} ')
+                    return
+            await ctx.send(f'>>> You have not joined Avalon matchmaking yet {ctx.author.mention}')
+
+        elif len(game_phase) > 0:
+            await ctx.send(">>> You can not leave the game once it has started")
+
+    elif reply == 'start':
+        if len(game_phase) <= 0:
+
+            if len(avalon_players_mention) < 5:
+                await ctx.send(f">>> Sorry {ctx.author.mention}, Avalon needs at least five players :cry:")
+                return
+            elif len(avalon_players_mention) >= 5:
+                game_phase.append(0)
+                await ctx.send(f">>> The game of Avalon has begun\n\nType **.avalon myrole** to find out your role")
+                index_counter = 0
+                verylong_message = ""
+                for name in avalon_players_mention:
+
+                    verylong_message = verylong_message + f"{index_counter}: {name} "
+
+                    index_counter = index_counter + 1
+
+
+                turn_index = range(len(avalon_players_mention))
+                current_index.append(random.choice(turn_index))
+                if int(current_index[0]) - 1 == -1:
+                    lady_index.append(avalon_players_mention[len(avalon_players_mention) - 1])
+                else:
+                    lady_index.append(avalon_players_mention[int(current_index[0]) - 1])
+
+                hammer_index.append((int(current_index[0]) + 4) % len(avalon_players_mention))
+
+
+                await ctx.send(f">>> Round {len(game_score) + 1}\n\nCurrent Players:\n\n:arrow_left: {verylong_message} :arrow_right:")
+                await ctx.send(f">>> The person who starts is {avalon_players_mention[current_index[0]]}\n\n The person who has lady of the lake is one place to the left of the person that starts {avalon_players_mention[lady_index[0]]}\n\nHammer falls on {avalon_players_mention[hammer_index[0]]}\n\nWhen people have decided who is going on a mission, type  **.mission** [number of people going on a mission] e.g. **.mission 3**\n\nTo use the lady of the lake type **.lady [their_index_number]** e.g. **.lady 3**")
+
+                y_axis = len(game_score)
+                x_axis = len(avalon_players_mention) - 5
+
+                people_needed = rounds_array[y_axis][x_axis]
+                await ctx.send(f">>> Choose {people_needed} people you want on this mission. Type **.choose @koko** to choose e.g. **.choose @denny3sacrowd @koko @sleo081 or .choose @sleo081 or .choose @sleo081 @denny3sacrowd** ")
+                return
+
+        elif len(game_phase) > 0:
+            await ctx.send(f">>> The game of Avalon has already started...")
+
+    elif reply == 'yes':
+        if len(game_phase) != 1:
+            await ctx.send(">>> This command is not valid for now")
+            return
+        for name in deciders:
+            if name == ctx.author.mention:
+                await ctx.send(">>> You have already voted no...")
+                return
+        deciders.append(ctx.author.mention)
+        no_votes.append('yes')
+        if len(deciders) == len(avalon_players_mention):
+            await ctx.send(">>> Counting Votes...")
+            await ctx.send(f">>> This is who voted for what:\n{deciders}\n{no_votes}")
+            no_count = 0
+            for vote in no_votes:
+                if vote == 'no':
+                    no_count = no_count + 1
+
+            if no_count >= math.ceil(float(len(avalon_players_mention)) / float(2.0)):
+                await ctx.send(">>> Please let the next person decide who goes on a mission")
+
+
+                temp = current_index[0]
+
+                new_num = (temp + 1) % len(avalon_players_mention)
+
+                current_index.pop(0)
+
+                current_index.append(new_num)
+
+                if current_index[0] == hammer_index[0]:
+                    await ctx.send(
+                        f">>> {avalon_players_mention[current_index[0]]} gets to choose who goes in the mission without any objections. Type **.avalon no** to vote no for the mission or type **.avalon yes** to let this mission to continue")
+                    game_phase.append(0)
+                    deciders.clear()
+                    no_votes.clear()
+
+
+                else:
+                    await ctx.send(f">>> It is now {avalon_players_mention[current_index[0]]}'s turn")
+                    mission_participants.clear()
+                    deciders.clear()
+                    no_votes.clear()
+            else:
+                await ctx.send(">>> This mission will be undertaken soon.")
+                mission_lock.append(0)
+
+                game_phase.append(0)
+                deciders.clear()
+                no_votes.clear()
+
+            return
+
+        else:
+            await ctx.send(f">>> Needs {len(avalon_players_mention) - len(no_votes)} more votes to reveal whether this mission is to be undertaken or not")
+
+    elif reply == 'no':
+        if len(game_phase) != 1:
+            await ctx.send(">>> This command is not valid for now")
+            return
+        for name in deciders:
+            if name == ctx.author.mention:
+                await ctx.send(">>> You have already voted no...")
+                return
+        deciders.append(ctx.author.mention)
+        no_votes.append("no")
+
+        if len(deciders) == len(avalon_players_mention):
+            await ctx.send(">>> Counting Votes...")
+            await ctx.send(f">>> This is who voted for what:\n{deciders}\n{no_votes}")
+            no_count = 0
+            for vote in no_votes:
+                if vote == 'no':
+                    no_count = no_count + 1
+
+            if no_count >= math.ceil(float(len(avalon_players_mention)) / float(2.0)):
+                await ctx.send(">>> Please let the next person decide who goes on a mission")
+
+                temp = current_index[0]
+
+                new_num = (temp + 1) % len(avalon_players_mention)
+
+                current_index.pop(0)
+
+                current_index.append(new_num)
+
+                if current_index[0] == hammer_index[0]:
+                    await ctx.send(
+                        f">>> {avalon_players_mention[current_index[0]]} gets to choose who goes in the mission without any objections. Type **.avalon no** to vote no for the mission or type **.avalon yes** to let this mission to continue")
+                    game_phase.append(0)
+                    deciders.clear()
+                    no_votes.clear()
+                    mission_lock.append(0)
+
+
+                else:
+                    await ctx.send(f">>> It is now {avalon_players_mention[current_index[0]]}'s turn")
+                    mission_participants.clear()
+                    deciders.clear()
+                    no_votes.clear()
+            else:
+                await ctx.send(">>> This mission will be undertaken soon.")
+                deciders.clear()
+                no_votes.clear()
+                mission_lock.append(0)
+                game_phase.append(0)
+            return
+        else:
+            await ctx.send(
+                f">>> Needs {len(avalon_players_mention) - len(no_votes)} more votes to reveal whether this mission is to be undertaken or not")
+
+    elif reply == 'fail':
+
+        await ctx.channel.purge(limit=1)
+        if len(game_phase) != 2:
+            await ctx.send(">>> This command is not valid for now")
+            return
+        for name in has_voted:
+            if name == ctx.author.mention:
+                await ctx.send(">>> You have already voted")
+                return
+        county = 0
+        for name in mission_participants:
+            if name == ctx.author.mention:
+                county = county + 1
+        await ctx.send(f"{mission_participants}")
+        if county == 0:
+            await ctx.send(f">>> You are not selected for this mission or no one hasn't been nominated yet for this mission")
+            return
+        has_voted.append(ctx.author.mention)
+        fail_votes.append(1)
+        if len(game_score) == 3 and len(fail_votes) >= 2 and len(avalon_players_mention) >= 7 and len(mission_participants) == len(has_voted):
+            await ctx.send(">>> **The mission has failed**")
+            mission_lock.clear()
+            game_phase.remove(0)
+            mission_participants.clear()
+            has_voted.clear()
+            fail_votes.clear()
+            game_score.append(0)
+            lady_use.clear()
+            hammer_index.pop(0)
+            hammer_index.append((int(current_index[0]) + 4) % len(avalon_players_mention))
+            index_counter = 0
+            verylong_message = ""
+            for name in avalon_players_mention:
+                verylong_message = verylong_message + f"{index_counter}: {name} "
+
+                index_counter = index_counter + 1
+
+            passes = 0
+            fails = 0
+            for item in game_score:
+                if item == 1:
+                    passes = passes + 1
+                elif item == 0:
+                    fails = fails + 1
+            if fails == 3:
+                await ctx.send(">>> **The Bad people win.**")
+                avalon_players_mention.clear()
+                game_phase.clear()
+                no_votes.clear()
+                fail_votes.clear()
+                mission_participants.clear()
+                has_voted.clear()
+                game_score.clear()
+
+                current_index.clear()
+                hammer_index.clear()
+                lady_index.clear()
+                deciders.clear()
+                mission_lock.clear()
+
+                return
+            await ctx.send(f">>> Round {len(game_score) + 1}\n\nCurrent Players:\n\n:arrow_left: {verylong_message} :arrow_right:\n\nIt is now {avalon_players_mention[current_index[0]]}'s turn\n\nThe hammer lands on {avalon_players_mention[hammer_index[0]]}")
+            y_axis = len(game_score)
+            x_axis = len(avalon_players_mention) - 5
+
+            people_needed = rounds_array[y_axis][x_axis]
+            await ctx.send(f">>> Choose {people_needed} people you want on this mission. Type **.choose [person]** to choose e.g. **.choose @denny3sacrowd @koko @sleo081 or .choose @sleo081 or .choose @sleo081 @denny3sacrowd**")
+            return
+        elif len(fail_votes) >= 1 and len(mission_participants) == len(has_voted):
+            await ctx.send(">>> **The mission has failed**")
+            mission_lock.clear()
+            game_phase.remove(0)
+            mission_participants.clear()
+            has_voted.clear()
+            fail_votes.clear()
+            game_score.append(0)
+            lady_use.clear()
+            hammer_index.pop(0)
+            hammer_index.append((int(current_index[0]) + 4) % len(avalon_players_mention))
+            index_counter = 0
+            verylong_message = ""
+            for name in avalon_players_mention:
+                verylong_message = verylong_message + f"{index_counter}: {name} "
+
+                index_counter = index_counter + 1
+
+
+            passes = 0
+            fails = 0
+            for item in game_score:
+                if item == 1:
+                    passes = passes + 1
+                elif item == 0:
+                    fails = fails + 1
+            if fails == 3:
+                await ctx.send(">>> **The Bad people win.**")
+                avalon_players_mention.clear()
+                game_phase.clear()
+                no_votes.clear()
+                fail_votes.clear()
+                mission_participants.clear()
+                has_voted.clear()
+                game_score.clear()
+
+                current_index.clear()
+                hammer_index.clear()
+                lady_index.clear()
+                deciders.clear()
+                mission_lock.clear()
+
+                return
+            await ctx.send(f">>> Round {len(game_score) + 1}\n\nCurrent Players:\n\n:arrow_left: {verylong_message} :arrow_right:\n\nIt is now {avalon_players_mention[current_index[0]]}'s turn\n\nThe hammer lands on {avalon_players_mention[hammer_index[0]]}")
+            y_axis = len(game_score)
+            x_axis = len(avalon_players_mention) - 5
+
+            people_needed = rounds_array[y_axis][x_axis]
+            await ctx.send(f">>> Choose {people_needed} people you want on this mission. Type **.choose [person]** to choose e.g. **.choose @denny3sacrowd @koko @sleo081 or .choose @sleo081 or .choose @sleo081 @denny3sacrowd** ")
+            return
+
+    elif reply == 'pass':
+        await ctx.channel.purge(limit=1)
+        if len(game_phase) != 2:
+            await ctx.send(">>> This command is not valid for now")
+            return
+        for name in has_voted:
+            if name == ctx.author.mention:
+                await ctx.send(">>> You have already voted")
+                return
+        county = 0
+        for name in mission_participants:
+            if name == ctx.author.mention:
+                county = county + 1
+        await ctx.send(f"{mission_participants}")
+        if county == 0:
+            await ctx.send(f">>> You are not selected for this mission or no one hasn't been nominated yet for this mission")
+            return
+        has_voted.append(ctx.author.mention)
+        if len(mission_participants) == len(has_voted) and len(fail_votes) < 2 and len(avalon_players_mention) >= 7 and len(game_score) == 3:
+            await ctx.send(">>> **The mission has passed**")
+            mission_lock.clear()
+            game_phase.remove(0)
+            mission_participants.clear()
+            has_voted.clear()
+            game_score.append(1)
+            lady_use.clear()
+            hammer_index.pop(0)
+            hammer_index.append((int(current_index[0]) + 4) % len(avalon_players_mention))
+            index_counter = 0
+            verylong_message = ""
+            for name in avalon_players_mention:
+                verylong_message = verylong_message + f"{index_counter}: {name} "
+
+                index_counter = index_counter + 1
+
+            passes = 0
+            fails = 0
+            for item in game_score:
+                if item == 1:
+                    passes = passes + 1
+                elif item == 0:
+                    fails = fails + 1
+            if passes == 3:
+
+                await ctx.send(">>> The Bad people have one more chance to win if they guess who the Merlin is. Type **.merlin @person** to guess")
+                return
+            await ctx.send(f">>> Round {len(game_score) + 1}\n\nCurrent Players:\n\n:arrow_left: {verylong_message} :arrow_right:\n\nIt is now {avalon_players_mention[current_index[0]]}'s turn\n\nThe hammer lands on {avalon_players_mention[hammer_index[0]]}")
+            y_axis = len(game_score)
+            x_axis = len(avalon_players_mention) - 5
+
+            people_needed = rounds_array[y_axis][x_axis]
+            await ctx.send(f">>> Choose {people_needed} people you want on this mission. Type **.choose [person]** to choose e.g. **.choose @denny3sacrowd @koko @sleo081 or .choose @sleo081 or .choose @sleo081 @denny3sacrowd**")
+            return
+        elif len(mission_participants) == len(has_voted) and len(fail_votes) < 1:
+            await ctx.send(">>> **The mission has passed**")
+            mission_lock.clear()
+            game_phase.remove(0)
+            mission_participants.clear()
+            has_voted.clear()
+            game_score.append(1)
+            lady_use.clear()
+            hammer_index.pop(0)
+            hammer_index.append((int(current_index[0]) + 4) % len(avalon_players_mention))
+            index_counter = 0
+            verylong_message = ""
+            for name in avalon_players_mention:
+                verylong_message = verylong_message + f"{index_counter}: {name} "
+
+                index_counter = index_counter + 1
+
+            passes = 0
+            fails = 0
+            for item in game_score:
+                if item == 1:
+                    passes = passes + 1
+                elif item == 0:
+                    fails = fails + 1
+            if passes == 3:
+
+                await ctx.send(">>> The Bad people have one more chance to win if they guess who the Merlin is. Type **.merlin @person** to guess")
+                return
+            await ctx.send(f">>> Round {len(game_score) + 1}\n\nCurrent Players:\n\n:arrow_left: {verylong_message} :arrow_right:\n\nIt is now {avalon_players_mention[current_index[0]]}'s turn\n\nThe hammer lands on {avalon_players_mention[hammer_index[0]]}")
+            y_axis = len(game_score)
+            x_axis = len(avalon_players_mention) - 5
+
+            people_needed = rounds_array[y_axis][x_axis]
+            await ctx.send(f">>> Choose {people_needed} people you want on this mission. Type **.choose [person]** to choose e.g. **.choose @denny3sacrowd @koko @sleo081 or .choose @sleo081 or .choose @sleo081 @denny3sacrowd**")
+            return
+
+
+    elif reply == 'myrole':
+        if len(game_phase) >= 1:
+
+            if len(avalon_players_mention) == 5:
+
+                avalon_roles = ['Loyal', 'Percival', 'Merlin','Morgana', 'Assassin']
+                await ctx.author.send(f'>>> The roles are\n\nGood:\nLoyal\nPercival\nMerlin\n\nBad:\nMorgana\nAssassin')
+
+                random.shuffle(avalon_roles5)
+                random.shuffle(avalon_roles5)
+                random.shuffle(avalon_roles5)
+                random.shuffle(avalon_roles5)
+                random.shuffle(avalon_roles5)
+
+                their_index = avalon_players_mention.index(ctx.author.mention)
+
+                their_role = avalon_roles5[their_index]
+
+                the_merlin_index = avalon_roles5.index("Merlin")
+
+                the_merlin = avalon_players_mention[the_merlin_index]
+
+                the_morgana_index = avalon_roles5.index("Morgana")
+
+                the_morgana = avalon_players_mention[the_morgana_index]
+
+                the_assassin_index = avalon_roles5.index("Assassin")
+
+                the_assassin = avalon_players_mention[the_assassin_index]
+
+                merlinmorganaArray = [the_merlin, the_morgana]
+
+                the_index_zero = avalon_players_mention.index(merlinmorganaArray[0])
+
+                the_index_one = avalon_players_mention.index(merlinmorganaArray[1])
+
+                random.shuffle(merlinmorganaArray)
+                random.shuffle(merlinmorganaArray)
+                random.shuffle(merlinmorganaArray)
+                random.shuffle(merlinmorganaArray)
+                random.shuffle(merlinmorganaArray)
+
+                if their_role == 'Loyal':
+                    long_message = f'Your role:\n\n**{their_role}**\n\nYour alliance:\n\n**Good**\n\nAdditionally you know:\n\n**Nothing else**\n\nPlease also note your index number which is **{their_index}**'
+                elif their_role == 'Percival':
+                    long_message = f'Your role:\n\n**{their_role}**\n\nYour alliance:\n\n**Good**\n\nAdditionally you know:\n\n**One of {merlinmorganaArray[0]} (Index Number: {the_index_zero}) and {merlinmorganaArray[1]} (Index Number: {the_index_one}) is the Merlin, the other is the Morgana**\n\nPlease also note your index number which is **{their_index}**'
+                elif their_role == 'Merlin':
+                    long_message = f'Your role:\n\n**{their_role}**\n\nYour alliance:\n\n**Good**\n\nAdditionally you know:\n\n**The bad people are:\n{the_morgana} (Index Number: {the_morgana_index})\n{the_assassin} (Index Number: {the_assassin_index})**\n\nPlease also note your index number which is **{their_index}**'
+                elif their_role == 'Morgana':
+                    long_message = f'Your role:\n\n**{their_role}**\n\nYour alliance:\n\n**Bad**\n\nAdditionally you know:\n\n**Including yourself, the other bad person is:\n{the_assassin} (Index Number: {the_assassin_index}) who is the Assassin**\n\nPlease also note your index number which is **{their_index}**'
+                elif their_role == 'Assassin':
+                    long_message = f'Your role:\n\n**{their_role}**\n\nYour alliance:\n\n**Bad**\n\nAdditionally you know:\n\n**Including yourself, the other bad person is:\n{the_morgana} (Index Number: {the_morgana_index}) who is the Morgana**\n\nPlease also note your index number which is **{their_index}**'
+                await ctx.author.send(f'>>> {long_message}')
+
+            elif len(avalon_players_mention) == 6:
+
+                avalon_roles = ['Loyal', 'Loyal', 'Percival', 'Merlin', 'Morgana', 'Assassin']
+                await ctx.author.send(f'>>> The roles are\n\nGood:\nLoyal\nLoyal\nPercival\nMerlin\n\nBad:\nMorgana\nAssassin')
+
+                random.shuffle(avalon_roles6)
+                random.shuffle(avalon_roles6)
+                random.shuffle(avalon_roles6)
+                random.shuffle(avalon_roles6)
+                random.shuffle(avalon_roles6)
+
+                their_index = avalon_players_mention.index(ctx.author.mention)
+
+                their_role = avalon_roles6[their_index]
+
+                the_merlin_index = avalon_roles6.index("Merlin")
+
+                the_merlin = avalon_players_mention[the_merlin_index]
+
+                the_morgana_index = avalon_roles6.index("Morgana")
+
+                the_morgana = avalon_players_mention[the_morgana_index]
+
+                the_assassin_index = avalon_roles6.index("Assassin")
+
+                the_assassin = avalon_players_mention[the_assassin_index]
+
+                merlinmorganaArray = [the_merlin, the_morgana]
+
+                the_index_zero = avalon_players_mention.index(merlinmorganaArray[0])
+
+                the_index_one = avalon_players_mention.index(merlinmorganaArray[1])
+
+                random.shuffle(merlinmorganaArray)
+                random.shuffle(merlinmorganaArray)
+                random.shuffle(merlinmorganaArray)
+                random.shuffle(merlinmorganaArray)
+                random.shuffle(merlinmorganaArray)
+
+                if their_role == 'Loyal':
+                    long_message = f'Your role:\n\n**{their_role}**\n\nYour alliance:\n\n**Good**\n\nAdditionally you know:\n\n**Nothing else**\n\nPlease also note your index number which is **{their_index}**'
+                elif their_role == 'Percival':
+                    long_message = f'Your role:\n\n**{their_role}**\n\nYour alliance:\n\n**Good**\n\nAdditionally you know:\n\n**One of {merlinmorganaArray[0]} (Index Number: {the_index_zero}) and {merlinmorganaArray[1]} (Index Number: {the_index_one}) is the Merlin, the other is the Morgana**\n\nPlease also note your index number which is **{their_index}**'
+                elif their_role == 'Merlin':
+                    long_message = f'Your role:\n\n**{their_role}**\n\nYour alliance:\n\n**Good**\n\nAdditionally you know:\n\n**The bad people are:\n{the_morgana} (Index Number: {the_morgana_index})\n{the_assassin} (Index Number: {the_assassin_index})**\n\nPlease also note your index number which is **{their_index}**'
+                elif their_role == 'Morgana':
+                    long_message = f'Your role:\n\n**{their_role}**\n\nYour alliance:\n\n**Bad**\n\nAdditionally you know:\n\n**Including yourself, the other bad person is:\n{the_assassin} (Index Number: {the_assassin_index}) who is the Assassin**\n\nPlease also note your index number which is **{their_index}**'
+                elif their_role == 'Assassin':
+                    long_message = f'Your role:\n\n**{their_role}**\n\nYour alliance:\n\n**Bad**\n\nAdditionally you know:\n\n**Including yourself, the other bad person is:\n{the_morgana} (Index Number: {the_morgana_index}) who is the Morgana**\n\nPlease also note your index number which is **{their_index}**'
+
+                await ctx.author.send(f'>>> {long_message}')
+
+            elif len(avalon_players_mention) == 7:
+
+                avalon_roles = ['Loyal', 'Loyal', 'Percival', 'Merlin', 'Morgana', 'Assassin', 'Mordred']
+                await ctx.author.send(f'>>> The roles are\n\nGood:\nLoyal\nLoyal\nPercival\nMerlin\n\nBad:\nMorgana\nAssassin\nMordred')
+
+                random.shuffle(avalon_roles7)
+                random.shuffle(avalon_roles7)
+                random.shuffle(avalon_roles7)
+                random.shuffle(avalon_roles7)
+                random.shuffle(avalon_roles7)
+
+                their_index = avalon_players_mention.index(ctx.author.mention)
+
+                their_role = avalon_roles7[their_index]
+
+                the_merlin_index = avalon_roles7.index("Merlin")
+
+                the_merlin = avalon_players_mention[the_merlin_index]
+
+                the_morgana_index = avalon_roles7.index("Morgana")
+
+                the_morgana = avalon_players_mention[the_morgana_index]
+
+                the_assassin_index = avalon_roles7.index("Assassin")
+
+                the_assassin = avalon_players_mention[the_assassin_index]
+
+                the_mordred_index = avalon_roles7.index("Mordred")
+
+                the_mordred = avalon_players_mention[the_mordred_index]
+
+                merlinmorganaArray = [the_merlin, the_morgana]
+
+                the_index_zero = avalon_players_mention.index(merlinmorganaArray[0])
+
+                the_index_one = avalon_players_mention.index(merlinmorganaArray[1])
+
+                random.shuffle(merlinmorganaArray)
+                random.shuffle(merlinmorganaArray)
+                random.shuffle(merlinmorganaArray)
+                random.shuffle(merlinmorganaArray)
+                random.shuffle(merlinmorganaArray)
+
+                if their_role == 'Loyal':
+                    long_message = f'Your role:\n\n**{their_role}**\n\nYour alliance:\n\n**Good**\n\nAdditionally you know:\n\n**Nothing else**\n\nPlease also note your index number which is **{their_index}**'
+                elif their_role == 'Percival':
+                    long_message = f'Your role:\n\n**{their_role}**\n\nYour alliance:\n\n**Good**\n\nAdditionally you know:\n\n**One of {merlinmorganaArray[0]} (Index Number: {the_index_zero}) and {merlinmorganaArray[1]} (Index Number: {the_index_one}) is the Merlin, the other is the Morgana**\n\nPlease also note your index number which is **{their_index}**'
+                elif their_role == 'Merlin':
+                    long_message = f'Your role:\n\n**{their_role}**\n\nYour alliance:\n\n**Good**\n\nAdditionally you know:\n\n**Some of the bad people are:\n{the_morgana} (Index Number: {the_morgana_index})\n{the_assassin} (Index Number: {the_assassin_index})\nThere is another bad person called the Mordred but you do not know who they are**\n\nPlease also note your index number which is **{their_index}**'
+                elif their_role == 'Morgana':
+                    long_message = f'Your role:\n\n**{their_role}**\n\nYour alliance:\n\n**Bad**\n\nAdditionally you know:\n\n**Including yourself, the other bad people are:\n{the_assassin} (Index Number: {the_assassin_index}) who is the Assassin\n{the_mordred} (Index Number: {the_mordred_index}) who is the Mordred**\n\nPlease also note your index number which is **{their_index}**'
+                elif their_role == 'Assassin':
+                    long_message = f'Your role:\n\n**{their_role}**\n\nYour alliance:\n\n**Bad**\n\nAdditionally you know:\n\n**Including yourself, the other bad people are:\n{the_morgana} (Index Number: {the_morgana_index}) who is the Morgana\n{the_mordred} (Index Number: {the_mordred_index}) who is the Mordred**\n\nPlease also note your index number which is **{their_index}**'
+                elif their_role == 'Mordred':
+                    long_message = f'Your role:\n\n**{their_role}**\n\nYour alliance:\n\n**Bad**\n\nAdditionally you know:\n\n**Including yourself, the other bad people are:\n{the_morgana} (Index Number: {the_morgana_index}) who is the Morgana\n{the_assassin} (Index Number: {the_assassin_index}) who is the Assassin**\n\nPlease also note your index number which is **{their_index}**'
+                await ctx.author.send(f'>>> {long_message}')
+
+            elif len(avalon_players_mention) == 8:
+
+                avalon_roles = ['Loyal', 'Loyal', 'Loyal', 'Percival', 'Merlin', 'Morgana', 'Assassin', 'Mordred']
+                await ctx.author.send(
+                    f'>>> The roles are\n\nGood:\nLoyal\nLoyal\nLoyal\nPercival\nMerlin\n\nBad:\nMorgana\nAssassin\nMordred')
+
+                random.shuffle(avalon_roles8)
+                random.shuffle(avalon_roles8)
+                random.shuffle(avalon_roles8)
+                random.shuffle(avalon_roles8)
+                random.shuffle(avalon_roles8)
+
+                their_index = avalon_players_mention.index(ctx.author.mention)
+
+                their_role = avalon_roles8[their_index]
+
+                the_merlin_index = avalon_roles8.index("Merlin")
+
+                the_merlin = avalon_players_mention[the_merlin_index]
+
+                the_morgana_index = avalon_roles8.index("Morgana")
+
+                the_morgana = avalon_players_mention[the_morgana_index]
+
+                the_assassin_index = avalon_roles8.index("Assassin")
+
+                the_assassin = avalon_players_mention[the_assassin_index]
+
+                the_mordred_index = avalon_roles8.index("Mordred")
+
+                the_mordred = avalon_players_mention[the_mordred_index]
+
+                merlinmorganaArray = [the_merlin, the_morgana]
+
+                the_index_zero = avalon_players_mention.index(merlinmorganaArray[0])
+
+                the_index_one = avalon_players_mention.index(merlinmorganaArray[1])
+
+                random.shuffle(merlinmorganaArray)
+                random.shuffle(merlinmorganaArray)
+                random.shuffle(merlinmorganaArray)
+                random.shuffle(merlinmorganaArray)
+                random.shuffle(merlinmorganaArray)
+
+                if their_role == 'Loyal':
+                    long_message = f'Your role:\n\n**{their_role}**\n\nYour alliance:\n\n**Good**\n\nAdditionally you know:\n\n**Nothing else**\n\nPlease also note your index number which is **{their_index}**'
+                elif their_role == 'Percival':
+                    long_message = f'Your role:\n\n**{their_role}**\n\nYour alliance:\n\n**Good**\n\nAdditionally you know:\n\n**One of {merlinmorganaArray[0]} (Index Number: {the_index_zero}) and {merlinmorganaArray[1]} (Index Number: {the_index_one}) is the Merlin, the other is the Morgana**\n\nPlease also note your index number which is **{their_index}**'
+                elif their_role == 'Merlin':
+                    long_message = f'Your role:\n\n**{their_role}**\n\nYour alliance:\n\n**Good**\n\nAdditionally you know:\n\n**Some of the bad people are:\n{the_morgana} (Index Number: {the_morgana_index})\n{the_assassin} (Index Number: {the_assassin_index})\nThere is another bad person called the Mordred but you do not know who they are**\n\nPlease also note your index number which is **{their_index}**'
+                elif their_role == 'Morgana':
+                    long_message = f'Your role:\n\n**{their_role}**\n\nYour alliance:\n\n**Bad**\n\nAdditionally you know:\n\n**Including yourself, the other bad people are:\n{the_assassin} (Index Number: {the_assassin_index}) who is the Assassin\n{the_mordred} (Index Number: {the_mordred_index}) who is the Mordred**\n\nPlease also note your index number which is **{their_index}**'
+                elif their_role == 'Assassin':
+                    long_message = f'Your role:\n\n**{their_role}**\n\nYour alliance:\n\n**Bad**\n\nAdditionally you know:\n\n**Including yourself, the other bad people are:\n{the_morgana} (Index Number: {the_morgana_index}) who is the Morgana\n{the_mordred} (Index Number: {the_mordred_index}) who is the Mordred**\n\nPlease also note your index number which is **{their_index}**'
+                elif their_role == 'Mordred':
+                    long_message = f'Your role:\n\n**{their_role}**\n\nYour alliance:\n\n**Bad**\n\nAdditionally you know:\n\n**Including yourself, the other bad people are:\n{the_morgana} (Index Number: {the_morgana_index}) who is the Morgana\n{the_assassin} (Index Number: {the_assassin_index}) who is the Assassin**\n\nPlease also note your index number which is **{their_index}**'
+                await ctx.author.send(f'>>> {long_message}')
+            elif len(avalon_players_mention) == 9:
+
+                avalon_roles = ['Loyal', 'Loyal', 'Loyal', 'Loyal','Percival', 'Merlin', 'Morgana', 'Assassin', 'Mordred']
+                await ctx.author.send(
+                    f'>>> The roles are\n\nGood:\nLoyal\nLoyal\nLoyal\nLoyal\nPercival\nMerlin\n\nBad:\nMorgana\nAssassin\nMordred')
+
+                random.shuffle(avalon_roles9)
+                random.shuffle(avalon_roles9)
+                random.shuffle(avalon_roles9)
+                random.shuffle(avalon_roles9)
+                random.shuffle(avalon_roles9)
+
+                their_index = avalon_players_mention.index(ctx.author.mention)
+
+                their_role = avalon_roles9[their_index]
+
+                the_merlin_index = avalon_roles9.index("Merlin")
+
+                the_merlin = avalon_players_mention[the_merlin_index]
+
+                the_morgana_index = avalon_roles9.index("Morgana")
+
+                the_morgana = avalon_players_mention[the_morgana_index]
+
+                the_assassin_index = avalon_roles9.index("Assassin")
+
+                the_assassin = avalon_players_mention[the_assassin_index]
+
+                the_mordred_index = avalon_roles9.index("Mordred")
+
+                the_mordred = avalon_players_mention[the_mordred_index]
+
+                merlinmorganaArray = [the_merlin, the_morgana]
+
+                the_index_zero = avalon_players_mention.index(merlinmorganaArray[0])
+
+                the_index_one = avalon_players_mention.index(merlinmorganaArray[1])
+
+                random.shuffle(merlinmorganaArray)
+                random.shuffle(merlinmorganaArray)
+                random.shuffle(merlinmorganaArray)
+                random.shuffle(merlinmorganaArray)
+                random.shuffle(merlinmorganaArray)
+
+                if their_role == 'Loyal':
+                    long_message = f'Your role:\n\n**{their_role}**\n\nYour alliance:\n\n**Good**\n\nAdditionally you know:\n\n**Nothing else**\n\nPlease also note your index number which is **{their_index}**'
+                elif their_role == 'Percival':
+                    long_message = f'Your role:\n\n**{their_role}**\n\nYour alliance:\n\n**Good**\n\nAdditionally you know:\n\n**One of {merlinmorganaArray[0]} (Index Number: {the_index_zero}) and {merlinmorganaArray[1]} (Index Number: {the_index_one}) is the Merlin, the other is the Morgana**\n\nPlease also note your index number which is **{their_index}**'
+                elif their_role == 'Merlin':
+                    long_message = f'Your role:\n\n**{their_role}**\n\nYour alliance:\n\n**Good**\n\nAdditionally you know:\n\n**Some of the bad people are:\n{the_morgana} (Index Number: {the_morgana_index})\n{the_assassin} (Index Number: {the_assassin_index})\nThere is another bad person called the Mordred but you do not know who they are**\n\nPlease also note your index number which is **{their_index}**'
+                elif their_role == 'Morgana':
+                    long_message = f'Your role:\n\n**{their_role}**\n\nYour alliance:\n\n**Bad**\n\nAdditionally you know:\n\n**Including yourself, the other bad people are:\n{the_assassin} (Index Number: {the_assassin_index}) who is the Assassin\n{the_mordred} (Index Number: {the_mordred_index}) who is the Mordred**\n\nPlease also note your index number which is **{their_index}**'
+                elif their_role == 'Assassin':
+                    long_message = f'Your role:\n\n**{their_role}**\n\nYour alliance:\n\n**Bad**\n\nAdditionally you know:\n\n**Including yourself, the other bad people are:\n{the_morgana} (Index Number: {the_morgana_index}) who is the Morgana\n{the_mordred} (Index Number: {the_mordred_index}) who is the Mordred**\n\nPlease also note your index number which is **{their_index}**'
+                elif their_role == 'Mordred':
+                    long_message = f'Your role:\n\n**{their_role}**\n\nYour alliance:\n\n**Bad**\n\nAdditionally you know:\n\n**Including yourself, the other bad people are:\n{the_morgana} (Index Number: {the_morgana_index}) who is the Morgana\n{the_assassin} (Index Number: {the_assassin_index}) who is the Assassin**\n\nPlease also note your index number which is **{their_index}**'
+                await ctx.author.send(f'>>> {long_message}')
+
+            elif len(avalon_players_mention) == 10:
+
+                avalon_roles = ['Loyal', 'Loyal', 'Loyal', 'Loyal', 'Percival', 'Merlin', 'Morgana', 'Assassin',
+                                'Mordred','Lackey']
+                await ctx.author.send(
+                    f'>>> The roles are\n\nGood:\nLoyal\nLoyal\nLoyal\nLoyal\nPercival\nMerlin\n\nBad:\nMorgana\nAssassin\nMordred\nLackey')
+
+                random.shuffle(avalon_roles10)
+                random.shuffle(avalon_roles10)
+                random.shuffle(avalon_roles10)
+                random.shuffle(avalon_roles10)
+                random.shuffle(avalon_roles10)
+
+                their_index = avalon_players_mention.index(ctx.author.mention)
+
+                their_role = avalon_roles10[their_index]
+
+                the_merlin_index = avalon_roles10.index("Merlin")
+
+                the_merlin = avalon_players_mention[the_merlin_index]
+
+                the_morgana_index = avalon_roles10.index("Morgana")
+
+                the_morgana = avalon_players_mention[the_morgana_index]
+
+                the_assassin_index = avalon_roles10.index("Assassin")
+
+                the_assassin = avalon_players_mention[the_assassin_index]
+
+                the_mordred_index = avalon_roles10.index("Mordred")
+
+                the_mordred = avalon_players_mention[the_mordred_index]
+
+                the_lackey_index = avalon_roles10.index("Lackey")
+
+                the_lackey = avalon_players_mention[the_lackey_index]
+
+                merlinmorganaArray = [the_merlin, the_morgana]
+
+                the_index_zero = avalon_players_mention.index(merlinmorganaArray[0])
+
+                the_index_one = avalon_players_mention.index(merlinmorganaArray[1])
+
+                random.shuffle(merlinmorganaArray)
+                random.shuffle(merlinmorganaArray)
+                random.shuffle(merlinmorganaArray)
+                random.shuffle(merlinmorganaArray)
+                random.shuffle(merlinmorganaArray)
+
+                if their_role == 'Loyal':
+                    long_message = f'Your role:\n\n**{their_role}**\n\nYour alliance:\n\n**Good**\n\nAdditionally you know:\n\n**Nothing else**\n\nPlease also note your index number which is **{their_index}**'
+                elif their_role == 'Percival':
+                    long_message = f'Your role:\n\n**{their_role}**\n\nYour alliance:\n\n**Good**\n\nAdditionally you know:\n\n**One of {merlinmorganaArray[0]} (Index Number: {the_index_zero}) and {merlinmorganaArray[1]} (Index Number: {the_index_one}) is the Merlin, the other is the Morgana**\n\nPlease also note your index number which is **{their_index}**'
+                elif their_role == 'Merlin':
+                    long_message = f'Your role:\n\n**{their_role}**\n\nYour alliance:\n\n**Good**\n\nAdditionally you know:\n\n**Some of the bad people are:\n{the_morgana} (Index Number: {the_morgana_index})\n{the_assassin} (Index Number: {the_assassin_index})\n{the_lackey} (Index Number: {the_lackey_index})\nThere is another bad person called the Mordred but you do not know who they are**\n\nPlease also note your index number which is **{their_index}**'
+                elif their_role == 'Morgana':
+                    long_message = f'Your role:\n\n**{their_role}**\n\nYour alliance:\n\n**Bad**\n\nAdditionally you know:\n\n**Including yourself, the other bad people are:\n{the_assassin} (Index Number: {the_assassin_index}) who is the Assassin\n{the_mordred} (Index Number: {the_mordred_index}) who is the Mordred\n{the_lackey} (Index Number: {the_lackey_index}) who is the Lackey**\n\nPlease also note your index number which is **{their_index}**'
+                elif their_role == 'Assassin':
+                    long_message = f'Your role:\n\n**{their_role}**\n\nYour alliance:\n\n**Bad**\n\nAdditionally you know:\n\n**Including yourself, the other bad people are:\n{the_morgana} (Index Number: {the_morgana_index}) who is the Morgana\n{the_mordred} (Index Number: {the_mordred_index}) who is the Mordred\n{the_lackey} (Index Number: {the_lackey_index}) who is the Lackey**\n\nPlease also note your index number which is **{their_index}**'
+                elif their_role == 'Mordred':
+                    long_message = f'Your role:\n\n**{their_role}**\n\nYour alliance:\n\n**Bad**\n\nAdditionally you know:\n\n**Including yourself, the other bad people are:\n{the_morgana} (Index Number: {the_morgana_index}) who is the Morgana\n{the_assassin} (Index Number: {the_assassin_index}) who is the Assassin\n{the_lackey} (Index Number: {the_lackey_index}) who is the Lackey**\n\nPlease also note your index number which is **{their_index}**'
+                elif their_role == 'Lackey':
+                    long_message = f'Your role:\n\n**{their_role}**\n\nYour alliance:\n\n**Bad**\n\nAdditionally you know:\n\n**Including yourself, the other bad people are:\n{the_morgana} (Index Number: {the_morgana_index}) who is the Morgana\n{the_assassin} (Index Number: {the_assassin_index}) who is the Assassin\n{the_mordred} (Index Number: {the_mordred_index}) who is the Mordred**\n\nPlease also note your index number which is **{their_index}**'
+                await ctx.author.send(f'>>> {long_message}')
+
+        elif len(game_phase) < 1:
+            await ctx.send(f'>>> {ctx.author.mention} Avalon matchmaking is not finished yet...')
+
+
 @client.command(aliases=['iq'])
 async def idolquest(ctx, response):
-    if response == 'begin':
+    if response == 'commands':
+        await ctx.send("```css\n\n.idolquest begin - Uploads yourself into the Idol Quest Database. Do this first if you want to play Idol Quest\n\n.idolquest compete - Compete against the top kpop idols to gain points\n\n.idolquest improvelist - See whether you have enough points to improve your various talents\n\n.improve {skill} - Use your points to improve your talent (For example, type .improve dancing)```")
+        return
+    elif response == 'begin':
         f = open('idolquest.txt','r')
         their_username = []
         for entry in f:
@@ -280,14 +1413,13 @@ async def idolquest(ctx, response):
                     theirPhoto.append(temp[2])
 
                 kpopfile.close()
-                # 131 kpop idols in txt file jan 15 2020
-                theIndex = randint(0, 130)
+                # 157 kpop idols in txt file jan 24 2020
+                theIndex = randint(0, 156)
                 group_name = theirGroup[theIndex]
                 member_name = theirName[theIndex]
 
                 if yourScore > oppScore:
 
-                    participation_bonus = 1
                     extra_bonus = randint(2,4)
                     if extra_bonus == 2:
                         extra_message = 'Bonus Points:\nParticipation + 1\nWinning + 1'
@@ -411,6 +1543,119 @@ async def improve(ctx, skill):
             index = index + 1
 
 
+theFinalGroup = []
+theFinalName = []
+theFinalPhoto = []
+hasStarted = []
+longScore = []
+
+@client.command(aliases=['ig'])
+async def idolguess(ctx, guess):
+    if guess == 'commands':
+        await ctx.send("```css\n\n.idolquess start - Starts the game\n\n.idolguess {the name of the person} - Make your guess (For example, type .idolguess chaekyung)\n\n.idolguess skip - Skips the current idol you have to guess at the cost of one life\n\n.idolquest quit - Quits the whole game overall```")
+    elif guess == 'start' and len(hasStarted) == 0:
+        hasStarted.append(0)
+        f = open("kpop.txt", "r")
+        theirGroup = []
+        theirName = []
+        theirPhoto = []
+
+        for x in f:
+            temp = x.split()
+            theirGroup.append(temp[0])
+            theirName.append(temp[1])
+            theirPhoto.append(temp[2])
+
+        f.close()
+        # 157 kpop idols in txt file jan 15 2020
+        theIndex = randint(0, 156)
+        theFinalGroup.append(theirGroup[theIndex])
+        theFinalName.append(theirName[theIndex])
+        theFinalPhoto.append(theirPhoto[theIndex])
+
+
+
+        await ctx.send(f">>> Who is this?\n{theFinalPhoto[0]}")
+        await asyncio.sleep(30)
+
+    elif guess.lower() == theFinalName[0].lower() and len(hasStarted) != 0:
+
+        theFinalName.clear()
+        theFinalGroup.clear()
+        theFinalPhoto.clear()
+        longScore.append(0)
+
+
+        f = open("kpop.txt", "r")
+        theirGroup = []
+        theirName = []
+        theirPhoto = []
+
+        for x in f:
+            temp = x.split()
+            theirGroup.append(temp[0])
+            theirName.append(temp[1])
+            theirPhoto.append(temp[2])
+
+        f.close()
+        # 157 kpop idols in txt file jan 15 2020
+        theIndex = randint(0, 156)
+        theFinalGroup.append(theirGroup[theIndex])
+        theFinalName.append(theirName[theIndex])
+        theFinalPhoto.append(theirPhoto[theIndex])
+
+        await ctx.send(f">>> Current score: {len(longScore)}\n\nWho is this?\n{theFinalPhoto[0]}")
+
+    elif ( (guess.lower() != theFinalName[0].lower()  )  or (guess.lower() == 'skip') ) and len(hasStarted) != 0 and guess.lower() != 'quit' and guess.lower() != 'start':
+        hasStarted.append(0)
+
+        await ctx.send(f">>> Sorry, the answer was {theFinalName[0]} from {theFinalGroup[0]} ")
+
+        if len(hasStarted) == 4:
+            await ctx.send(f">>> You have lost...\n\nFinal score: {len(longScore)}")
+            theFinalName.clear()
+            theFinalGroup.clear()
+            theFinalPhoto.clear()
+            hasStarted.clear()
+            return
+
+        await ctx.send(f">>> Lives remaining: {4 - len(hasStarted)}  ")
+        theFinalName.clear()
+        theFinalGroup.clear()
+        theFinalPhoto.clear()
+
+        f = open("kpop.txt", "r")
+        theirGroup = []
+        theirName = []
+        theirPhoto = []
+
+        for x in f:
+            temp = x.split()
+            theirGroup.append(temp[0])
+            theirName.append(temp[1])
+            theirPhoto.append(temp[2])
+
+
+        f.close()
+        # 157 kpop idols in txt file jan 15 2020
+        theIndex = randint(0, 156)
+        theFinalGroup.append(theirGroup[theIndex])
+        theFinalName.append(theirName[theIndex])
+        theFinalPhoto.append(theirPhoto[theIndex])
+
+        await ctx.send(f">>> Current score: {len(longScore)}\n\nWho is this?\n{theFinalPhoto[0]}")
+
+    elif guess.lower() == 'quit':
+        await ctx.send(f">>> You have lost...\nThe answer was {theFinalName[0]} from {theFinalGroup[0]}\n\nFinal score: {len(longScore)}")
+        theFinalName.clear()
+        theFinalGroup.clear()
+        theFinalPhoto.clear()
+        hasStarted.clear()
+
+    else:
+        await ctx.send(f">>> Sorry, that command is invalid for now...")
+
+
 @client.command()
 async def cheerup(ctx):
 
@@ -427,8 +1672,8 @@ async def cheerup(ctx):
         theirPhoto.append(temp[2])
 
     f.close()
-    # 131 kpop idols in txt file jan 15 2020
-    theIndex = randint(0,130)
+    # 157 kpop idols in txt file jan 15 2020
+    theIndex = randint(0,156)
     finalGroup = theirGroup[theIndex]
     finalName = theirName[theIndex]
 
@@ -467,7 +1712,7 @@ async def cheerup(ctx):
     await ctx.send(f'>>> {random.choice(cheers)}')
     await ctx.send(f'{theirPhoto[theIndex]}')
 
-CHANNEL = THE_CHANNEL_ID_GOES_HERE
+CHANNEL = your_channel_ID_goes here
 
 pasta_one = '>>> IMPORTANT SERVER ANNOUNCEMENT:\n\nLet people know that they should sleep on their bed and not on Nayoung\n\nThank you for your cooperation\n\nhttps://www.youtube.com/watch?v=c4fkgRTe71Q\n\n'
 
@@ -510,19 +1755,19 @@ pasta_seven = ">>> Oi Felix, chuck us a muzz!\n\nhttps://www.youtube.com/watch?v
 
 pasta_eight = ">>> Saving kpop hours\n\nhttps://www.youtube.com/watch?v=B54wPt-vbF0"
 
-pasta_nine = ">>> **Male teacher calls my name in the roll**\n\n. Me: https://www.youtube.com/watch?v=4RijMAvIawY"
+pasta_nine = ">>> **Male teacher calls my name in the roll**\n\nMe: https://www.youtube.com/watch?v=4RijMAvIawY"
 
-pasta_ten = ">>> Stay safe on the road\nhttps://www.youtube.com/watch?v=wsXf9P4hR2s"
+pasta_ten = ">>> Stay safe on the road\n\nhttps://www.youtube.com/watch?v=wsXf9P4hR2s"
 
 @client.event
 async def copy_pasta():
     await client.wait_until_ready()
     channel = client.get_channel(CHANNEL)
-    interval = 450
+    interval = 300
 
     while not client.is_closed():
         pastaArray = [pasta_one, pasta_two, pasta_three, pasta_four, pasta_five, pasta_six, pasta_seven, pasta_eight, pasta_nine, pasta_ten]
-        await asyncio.sleep(450)
+        await asyncio.sleep(1500)
         await channel.send(random.choice(pastaArray))
         await asyncio.sleep(interval)
 
@@ -531,7 +1776,7 @@ async def copy_pasta():
 async def happy_feelings():
     await client.wait_until_ready()
     channel = client.get_channel(CHANNEL)
-    interval = 300
+    interval = 600
 
     while not client.is_closed():
 
@@ -547,8 +1792,8 @@ async def happy_feelings():
             theirPhoto.append(temp[2])
 
         f.close()
-        # 131 kpop idols in txt file jan 15 2020
-        theIndex = randint(0, 130)
+        # 157 kpop idols in txt file jan 15 2020
+        theIndex = randint(0, 156)
         finalGroup = theirGroup[theIndex]
         finalName = theirName[theIndex]
 
@@ -584,7 +1829,7 @@ async def happy_feelings():
                   f'{finalGroup} {finalName} knows good times are coming for a good person like you! :chart_with_upwards_trend:']
 
         messageTotal = f'>>> {random.choice(cheers)}\n{theirPhoto[theIndex]}'
-        await asyncio.sleep(300)
+        await asyncio.sleep(1200)
         await channel.send(messageTotal)
         await asyncio.sleep(interval)
 
@@ -593,11 +1838,11 @@ async def happy_feelings():
 async def current_weather():
     await client.wait_until_ready()
     channel = client.get_channel(CHANNEL)
-    interval = 1200
+    interval = 900
 
     while not client.is_closed():
-        owm = pyowm.OWM('YOUR_API_FROM_OPENWEATHERMAP_GOES_HERE')
-        observation = owm.weather_at_place("YOUR_CITY_GOES_HERE,YOUR_COUNTRY_ABBREVIATION_GOES_HERE")
+        owm = pyowm.OWM('YOUR_OWM_API_GOES_HERE')
+        observation = owm.weather_at_place("your_city,your_country_abbreviation")
         w = observation.get_weather()
         temperature = w.get_temperature('celsius')
         detailed_description = w.get_detailed_status()
@@ -605,8 +1850,21 @@ async def current_weather():
         wind = w.get_wind()
         humidity = w.get_humidity()
         pressures = w.get_pressure()
-        uvi = owm.uvindex_around_coords(36.8485, 174.7633)
+        uvi = owm.uvindex_around_coords(latitude, longtitude)
+        uv_level = uvi.get_value()
         exposure_risk = uvi.get_exposure_risk()
+        current_time = uvi.get_reception_time(timeformat='date')
+
+        if round(uv_level) >= 11:
+            uv_message = "Extreme"
+        elif round(uv_level) >= 8:
+            uv_message = "Very High"
+        elif round(uv_level) >= 6:
+            uv_message = "High"
+        elif round(uv_level) >= 3:
+            uv_message = "Moderate"
+        else:
+            uv_message = "Low"
 
         if wind["deg"] >=345 or wind["deg"] <= 15:
             wind_direction = 'East'
@@ -625,7 +1883,8 @@ async def current_weather():
         elif wind["deg"] > 285 and wind["deg"] < 345:
             wind_direction = 'South-East'
 
-        big_message = f'>>> **Weather Forecast**    \n\nObservations:    :mag:\n{detailed_description}\n\nWind:    :dash:\nSpeed - {round(wind["speed"] * 1.6)} kilometres/hour\nDirection - {wind_direction} @ {wind["deg"]}°\n\nTemperature:    :thermometer_face:\nCurrent - {round(temperature["temp"])}°C\nMaximum - {round(temperature["temp_max"])}°C\nMinimum - {round(temperature["temp_min"])}°C\n\nHumidity and Clouds:    :cloud:\nHumidity - {humidity}%\nCloud Coverage - {cloud_coverage}%\n\nAtmospheric Pressure:    :thermometer:\nCurrent Pressure - {pressures["press"]} hPa\n\nUV:    :sunny:\nExposure Risk - {exposure_risk}\n\n'
+        big_message = f'>>> **Weather Forecast**   \n\nObservations:    :mag:\n{detailed_description}\n\nWind:    :dash:\nSpeed - {round(wind["speed"] * 1.6)} kilometres/hour\nDirection - {wind_direction} @ {wind["deg"]}°\n\nTemperature:    :thermometer_face:\nCurrent - {round(temperature["temp"])}°C\nMaximum - {round(temperature["temp_max"])}°C\nMinimum - {round(temperature["temp_min"])}°C\n\nHumidity and Clouds:    :cloud:\nHumidity - {humidity}%\nCloud Coverage - {cloud_coverage}%\n\nAtmospheric Pressure:    :thermometer:\nCurrent Pressure - {pressures["press"]} hPa\n\nUV:    :sunny:\nLevel - {round(uv_level)}   ({uv_message})\nExposure Risk - {exposure_risk}\n\nTime:    :clock:\nCurrent Time in 24H Format: {current_time}'
+        await asyncio.sleep(900)
         await channel.send(big_message)
         await asyncio.sleep(interval)
 
@@ -633,6 +1892,5 @@ async def current_weather():
 client.loop.create_task(copy_pasta())
 client.loop.create_task(happy_feelings())
 client.loop.create_task(current_weather())
-
 
 client.run('YOUR_DISCORD_BOT_TOKEN_GOES_HERE')
