@@ -2,13 +2,20 @@ import discord
 import random
 from random import randint
 from discord.ext import commands, tasks
+
 from itertools import cycle
 import asyncio
 import pyowm
 import math
+from PIL import Image, ImageDraw, ImageFont
 
+import nltk
+nltk.download('popular', quiet=True)
+import warnings
+warnings.filterwarnings("ignore")
 
-
+from chatterbot import ChatBot
+from chatterbot.trainers import ListTrainer
 
 
 client = commands.Bot(command_prefix = '.')
@@ -18,7 +25,7 @@ status = cycle(['Milkshake (Korean Ver.)', 'Always Be Your Girl (너의 소녀�
 @client.event
 async def on_ready():
     change_status.start()
-    await client.change_presence(status=discord.Status.online, activity=discord.Game('Always Be Your Girl (너의 소녀가 되어줄게)'))
+    #await client.change_presence(status=discord.Status.online, activity=discord.Game('Always Be Your Girl (너의 소녀가 되어줄게)'))
     print('Bot is ready.')
     print('We have logged in as {0.user}'.format(client))
 
@@ -43,6 +50,7 @@ async def on_message(message):
     coolWords10 = [".match"]
     coolWords11 = ["bye","Bye","BYE"]
     coolWords12 = ["!cd", "!ww"]
+    coolWords13 = ["im","Im","IM", "I'm","i'm","I'M","i am","I am", "I Am", "I AM"]
 
 
 
@@ -119,6 +127,28 @@ async def on_message(message):
         if message.content.count(word) > 0:
             await message.channel.send(">>> Your free trial of Kokobot has ended. However, Sadbot will always be free. Use Sadbot today!\n\n https://scontent.fakl6-1.fna.fbcdn.net/v/t1.15752-9/82462694_272856383692002_507557532571533312_n.jpg?_nc_cat=105&_nc_ohc=T61ibjd8r44AX_9ZXSp&_nc_ht=scontent.fakl6-1.fna&oh=c8467554b6b0be0dc27bfee1e38cab98&oe=5E9F6FBF")
 
+    for word in coolWords13:
+        if message.content.count(word) > 0:
+            #img = Image.new('RGBA', (1200, 1200), 'white')
+            img = Image.open("iam.png")
+
+            font = ImageFont.truetype("arial.ttf", 60)
+            str1 = message.content
+            str2 = f"From: {message.author}"
+            draw = ImageDraw.Draw(img)
+            draw.text((1, 75), str1, font=font, fill='cyan')
+            draw.text((1,800),str2 , font=font, fill='cyan')
+
+            img.save("iam2.png")
+
+            await message.channel.send(file=discord.File("iam2.png"))
+
+
+            img.close()
+            img2 = Image.open("iam.png")
+            img2.save("iam2.png")
+            img2.close()
+
     await client.process_commands(message)
 
 
@@ -135,7 +165,6 @@ async def on_member_remove(member):
 @client.command()
 async def ping(ctx):
     await ctx.send(f'>>> Pong!\nLatency: {round(client.latency * 1000)} ms')
-
 
 
 @client.command()
@@ -188,12 +217,12 @@ async def dice(ctx):
 
 @client.command()
 async def commands(ctx):
-    await ctx.send('```css\nGeneral Commands:\n\n.8ball - Ask it a question (Will not work if no arguments are entered)\n\n.about - Details of Sadbot\n\n.cheerup - Try this one if you are feeling down\n\n.dice - Rolls die\n\n.examszn - Get some words of wisdom from the bot if you are feeling stressed for your upcoming exams\n\n.hug - Try this one on someone. Remember to tag them when using this command\n\n.match - Ship yourself with your crush (Will not work if no arguments are entered)\n\n.piglatin {your message} - Convert your message to Pig Latin\n\n.ping - Checks latency\n\n.stanloona {your message} - Convert your message to let others know you really stan LOONA\n\nGame Commands:\n\n.idolguess commands - For Guess the Idol Game commands\n\n.idolquest commands - For Idol Quest Game commands\n\n.avalon commands - For Avalon Game commands```')
+    await ctx.send('```css\nGeneral Commands:\n\n.8ball - Ask it a question (Will not work if no arguments are entered)\n\n.about - Details of Sadbot\n\n.artwork {colour} - creates your artwork with the colour you have specified (You must specify a colour for this command to work. For example, type .artwork blue)\n\n.cheerup - Try this one if you are feeling down\n\n.dice - Rolls die\n\n.examszn - Get some words of wisdom from the bot if you are feeling stressed for your upcoming exams\n\n.hug - Try this one on someone. Remember to use their username (not their nickname) when using this command (For example, type .hug koko) \n\n.match - Ship yourself with your crush (For example, type .match Thomas and Nayeon)\n\n.piglatin {your message} - Convert your message to Pig Latin\n\n.ping - Checks latency\n\n.sadbot {your message} - talk to sadbot about kpop\n\n.stanloona {your message} - Convert your message to let others know you really stan LOONA\n\nGame Commands:\n\n.idolguess commands - For Guess the Idol Game commands\n\n.idolquest commands - For Idol Quest Game commands\n\n.avalon commands - For Avalon Game commands```')
 
 
 @client.command()
 async def examszn(ctx):
-    await ctx.send('>>> https://scontent.fakl6-1.fna.fbcdn.net/v/t1.15752-9/82079945_572354906648893_1092284134119702528_n.jpg?_nc_cat=103&_nc_ohc=w3g7WNcR28cAX-LNRS2&_nc_ht=scontent.fakl6-1.fna&oh=412aa5675422f10f2ad536699e319b2e&oe=5E8F79B7')
+    await ctx.send('>>> https://scontent.fakl6-1.fna.fbcdn.net/v/t1.15752-9/82276376_604105316813162_5652167650046902272_n.jpg?_nc_cat=110&_nc_ohc=sJgWVpNAbHAAX-17ANX&_nc_ht=scontent.fakl6-1.fna&oh=0da1366686ae449cf1c6f4a1e6f68d20&oe=5EBE1A66')
 
 
 @client.command(aliases=['sl'])
@@ -214,10 +243,49 @@ async def piglatin(ctx,*,arg):
         big_message = big_message + " " + med_message + " "
     await ctx.send(f">>> {big_message}")
 
+@client.command()
+async def artwork(ctx, colour):
+
+    img = Image.new('RGBA', (1200, 1200), 'silver')
+
+    font = ImageFont.truetype("arial.ttf", 5)
+    str1 = '*'
+    draw = ImageDraw.Draw(img)
+
+    the_count = 0
+    randpointx = randint(0, 1199)
+    randpointy = randint(0, 1199)
+    prevplotx = randpointx
+    prevploty = randpointy
+
+    draw.text((randpointx, randpointy), str1, font=font, fill=colour)
+    while the_count < 100000:
+
+
+        xcoords = [600,1,1199]
+        ycoords = [1,1199,1199]
+        rand_index = randint(0,2)
+
+        final_pointx = xcoords[rand_index]
+        final_pointy = ycoords[rand_index]
+
+        prevplotx = int(( final_pointx + prevplotx ) / 2)
+        prevploty = int(( final_pointy + prevploty ) / 2)
+
+
+        draw.text((prevplotx,prevploty),str1,font=font,fill=colour)
+
+        the_count = the_count + 1
+
+
+    img.save("artwork.png")
+
+    await ctx.send(file=discord.File("artwork.png"))
+
 
 @client.command()
 async def about(ctx):
-    await ctx.send(">>> https://gfycat.com/AchingLeanFalcon\n\nVersion: 0.3.2.3\nLatest Additions: Idol Guessing game and a few trivial commands\nNext Version: 0.3.3.0\nFuture Additions: TBA\nOwner: keed talk to 'em#2206\n\nSadbot has been made with lots of love!")
+    await ctx.send(">>> https://gfycat.com/AchingLeanFalcon\n\nVersion: 0.3.3.0\nLatest Additions: Idol Guessing game and a few trivial commands\nNext Version: 0.3.3.1\nFuture Additions: Risk, The Board Game\nMaintainer: keed talk to 'em#2206\nGithub: https://github.com/oliviacolombia/sadbot\n\nSadbot has been made with lots of love!")
 
 rounds_array = [ [2,2,2,3,3,3] , [3,3,3,4,4,4], [2,4,3,4,4,4] , [3,3,4,5,5,5], [3,4,4,5,5,5]]
 avalon_players_mention = []
@@ -747,7 +815,7 @@ async def avalon(ctx, reply):
                 f">>> Needs {len(avalon_players_mention) - len(no_votes)} more votes to reveal whether this mission is to be undertaken or not")
 
     elif reply == 'fail':
-
+        channel = client.get_channel(668249833793912912)
         await ctx.channel.purge(limit=1)
         if len(game_phase) != 2:
             await ctx.send(">>> This command is not valid for now")
@@ -767,7 +835,7 @@ async def avalon(ctx, reply):
         has_voted.append(ctx.author.mention)
         fail_votes.append(1)
         if len(game_score) == 3 and len(fail_votes) >= 2 and len(avalon_players_mention) >= 7 and len(mission_participants) == len(has_voted):
-            await ctx.send(">>> **The mission has failed**")
+            await channel.send(">>> **The mission has failed**")
             mission_lock.clear()
             game_phase.remove(0)
             mission_participants.clear()
@@ -792,7 +860,7 @@ async def avalon(ctx, reply):
                 elif item == 0:
                     fails = fails + 1
             if fails == 3:
-                await ctx.send(">>> **The Bad people win.**")
+                await channel.send(">>> **The Bad people win.**")
                 avalon_players_mention.clear()
                 game_phase.clear()
                 no_votes.clear()
@@ -808,15 +876,15 @@ async def avalon(ctx, reply):
                 mission_lock.clear()
 
                 return
-            await ctx.send(f">>> Round {len(game_score) + 1}\n\nCurrent Players:\n\n:arrow_left: {verylong_message} :arrow_right:\n\nIt is now {avalon_players_mention[current_index[0]]}'s turn\n\nThe hammer lands on {avalon_players_mention[hammer_index[0]]}")
+            await channel.send(f">>> Round {len(game_score) + 1}\n\nCurrent Players:\n\n:arrow_left: {verylong_message} :arrow_right:\n\nIt is now {avalon_players_mention[current_index[0]]}'s turn\n\nThe hammer lands on {avalon_players_mention[hammer_index[0]]}")
             y_axis = len(game_score)
             x_axis = len(avalon_players_mention) - 5
 
             people_needed = rounds_array[y_axis][x_axis]
-            await ctx.send(f">>> Choose {people_needed} people you want on this mission. Type **.choose [person]** to choose e.g. **.choose @denny3sacrowd @koko @sleo081 or .choose @sleo081 or .choose @sleo081 @denny3sacrowd**")
+            await channel.send(f">>> Choose {people_needed} people you want on this mission. Type **.choose [person]** to choose e.g. **.choose @denny3sacrowd @koko @sleo081 or .choose @sleo081 or .choose @sleo081 @denny3sacrowd**")
             return
         elif len(fail_votes) >= 1 and len(mission_participants) == len(has_voted):
-            await ctx.send(">>> **The mission has failed**")
+            await channel.send(">>> **The mission has failed**")
             mission_lock.clear()
             game_phase.remove(0)
             mission_participants.clear()
@@ -842,7 +910,7 @@ async def avalon(ctx, reply):
                 elif item == 0:
                     fails = fails + 1
             if fails == 3:
-                await ctx.send(">>> **The Bad people win.**")
+                await channel.send(">>> **The Bad people win.**")
                 avalon_players_mention.clear()
                 game_phase.clear()
                 no_votes.clear()
@@ -858,15 +926,16 @@ async def avalon(ctx, reply):
                 mission_lock.clear()
 
                 return
-            await ctx.send(f">>> Round {len(game_score) + 1}\n\nCurrent Players:\n\n:arrow_left: {verylong_message} :arrow_right:\n\nIt is now {avalon_players_mention[current_index[0]]}'s turn\n\nThe hammer lands on {avalon_players_mention[hammer_index[0]]}")
+            await channel.send(f">>> Round {len(game_score) + 1}\n\nCurrent Players:\n\n:arrow_left: {verylong_message} :arrow_right:\n\nIt is now {avalon_players_mention[current_index[0]]}'s turn\n\nThe hammer lands on {avalon_players_mention[hammer_index[0]]}")
             y_axis = len(game_score)
             x_axis = len(avalon_players_mention) - 5
 
             people_needed = rounds_array[y_axis][x_axis]
-            await ctx.send(f">>> Choose {people_needed} people you want on this mission. Type **.choose [person]** to choose e.g. **.choose @denny3sacrowd @koko @sleo081 or .choose @sleo081 or .choose @sleo081 @denny3sacrowd** ")
+            await channel.send(f">>> Choose {people_needed} people you want on this mission. Type **.choose [person]** to choose e.g. **.choose @denny3sacrowd @koko @sleo081 or .choose @sleo081 or .choose @sleo081 @denny3sacrowd** ")
             return
 
     elif reply == 'pass':
+        channel = client.get_channel(668249833793912912)
         await ctx.channel.purge(limit=1)
         if len(game_phase) != 2:
             await ctx.send(">>> This command is not valid for now")
@@ -885,7 +954,7 @@ async def avalon(ctx, reply):
             return
         has_voted.append(ctx.author.mention)
         if len(mission_participants) == len(has_voted) and len(fail_votes) < 2 and len(avalon_players_mention) >= 7 and len(game_score) == 3:
-            await ctx.send(">>> **The mission has passed**")
+            await channel.send(">>> **The mission has passed**")
             mission_lock.clear()
             game_phase.remove(0)
             mission_participants.clear()
@@ -910,17 +979,17 @@ async def avalon(ctx, reply):
                     fails = fails + 1
             if passes == 3:
 
-                await ctx.send(">>> The Bad people have one more chance to win if they guess who the Merlin is. Type **.merlin @person** to guess")
+                await channel.send(">>> The Bad people have one more chance to win if they guess who the Merlin is. Type **.merlin @person** to guess")
                 return
-            await ctx.send(f">>> Round {len(game_score) + 1}\n\nCurrent Players:\n\n:arrow_left: {verylong_message} :arrow_right:\n\nIt is now {avalon_players_mention[current_index[0]]}'s turn\n\nThe hammer lands on {avalon_players_mention[hammer_index[0]]}")
+            await channel.send(f">>> Round {len(game_score) + 1}\n\nCurrent Players:\n\n:arrow_left: {verylong_message} :arrow_right:\n\nIt is now {avalon_players_mention[current_index[0]]}'s turn\n\nThe hammer lands on {avalon_players_mention[hammer_index[0]]}")
             y_axis = len(game_score)
             x_axis = len(avalon_players_mention) - 5
 
             people_needed = rounds_array[y_axis][x_axis]
-            await ctx.send(f">>> Choose {people_needed} people you want on this mission. Type **.choose [person]** to choose e.g. **.choose @denny3sacrowd @koko @sleo081 or .choose @sleo081 or .choose @sleo081 @denny3sacrowd**")
+            await channel.send(f">>> Choose {people_needed} people you want on this mission. Type **.choose [person]** to choose e.g. **.choose @denny3sacrowd @koko @sleo081 or .choose @sleo081 or .choose @sleo081 @denny3sacrowd**")
             return
         elif len(mission_participants) == len(has_voted) and len(fail_votes) < 1:
-            await ctx.send(">>> **The mission has passed**")
+            await channel.send(">>> **The mission has passed**")
             mission_lock.clear()
             game_phase.remove(0)
             mission_participants.clear()
@@ -945,14 +1014,14 @@ async def avalon(ctx, reply):
                     fails = fails + 1
             if passes == 3:
 
-                await ctx.send(">>> The Bad people have one more chance to win if they guess who the Merlin is. Type **.merlin @person** to guess")
+                await channel.send(">>> The Bad people have one more chance to win if they guess who the Merlin is. Type **.merlin @person** to guess")
                 return
-            await ctx.send(f">>> Round {len(game_score) + 1}\n\nCurrent Players:\n\n:arrow_left: {verylong_message} :arrow_right:\n\nIt is now {avalon_players_mention[current_index[0]]}'s turn\n\nThe hammer lands on {avalon_players_mention[hammer_index[0]]}")
+            await channel.send(f">>> Round {len(game_score) + 1}\n\nCurrent Players:\n\n:arrow_left: {verylong_message} :arrow_right:\n\nIt is now {avalon_players_mention[current_index[0]]}'s turn\n\nThe hammer lands on {avalon_players_mention[hammer_index[0]]}")
             y_axis = len(game_score)
             x_axis = len(avalon_players_mention) - 5
 
             people_needed = rounds_array[y_axis][x_axis]
-            await ctx.send(f">>> Choose {people_needed} people you want on this mission. Type **.choose [person]** to choose e.g. **.choose @denny3sacrowd @koko @sleo081 or .choose @sleo081 or .choose @sleo081 @denny3sacrowd**")
+            await channel.send(f">>> Choose {people_needed} people you want on this mission. Type **.choose [person]** to choose e.g. **.choose @denny3sacrowd @koko @sleo081 or .choose @sleo081 or .choose @sleo081 @denny3sacrowd**")
             return
 
 
@@ -1617,6 +1686,7 @@ async def idolguess(ctx, guess):
             theFinalGroup.clear()
             theFinalPhoto.clear()
             hasStarted.clear()
+            longScore.clear()
             return
 
         await ctx.send(f">>> Lives remaining: {4 - len(hasStarted)}  ")
@@ -1651,6 +1721,7 @@ async def idolguess(ctx, guess):
         theFinalGroup.clear()
         theFinalPhoto.clear()
         hasStarted.clear()
+        longScore.clear()
 
     else:
         await ctx.send(f">>> Sorry, that command is invalid for now...")
@@ -1712,7 +1783,7 @@ async def cheerup(ctx):
     await ctx.send(f'>>> {random.choice(cheers)}')
     await ctx.send(f'{theirPhoto[theIndex]}')
 
-CHANNEL = your_channel_ID_goes here
+CHANNEL = channel_id_goes_here
 
 pasta_one = '>>> IMPORTANT SERVER ANNOUNCEMENT:\n\nLet people know that they should sleep on their bed and not on Nayoung\n\nThank you for your cooperation\n\nhttps://www.youtube.com/watch?v=c4fkgRTe71Q\n\n'
 
@@ -1841,8 +1912,8 @@ async def current_weather():
     interval = 900
 
     while not client.is_closed():
-        owm = pyowm.OWM('YOUR_OWM_API_GOES_HERE')
-        observation = owm.weather_at_place("your_city,your_country_abbreviation")
+        owm = pyowm.OWM('YOUR OWM API GOES HERE')
+        observation = owm.weather_at_place("Your City, Your Country Abbreviation")
         w = observation.get_weather()
         temperature = w.get_temperature('celsius')
         detailed_description = w.get_detailed_status()
@@ -1883,7 +1954,7 @@ async def current_weather():
         elif wind["deg"] > 285 and wind["deg"] < 345:
             wind_direction = 'South-East'
 
-        big_message = f'>>> **Weather Forecast**   \n\nObservations:    :mag:\n{detailed_description}\n\nWind:    :dash:\nSpeed - {round(wind["speed"] * 1.6)} kilometres/hour\nDirection - {wind_direction} @ {wind["deg"]}°\n\nTemperature:    :thermometer_face:\nCurrent - {round(temperature["temp"])}°C\nMaximum - {round(temperature["temp_max"])}°C\nMinimum - {round(temperature["temp_min"])}°C\n\nHumidity and Clouds:    :cloud:\nHumidity - {humidity}%\nCloud Coverage - {cloud_coverage}%\n\nAtmospheric Pressure:    :thermometer:\nCurrent Pressure - {pressures["press"]} hPa\n\nUV:    :sunny:\nLevel - {round(uv_level)}   ({uv_message})\nExposure Risk - {exposure_risk}\n\nTime:    :clock:\nCurrent Time in 24H Format: {current_time}'
+        big_message = f'>>> **Weather Forecast\n\n**{detailed_description}**\n\n:dash: Wind Speed: {round(wind["speed"] * 1.6)} kilometres/hour {wind_direction} (@ {wind["deg"]}°)\n:thermometer_face: Current Temperature: {round(temperature["temp"])}°C, Maximum: {round(temperature["temp_max"])}°C, Minimum: {round(temperature["temp_min"])}°C\n:sweat_drops: Humidity: {humidity}% with {cloud_coverage}% cloud coverage\n:thermometer: Pressure: {pressures["press"]} hPa\n:sunny: UV Level: {round(uv_level)} ({uv_message}) with a {exposure_risk} exposure risk\n:clock: Current Time: {current_time}'
         await asyncio.sleep(900)
         await channel.send(big_message)
         await asyncio.sleep(interval)
@@ -1892,5 +1963,49 @@ async def current_weather():
 client.loop.create_task(copy_pasta())
 client.loop.create_task(happy_feelings())
 client.loop.create_task(current_weather())
+
+chatbot = ChatBot('Sadbot')
+
+trainer = ListTrainer(chatbot)
+
+data = open('chatbot.txt').read()
+
+convos = data.strip().split('\n')
+
+trainer.train(convos)
+
+
+
+# Create a new trainer for the chatbot
+#trainer = ChatterBotCorpusTrainer(chatbot)
+
+# Train the chatbot based on the english corpus
+#trainer.train("chatterbot.corpus.english")
+
+# Train based on the english corpus
+#trainer.train("chatterbot.corpus.english")
+
+# Train based on english greetings corpus
+#trainer.train("chatterbot.corpus.english.greetings")
+
+# Train based on the english conversations corpus
+#trainer.train("chatterbot.corpus.english.conversations")
+
+
+
+@client.command(aliases=["sb"])
+async def sadbot(ctx,*,input):
+
+    # Get a response to an input statement
+    reply = chatbot.get_response(input)
+
+    await ctx.send(f" {reply}")
+
+    file = open('chatbot.txt', 'a')
+
+    final_message = input + "\n"
+    file.write(final_message)
+
+    file.close()
 
 client.run('YOUR_DISCORD_BOT_TOKEN_GOES_HERE')
