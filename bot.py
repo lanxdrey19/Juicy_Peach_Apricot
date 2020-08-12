@@ -24,16 +24,19 @@ from discord.ext.commands import Bot
 import discord
 from discord.utils import get
 
-# Bot prefix
+# Secret stuff
+import sys
+import os
+import secret_codes
 
+# Bot prefix
 client = commands.Bot(command_prefix = '.')
 
 # Token
-token = YOUR_TOKEN_GOES_HERE
 
 # For the bot's status
 
-status = cycle(['Fiesta | Type ".commands" for the list of commands','Hands Up | Type ".commands" for the list of commands', 'Nun Nu Nan Na | Type ".commands" for the list of commands', 'Crossroads | Type ".commands" for the list of commands', 'Wish | Type ".commands" for the list of commands', 'So What | Type ".commands" for the list of commands', 'Dun Dun | Type ".commands" for the list of commands','Cool | Type ".commands" for the list of commands',  'Bouncy | Type ".commands" for the list of commands', 'Say My Name | Type ".commands" for the list of commands','Scream | Type ".commands" for the list of commands', 'My Universe | Type ".commands" for the list of commands', 'Dazzle Dazzle | Type ".commands" for the list of commands', 'Timing | Type ".commands" for the list of commands', 'Queen | Type ".commands" for the list of commands','Jackpot | Type ".commands" for the list of commands', 'Lie | Type ".commands" for the list of commands', 'Plant | Type ".commands" for the list of commands', 'VALENTi | Type ".commands" for the list of commands', 'Future | Type ".commands" for the list of commands', 'ASSA | Type ".commands" for the list of commands', 'Oh my God | Type ".commands" for the list of commands','DUMHDURUM | Type ".commands" for the list of commands','LALALILALA | Type ".commands" for the list of commands'])
+status = cycle(secret_codes.BOT_CYCLE_MESSAGES)
 @client.event
 async def on_ready():
     change_status.start()
@@ -53,7 +56,7 @@ async def change_status():
 async def on_raw_reaction_add(payload):
     global role
     message_id = payload.message_id
-    if message_id == message_id_goes_here:
+    if message_id == secret_codes.SAD_ROLES_MESSAGE_ID:
         guild_id = payload.guild_id
         guild = discord.utils.find(lambda g: g.id == guild_id, client.guilds)
 
@@ -71,18 +74,19 @@ async def on_raw_reaction_add(payload):
         else:
             print("role not found")
 
+# Sadboiclique
 @client.event
 async def on_raw_reaction_remove(payload):
     global role
-    message_id = payload.message_id
-    if message_id == message_id_goes_here:
+    sadboi_message_id = payload.message_id
+    if sadboi_message_id == secret_codes.SAD_ROLES_MESSAGE_ID:
         guild_id = payload.guild_id
         guild = discord.utils.find(lambda g: g.id == guild_id, client.guilds)
 
-        if payload.emoji.name == 'sujeongconcernyoinked':
-            role = discord.utils.get(guild.roles, name="Kpop Updates")
-        elif payload.emoji.name == 'suyunpout':
-            role = discord.utils.get(guild.roles, name="Instruction")
+        if payload.emoji.name == secret_codes.SAD_EMOTE_1:
+            role = discord.utils.get(guild.roles, name=secret_codes.SAD_ROLE_1)
+        elif payload.emoji.name == secret_codes.SAD_EMOTE_2:
+            role = discord.utils.get(guild.roles, name=secret_codes.SAD_ROLE_2)
 
         if role is not None:
             member = discord.utils.find(lambda m: m.id == payload.user_id, guild.members)
@@ -92,6 +96,7 @@ async def on_raw_reaction_remove(payload):
                 print("member not found")
         else:
             print("role not found")
+
 
 @client.event
 async def on_message(message):
@@ -137,7 +142,6 @@ async def on_message(message):
         if message.content.count(word) > 0:
             emoji = '😍'
             await message.add_reaction(emoji)
-
 
     await client.process_commands(message)
 
@@ -309,36 +313,18 @@ async def cheerup(ctx):
             await ctx.send('You already have a slideshow going on...')
             return
     cheerup_players.append(ctx.author.mention)
-    f = open("kpop.txt", "r")
     theirGroup = []
     theirName = []
     theirPhoto = []
     counterNumber = 0
-    for x in f:
+    f = open("kpop.txt", "r")
+    for line in f:
         counterNumber = counterNumber + 1
-        temp = x.split()
-        theirPhoto.append(temp[len(temp) - 1])
-        temp.remove(temp[len(temp) - 1])
-        idol_group = ""
-        idol_name = ""
-        count_one = []
-        for item in temp:
-            if item != 'ge' and len(count_one) == 0:
-                idol_group = idol_group + item
-                count_one.append(0)
-            elif item != 'ge' and len(count_one) == 1:
-                idol_group = idol_group + " " + item
-            elif item == 'ge':
-                count_one.append(0)
-            elif len(count_one) == 2:
-                idol_name = idol_name + item
-                count_one.append(0)
-            elif len(count_one) == 3:
-                idol_name = idol_name + " " + item
-        count_one.clear()
-
-        theirGroup.append(idol_group)
-        theirName.append(idol_name)
+        line = line.rstrip('\n')
+        line = line.split(',')
+        theirGroup.append(line[0])
+        theirName.append(line[1])
+        theirPhoto.append(line[2])
 
     f.close()
 
@@ -385,39 +371,16 @@ async def cheerup(ctx):
     interval = 5
     await asyncio.sleep(interval)
 
-
     while not client.is_closed():
-        await asyncio.sleep(interval)
 
         f = open("kpop.txt", "r")
-        theirGroup = []
-        theirName = []
-        theirPhoto = []
-
-        for x in f:
-            temp = x.split()
-            theirPhoto.append(temp[len(temp) - 1])
-            temp.remove(temp[len(temp) - 1])
-            idol_group = ""
-            idol_name = ""
-            count_one = []
-            for item in temp:
-                if item != 'ge' and len(count_one) == 0:
-                    idol_group = idol_group + item
-                    count_one.append(0)
-                elif item != 'ge' and len(count_one) == 1:
-                    idol_group = idol_group + " " + item
-                elif item == 'ge':
-                    count_one.append(0)
-                elif len(count_one) == 2:
-                    idol_name = idol_name + item
-                    count_one.append(0)
-                elif len(count_one) == 3:
-                    idol_name = idol_name + " " + item
-            count_one.clear()
-
-            theirGroup.append(idol_group)
-            theirName.append(idol_name)
+        for line in f:
+            counterNumber = counterNumber + 1
+            line = line.rstrip('\n')
+            line = line.split(',')
+            theirGroup.append(line[0])
+            theirName.append(line[1])
+            theirPhoto.append(line[2])
 
         f.close()
 
@@ -460,6 +423,7 @@ async def cheerup(ctx):
         await msg1.edit(content=f">>> :blush: Here is another photo to cheer you up! :blush:\n\n")
         await msg2.edit(content=f'>>> {random.choice(cheers)}')
         await msg3.edit(content=f'{theirPhoto[theIndex]}')
+        await asyncio.sleep(interval)
         slides.append(0)
         if len(slides) == 10:
             await ctx.send(f">>> You may start a new slideshow {ctx.author.mention}")
@@ -641,8 +605,8 @@ async def weather(ctx):
     await client.wait_until_ready()
 
     #while not client.is_closed():
-    owm = pyowm.OWM(YOUR_TOKEN_GOES_HERE)
-    observation = owm.weather_at_place("Auckland, NZ")
+    owm = pyowm.OWM(secret_codes.OWM_API_KEY)
+    observation = owm.weather_at_place(secret_codes.MY_CITY_AND_COUNTRY)
     w = observation.get_weather()
     temperature = w.get_temperature('celsius')
     detailed_description = w.get_detailed_status().capitalize()
@@ -650,7 +614,7 @@ async def weather(ctx):
     wind = w.get_wind()
     humidity = w.get_humidity()
     pressures = w.get_pressure()
-    uvi = owm.uvindex_around_coords(36.8485, 174.7633)
+    uvi = owm.uvindex_around_coords(secret_codes.THE_LATITUDE, secret_codes.THE_LONGTITUDE)
     uv_level = uvi.get_value()
     exposure_risk = uvi.get_exposure_risk()
     current_time = uvi.get_reception_time(timeformat='date')
@@ -683,610 +647,10 @@ async def weather(ctx):
     elif wind["deg"] > 285 and wind["deg"] < 345:
         wind_direction = 'South-East'
 
-    big_message = f'>>> **Weather Forecast in Auckland, New Zealand**    :earth_asia:  :flag_nz:\n\n**{detailed_description}**\n\n:dash: Wind Speed: {round(wind["speed"] * 1.6)} kilometres/hour {wind_direction} (@ {wind["deg"]}°)\n:thermometer_face: Current Temperature: {round(temperature["temp"])}°C, Maximum: {round(temperature["temp_max"])}°C, Minimum: {round(temperature["temp_min"])}°C\n:sweat_drops: Humidity: {humidity}% with {cloud_coverage}% cloud coverage\n:thermometer: Pressure: {pressures["press"]} hPa\n:sunny: UV Level: {round(uv_level)} ({uv_message}) with a {exposure_risk} exposure risk\n:clock: Current Time: {current_time}'
-    await ctx.send(big_message)
+    final_message = f'>>> {secret_codes.WEATHER_PART_OF_MESSAGE}:\n\n**{detailed_description}**\n\n:dash: Wind Speed: {round(wind["speed"] * 1.6)} kilometres/hour {wind_direction} (@ {wind["deg"]}°)\n:thermometer_face: Current Temperature: {round(temperature["temp"])}°C, Maximum: {round(temperature["temp_max"])}°C, Minimum: {round(temperature["temp_min"])}°C\n:sweat_drops: Humidity: {humidity}% with {cloud_coverage}% cloud coverage\n:thermometer: Pressure: {pressures["press"]} hPa\n:sunny: UV Level: {round(uv_level)} ({uv_message}) with a {exposure_risk} exposure risk\n:clock: Current Time: {current_time}'
+    await ctx.send(final_message)
 
-# Profile
 
-@client.command(help="Displays your profile details",aliases=['p'])
-async def profile(ctx,*,message):
-
-
-    messageLength = message.split()
-
-
-    if len(messageLength) == 1:
-        if message.lower() == 'commands':
-            await ctx.send(
-                "```css\n\n.profile self - Displays your profile\n\n.profile {@user} - Displays the profile of the specified user\n\n.profile changename {Your name} - Changes what is displayed as your name in your profile\n\n.profile changedegree {Your degree and major} - Changes what is displayed as your degree and major in your profile\n\n.profile changegroups {Your favourite kpop groups} - Changes which groups are displayed as your favorite groups in your profile\n\n.profile changeidols {Your favourite idols} - Changes who is displayed as your favourite idols in your profile\n\n.profile changelistening {Who you have been listening to} - Changes which artists you have been listening to in your profile\n\n.profile changesomething {Something you want us to know} - Changes what is displayed as something you would like everyone to know in your profile```")
-        elif message.lower() == 'self':
-            f = open("profiles.txt", "r")
-
-            isFound = False
-            for x in f:
-
-                temp = x.split()
-                if ctx.author.mention == temp[0]:
-
-                    isFound = True
-                    count = 0
-                    theirDiscordID = ""
-                    name = ""
-                    degreeMajor = ""
-                    favGroups = ""
-                    favIdols = ""
-                    listeningTo = ""
-                    something = ""
-
-                    for item in temp:
-
-                        if item == "$toP":
-                            count = count + 1
-                        elif count == 0:
-                            theirDiscordID = theirDiscordID + " " + item
-                        elif count == 1:
-                            name = name + " " + item
-                        elif count == 2:
-                            degreeMajor = degreeMajor + " " + item
-                        elif count == 3:
-                            favGroups = favGroups + " " + item
-                        elif count == 4:
-                            favIdols = favIdols + " " + item
-                        elif count == 5:
-                            listeningTo = listeningTo + " " + item
-                        elif count == 6:
-                            something = something + " " + item
-                    f.close()
-
-                    await ctx.send(f">>> Profile for {theirDiscordID}\n\nName: {name}\n\nDegree and Major: {degreeMajor}\n\nFavourite Groups: {favGroups}\n\nFavourite Idols: {favIdols}\n\nCurrently Listening To: {listeningTo}\n\nSomething I would like you to know: {something}")
-
-            if isFound == False:
-                f.close()
-
-                name = "ADD YOUR NAME HERE"
-                degreeMajor = "ADD YOUR DEGREE AND MAJOR HERE"
-                favGroups = "ADD YOUR FAVOURITE GROUPS HERE"
-                favIdols = "ADD YOUR FAVORITE IDOLS HERE"
-                listeningTo = "ADD THE SONGS YOU ARE CURRENTLY LISTENING TO HERE"
-                something = "ADD SOMETHING YOU WOULD LOVE EVERYONE TO KNOW ABOUT"
-
-                largeMessage = f"{ctx.author.mention} $toP {name} $toP {degreeMajor} $toP {favGroups} $toP {favIdols} $toP {listeningTo} $toP {something}"
-                f = open('profiles.txt', 'a')
-                f.write(largeMessage)
-
-                await ctx.send(f">>> Profile for {ctx.author.mention}\n\nName: {name}\n\nDegree and Major: {degreeMajor}\n\nFavourite Groups: {favGroups}\n\nFavourite Idols: {favIdols}\n\nCurrently Listening To: {listeningTo}\n\nSomething I would like you to know: {something}")
-                f.close()
-        else:
-            f = open("profiles.txt", "r")
-
-            isFound = False
-            for x in f:
-
-                temp = x.split()
-                if message == temp[0]:
-
-                    isFound = True
-                    count = 0
-                    theirDiscordID = ""
-                    name = ""
-                    degreeMajor = ""
-                    favGroups = ""
-                    favIdols = ""
-                    listeningTo = ""
-                    something = ""
-
-                    for item in temp:
-
-                        if item == "$toP":
-                            count = count + 1
-                        elif count == 0:
-                            theirDiscordID = theirDiscordID + " " + item
-                        elif count == 1:
-                            name = name + " " + item
-                        elif count == 2:
-                            degreeMajor = degreeMajor + " " + item
-                        elif count == 3:
-                            favGroups = favGroups + " " + item
-                        elif count == 4:
-                            favIdols = favIdols + " " + item
-                        elif count == 5:
-                            listeningTo = listeningTo + " " + item
-                        elif count == 6:
-                            something = something + " " + item
-                    f.close()
-
-                    await ctx.send(
-                        f">>> Profile for {theirDiscordID}\n\nName: {name}\n\nDegree and Major: {degreeMajor}\n\nFavourite Groups: {favGroups}\n\nFavourite Idols: {favIdols}\n\nCurrently Listening To: {listeningTo}\n\nSomething I would like you to know: {something}")
-
-            if isFound == False:
-                if ctx.author.mention == message:
-
-                    name = "ADD YOUR NAME HERE"
-                    degreeMajor = "ADD YOUR DEGREE AND MAJOR HERE"
-                    favGroups = "ADD YOUR FAVOURITE GROUPS HERE"
-                    favIdols = "ADD YOUR FAVORITE IDOLS HERE"
-                    listeningTo = "ADD THE SONGS YOU ARE CURRENTLY LISTENING TO HERE"
-                    something = "ADD SOMETHING YOU WOULD LOVE EVERYONE TO KNOW ABOUT"
-
-                    largeMessage = f"{ctx.author.mention} $toP {name} $toP {degreeMajor} $toP {favGroups} $toP {favIdols} $toP {listeningTo} $toP {something}"
-                    f = open('profiles.txt', 'a')
-                    f.write(largeMessage)
-
-                    await ctx.send(
-                        f">>> Profile for {ctx.author.mention}\n\nName: {name}\n\nDegree and Major: {degreeMajor}\n\nFavourite Groups: {favGroups}\n\nFavourite Idols: {favIdols}\n\nCurrently Listening To: {listeningTo}\n\nSomething I would like you to know: {something}")
-                    f.close()
-                else:
-                    await ctx.send(f">>> Sorry, the user: {message} can not be found... Please try again.")
-
-    else:
-        if messageLength[0].lower() == 'changename':
-            f = open("profiles.txt", "r")
-            infoArray = []
-            arrayCount = 0
-            isFound = False
-            for x in f:
-                arrayCount = arrayCount + 1
-                temp = x.split()
-                if ctx.author.mention != temp[0]:
-                    infoArray.append(x)
-
-                if ctx.author.mention == temp[0]:
-
-                    isFound = True
-                    count = 0
-                    theirDiscordID = ""
-                    name = ""
-                    degreeMajor = ""
-                    favGroups = ""
-                    favIdols = ""
-                    listeningTo = ""
-                    something = ""
-
-                    for item in temp:
-
-                        if item == "$toP":
-                            count = count + 1
-                        elif count == 0:
-                            theirDiscordID = theirDiscordID + " " + item
-                        elif count == 1:
-                            name = name + " " + item
-                        elif count == 2:
-                            degreeMajor = degreeMajor + " " + item
-                        elif count == 3:
-                            favGroups = favGroups + " " + item
-                        elif count == 4:
-                            favIdols = favIdols + " " + item
-                        elif count == 5:
-                            listeningTo = listeningTo + " " + item
-                        elif count == 6:
-                            something = something + " " + item
-                    f.close()
-
-                    newName = ""
-                    for item in messageLength:
-                        if item != 'changename':
-                            newName = newName + item + " "
-
-                    await ctx.send(">>> Your details has been successfully changed. Please type .profile self to view your changes")
-                    f = open('profiles.txt', 'w')
-                    largeMessage = f"{ctx.author.mention} $toP {newName} $toP {degreeMajor} $toP {favGroups} $toP {favIdols} $toP {listeningTo} $toP {something}"
-                    f.write(largeMessage)
-                    for item in infoArray:
-                        f.write(item)
-                    f.close()
-            if isFound == False:
-                f.close()
-
-                name = "ADD YOUR NAME HERE"
-                degreeMajor = "ADD YOUR DEGREE AND MAJOR HERE"
-                favGroups = "ADD YOUR FAVOURITE GROUPS HERE"
-                favIdols = "ADD YOUR FAVORITE IDOLS HERE"
-                listeningTo = "ADD THE SONGS YOU ARE CURRENTLY LISTENING TO HERE"
-                something = "ADD SOMETHING YOU WOULD LOVE EVERYONE TO KNOW ABOUT"
-
-                newName = ""
-                for item in messageLength:
-                    if item != 'changename':
-                        newName = newName + item + " "
-
-
-                largeMessage = f"{ctx.author.mention} $toP {newName} $toP {degreeMajor} $toP {favGroups} $toP {favIdols} $toP {listeningTo} $toP {something}"
-                f = open('profiles.txt', 'a')
-                f.write(largeMessage)
-
-                await ctx.send(
-                    ">>> Your details has been successfully changed. Please type\n\n.profile self \n\nto view your changes")
-                f.close()
-        elif messageLength[0].lower() == 'changedegree':
-            f = open("profiles.txt", "r")
-            infoArray = []
-            arrayCount = 0
-            isFound = False
-            for x in f:
-                arrayCount = arrayCount + 1
-                temp = x.split()
-                if ctx.author.mention != temp[0]:
-                    infoArray.append(x)
-
-                if ctx.author.mention == temp[0]:
-
-                    isFound = True
-                    count = 0
-                    theirDiscordID = ""
-                    name = ""
-                    degreeMajor = ""
-                    favGroups = ""
-                    favIdols = ""
-                    listeningTo = ""
-                    something = ""
-
-                    for item in temp:
-
-                        if item == "$toP":
-                            count = count + 1
-                        elif count == 0:
-                            theirDiscordID = theirDiscordID + " " + item
-                        elif count == 1:
-                            name = name + " " + item
-                        elif count == 2:
-                            degreeMajor = degreeMajor + " " + item
-                        elif count == 3:
-                            favGroups = favGroups + " " + item
-                        elif count == 4:
-                            favIdols = favIdols + " " + item
-                        elif count == 5:
-                            listeningTo = listeningTo + " " + item
-                        elif count == 6:
-                            something = something + " " + item
-                    f.close()
-
-                    newDegree = ""
-                    for item in messageLength:
-                        if item.lower() != 'changedegree':
-                            newDegree = newDegree + item + " "
-
-                    await ctx.send(
-                        ">>> Your details has been successfully changed. Please type .profile self to view your changes")
-                    f = open('profiles.txt', 'w')
-                    largeMessage = f"{ctx.author.mention} $toP {name} $toP {newDegree} $toP {favGroups} $toP {favIdols} $toP {listeningTo} $toP {something}"
-                    f.write(largeMessage)
-                    for item in infoArray:
-                        f.write(item)
-                    f.close()
-            if isFound == False:
-                f.close()
-
-                name = "ADD YOUR NAME HERE"
-                degreeMajor = "ADD YOUR DEGREE AND MAJOR HERE"
-                favGroups = "ADD YOUR FAVOURITE GROUPS HERE"
-                favIdols = "ADD YOUR FAVORITE IDOLS HERE"
-                listeningTo = "ADD THE SONGS YOU ARE CURRENTLY LISTENING TO HERE"
-                something = "ADD SOMETHING YOU WOULD LOVE EVERYONE TO KNOW ABOUT"
-
-                newDegree = ""
-                for item in messageLength:
-                    if item.lower() != 'changedegree':
-                        newDegree = newDegree + item + " "
-
-                largeMessage = f"{ctx.author.mention} $toP {name} $toP {newDegree} $toP {favGroups} $toP {favIdols} $toP {listeningTo} $toP {something}"
-                f = open('profiles.txt', 'a')
-                f.write(largeMessage)
-
-                await ctx.send(
-                    ">>> Your details has been successfully changed. Please type\n\n.profile self \n\nto view your changes")
-                f.close()
-        elif messageLength[0].lower() == 'changegroups':
-            f = open("profiles.txt", "r")
-            infoArray = []
-            arrayCount = 0
-            isFound = False
-            for x in f:
-                arrayCount = arrayCount + 1
-                temp = x.split()
-                if ctx.author.mention != temp[0]:
-                    infoArray.append(x)
-
-                if ctx.author.mention == temp[0]:
-
-                    isFound = True
-                    count = 0
-                    theirDiscordID = ""
-                    name = ""
-                    degreeMajor = ""
-                    favGroups = ""
-                    favIdols = ""
-                    listeningTo = ""
-                    something = ""
-
-                    for item in temp:
-
-                        if item == "$toP":
-                            count = count + 1
-                        elif count == 0:
-                            theirDiscordID = theirDiscordID + " " + item
-                        elif count == 1:
-                            name = name + " " + item
-                        elif count == 2:
-                            degreeMajor = degreeMajor + " " + item
-                        elif count == 3:
-                            favGroups = favGroups + " " + item
-                        elif count == 4:
-                            favIdols = favIdols + " " + item
-                        elif count == 5:
-                            listeningTo = listeningTo + " " + item
-                        elif count == 6:
-                            something = something + " " + item
-                    f.close()
-
-                    newFavGroups = ""
-                    for item in messageLength:
-                        if item.lower() != 'changegroups':
-                            newFavGroups = newFavGroups+ item + " "
-
-                    await ctx.send(
-                        ">>> Your details has been successfully changed. Please type .profile self to view your changes")
-                    f = open('profiles.txt', 'w')
-                    largeMessage = f"{ctx.author.mention} $toP {name} $toP {degreeMajor} $toP {newFavGroups} $toP {favIdols} $toP {listeningTo} $toP {something}"
-                    f.write(largeMessage)
-                    for item in infoArray:
-                        f.write(item)
-                    f.close()
-            if isFound == False:
-                f.close()
-
-                name = "ADD YOUR NAME HERE"
-                degreeMajor = "ADD YOUR DEGREE AND MAJOR HERE"
-                favGroups = "ADD YOUR FAVOURITE GROUPS HERE"
-                favIdols = "ADD YOUR FAVORITE IDOLS HERE"
-                listeningTo = "ADD THE SONGS YOU ARE CURRENTLY LISTENING TO HERE"
-                something = "ADD SOMETHING YOU WOULD LOVE EVERYONE TO KNOW ABOUT"
-
-                newFavGroups = ""
-                for item in messageLength:
-                    if item.lower() != 'changegroups':
-                        newFavGroups = newFavGroups + item + " "
-
-                largeMessage = f"{ctx.author.mention} $toP {name} $toP {degreeMajor} $toP {newFavGroups} $toP {favIdols} $toP {listeningTo} $toP {something}"
-                f = open('profiles.txt', 'a')
-                f.write(largeMessage)
-
-                await ctx.send(
-                    ">>> Your detailshas been successfully changed. Please type\n\n.profile self \n\nto view your changes")
-                f.close()
-        elif messageLength[0].lower() == 'changeidols':
-            f = open("profiles.txt", "r")
-            infoArray = []
-            arrayCount = 0
-            isFound = False
-            for x in f:
-                arrayCount = arrayCount + 1
-                temp = x.split()
-                if ctx.author.mention != temp[0]:
-                    infoArray.append(x)
-
-                if ctx.author.mention == temp[0]:
-
-                    isFound = True
-                    count = 0
-                    theirDiscordID = ""
-                    name = ""
-                    degreeMajor = ""
-                    favGroups = ""
-                    favIdols = ""
-                    listeningTo = ""
-                    something = ""
-
-                    for item in temp:
-
-                        if item == "$toP":
-                            count = count + 1
-                        elif count == 0:
-                            theirDiscordID = theirDiscordID + " " + item
-                        elif count == 1:
-                            name = name + " " + item
-                        elif count == 2:
-                            degreeMajor = degreeMajor + " " + item
-                        elif count == 3:
-                            favGroups = favGroups + " " + item
-                        elif count == 4:
-                            favIdols = favIdols + " " + item
-                        elif count == 5:
-                            listeningTo = listeningTo + " " + item
-                        elif count == 6:
-                            something = something + " " + item
-                    f.close()
-
-                    newFavIdols = ""
-                    for item in messageLength:
-                        if item.lower() != 'changeidols':
-                            newFavIdols = newFavIdols + item + " "
-
-                    await ctx.send(
-                        ">>> Your details has been successfully changed. Please type .profile self to view your changes")
-                    f = open('profiles.txt', 'w')
-                    largeMessage = f"{ctx.author.mention} $toP {name} $toP {degreeMajor} $toP {favGroups} $toP {newFavIdols} $toP {listeningTo} $toP {something}"
-                    f.write(largeMessage)
-                    for item in infoArray:
-                        f.write(item)
-                    f.close()
-            if isFound == False:
-                f.close()
-
-                name = "ADD YOUR NAME HERE"
-                degreeMajor = "ADD YOUR DEGREE AND MAJOR HERE"
-                favGroups = "ADD YOUR FAVOURITE GROUPS HERE"
-                favIdols = "ADD YOUR FAVORITE IDOLS HERE"
-                listeningTo = "ADD THE SONGS YOU ARE CURRENTLY LISTENING TO HERE"
-                something = "ADD SOMETHING YOU WOULD LOVE EVERYONE TO KNOW ABOUT"
-
-                newFavIdols = ""
-                for item in messageLength:
-                    if item.lower() != 'changeidols':
-                        newFavIdols = newFavIdols + item + " "
-
-                largeMessage = f"{ctx.author.mention} $toP {name} $toP {degreeMajor} $toP {favGroups} $toP {newFavIdols} $toP {listeningTo} $toP {something}"
-                f = open('profiles.txt', 'a')
-                f.write(largeMessage)
-
-                await ctx.send(
-                    ">>> Your details has been successfully changed. Please type\n\n.profile self \n\nto view your changes")
-                f.close()
-        elif messageLength[0].lower() == 'changelistening':
-            f = open("profiles.txt", "r")
-            infoArray = []
-            arrayCount = 0
-            isFound = False
-            for x in f:
-                arrayCount = arrayCount + 1
-                temp = x.split()
-                if ctx.author.mention != temp[0]:
-                    infoArray.append(x)
-
-                if ctx.author.mention == temp[0]:
-
-                    isFound = True
-                    count = 0
-                    theirDiscordID = ""
-                    name = ""
-                    degreeMajor = ""
-                    favGroups = ""
-                    favIdols = ""
-                    listeningTo = ""
-                    something = ""
-
-                    for item in temp:
-
-                        if item == "$toP":
-                            count = count + 1
-                        elif count == 0:
-                            theirDiscordID = theirDiscordID + " " + item
-                        elif count == 1:
-                            name = name + " " + item
-                        elif count == 2:
-                            degreeMajor = degreeMajor + " " + item
-                        elif count == 3:
-                            favGroups = favGroups + " " + item
-                        elif count == 4:
-                            favIdols = favIdols + " " + item
-                        elif count == 5:
-                            listeningTo = listeningTo + " " + item
-                        elif count == 6:
-                            something = something + " " + item
-                    f.close()
-
-                    newListening = ""
-                    for item in messageLength:
-                        if item.lower() != 'changelistening':
-                            newListening = newListening + item + " "
-
-                    await ctx.send(
-                        ">>> Your details has been successfully changed. Please type .profile self to view your changes")
-                    f = open('profiles.txt', 'w')
-                    largeMessage = f"{ctx.author.mention} $toP {name} $toP {degreeMajor} $toP {favGroups} $toP {favIdols} $toP {newListening} $toP {something}"
-                    f.write(largeMessage)
-                    for item in infoArray:
-                        f.write(item)
-                    f.close()
-            if isFound == False:
-                f.close()
-
-                name = "ADD YOUR NAME HERE"
-                degreeMajor = "ADD YOUR DEGREE AND MAJOR HERE"
-                favGroups = "ADD YOUR FAVOURITE GROUPS HERE"
-                favIdols = "ADD YOUR FAVORITE IDOLS HERE"
-                listeningTo = "ADD THE SONGS YOU ARE CURRENTLY LISTENING TO HERE"
-                something = "ADD SOMETHING YOU WOULD LOVE EVERYONE TO KNOW ABOUT"
-
-                newListening = ""
-                for item in messageLength:
-                    if item.lower() != 'changelistening':
-                        newListening = newListening + item + " "
-
-                largeMessage = f"{ctx.author.mention} $toP {name} $toP {degreeMajor} $toP {favGroups} $toP {favIdols} $toP {newListening} $toP {something}"
-                f = open('profiles.txt', 'a')
-                f.write(largeMessage)
-
-                await ctx.send(
-                    ">>> Your details has been successfully changed. Please type\n\n.profile self \n\nto view your changes")
-                f.close()
-        elif messageLength[0].lower() == 'changesomething':
-            f = open("profiles.txt", "r")
-            infoArray = []
-            arrayCount = 0
-            isFound = False
-            for x in f:
-                arrayCount = arrayCount + 1
-                temp = x.split()
-                if ctx.author.mention != temp[0]:
-                    infoArray.append(x)
-
-                if ctx.author.mention == temp[0]:
-
-                    isFound = True
-                    count = 0
-                    theirDiscordID = ""
-                    name = ""
-                    degreeMajor = ""
-                    favGroups = ""
-                    favIdols = ""
-                    listeningTo = ""
-                    something = ""
-
-                    for item in temp:
-
-                        if item == "$toP":
-                            count = count + 1
-                        elif count == 0:
-                            theirDiscordID = theirDiscordID + " " + item
-                        elif count == 1:
-                            name = name + " " + item
-                        elif count == 2:
-                            degreeMajor = degreeMajor + " " + item
-                        elif count == 3:
-                            favGroups = favGroups + " " + item
-                        elif count == 4:
-                            favIdols = favIdols + " " + item
-                        elif count == 5:
-                            listeningTo = listeningTo + " " + item
-                        elif count == 6:
-                            something = something + " " + item
-                    f.close()
-
-                    newSomething = ""
-                    for item in messageLength:
-                        if item.lower() != 'changesomething':
-                            newSomething = newSomething + item + " "
-
-                    await ctx.send(
-                        ">>> Your details has been successfully changed. Please type .profile self to view your changes")
-                    f = open('profiles.txt', 'w')
-                    largeMessage = f"{ctx.author.mention} $toP {name} $toP {degreeMajor} $toP {favGroups} $toP {favIdols} $toP {listeningTo} $toP {newSomething}"
-                    f.write(largeMessage)
-                    for item in infoArray:
-                        f.write(item)
-                    f.close()
-            if isFound == False:
-                f.close()
-
-                name = "ADD YOUR NAME HERE"
-                degreeMajor = "ADD YOUR DEGREE AND MAJOR HERE"
-                favGroups = "ADD YOUR FAVOURITE GROUPS HERE"
-                favIdols = "ADD YOUR FAVORITE IDOLS HERE"
-                listeningTo = "ADD THE SONGS YOU ARE CURRENTLY LISTENING TO HERE"
-                something = "ADD SOMETHING YOU WOULD LOVE EVERYONE TO KNOW ABOUT"
-
-                newSomething = ""
-                for item in messageLength:
-                    if item.lower() != 'changesomething':
-                        newSomething = newSomething + item + " "
-
-                largeMessage = f"{ctx.author.mention} $toP {name} $toP {degreeMajor} $toP {favGroups} $toP {favIdols} $toP {listeningTo} $toP {newSomething}"
-                f = open('profiles.txt', 'a')
-                f.write(largeMessage)
-
-                await ctx.send(
-                    ">>> Your details has been successfully changed. Please type\n\n.profile self \n\nto view your changes")
-                f.close()
 # Idol Guess
 
 # Initialising Variables for Idol Guess
@@ -1305,37 +669,19 @@ async def idolguess(ctx, *, guess):
             "```css\n\n.idolguess start - Starts the game\n\n.idolguess {the name of the person} - Make your guess (For example, type .idolguess sojin)\n\n.idolguess skip - Skips the current idol you have to guess at the cost of one life\n\n.idolguess quit - Quits the whole game overall```")
     elif guess == 'start' and len(hasStarted) == 0:
         hasStarted.append(0)
-        f = open("kpop.txt", "r")
+
         theirGroup = []
         theirName = []
         theirPhoto = []
-        counterNumber = 0;
-
-        for x in f:
+        counterNumber = 0
+        f = open("kpop.txt", "r")
+        for line in f:
             counterNumber = counterNumber + 1
-            temp = x.split()
-            theirPhoto.append(temp[len(temp) - 1])
-            temp.remove(temp[len(temp) - 1])
-            idol_group = ""
-            idol_name = ""
-            count_one = []
-            for item in temp:
-                if item != 'ge' and len(count_one) == 0:
-                    idol_group = idol_group + item
-                    count_one.append(0)
-                elif item != 'ge' and len(count_one) == 1:
-                    idol_group = idol_group + " " + item
-                elif item == 'ge':
-                    count_one.append(0)
-                elif len(count_one) == 2:
-                    idol_name = idol_name + item
-                    count_one.append(0)
-                elif len(count_one) == 3:
-                    idol_name = idol_name + " " + item
-            count_one.clear()
-
-            theirGroup.append(idol_group)
-            theirName.append(idol_name)
+            line = line.rstrip('\n')
+            line = line.split(',')
+            theirGroup.append(line[0])
+            theirName.append(line[1])
+            theirPhoto.append(line[2])
 
         f.close()
 
@@ -1354,37 +700,18 @@ async def idolguess(ctx, *, guess):
         theFinalPhoto.clear()
         longScore.append(0)
 
-        f = open("kpop.txt", "r")
         theirGroup = []
         theirName = []
         theirPhoto = []
         counterNumber = 0
-
-        for x in f:
+        f = open("kpop.txt", "r")
+        for line in f:
             counterNumber = counterNumber + 1
-            temp = x.split()
-            theirPhoto.append(temp[len(temp) - 1])
-            temp.remove(temp[len(temp) - 1])
-            idol_group = ""
-            idol_name = ""
-            count_one = []
-            for item in temp:
-                if item != 'ge' and len(count_one) == 0:
-                    idol_group = idol_group + item
-                    count_one.append(0)
-                elif item != 'ge' and len(count_one) == 1:
-                    idol_group = idol_group + " " + item
-                elif item == 'ge':
-                    count_one.append(0)
-                elif len(count_one) == 2:
-                    idol_name = idol_name + item
-                    count_one.append(0)
-                elif len(count_one) == 3:
-                    idol_name = idol_name + " " + item
-            count_one.clear()
-
-            theirGroup.append(idol_group)
-            theirName.append(idol_name)
+            line = line.rstrip('\n')
+            line = line.split(',')
+            theirGroup.append(line[0])
+            theirName.append(line[1])
+            theirPhoto.append(line[2])
 
         f.close()
 
@@ -1415,39 +742,21 @@ async def idolguess(ctx, *, guess):
         theFinalGroup.clear()
         theFinalPhoto.clear()
 
-        f = open("kpop.txt", "r")
         theirGroup = []
         theirName = []
         theirPhoto = []
         counterNumber = 0
-
-        for x in f:
+        f = open("kpop.txt", "r")
+        for line in f:
             counterNumber = counterNumber + 1
-            temp = x.split()
-            theirPhoto.append(temp[len(temp) - 1])
-            temp.remove(temp[len(temp) - 1])
-            idol_group = ""
-            idol_name = ""
-            count_one = []
-            for item in temp:
-                if item != 'ge' and len(count_one) == 0:
-                    idol_group = idol_group + item
-                    count_one.append(0)
-                elif item != 'ge' and len(count_one) == 1:
-                    idol_group = idol_group + " " + item
-                elif item == 'ge':
-                    count_one.append(0)
-                elif len(count_one) == 2:
-                    idol_name = idol_name + item
-                    count_one.append(0)
-                elif len(count_one) == 3:
-                    idol_name = idol_name + " " + item
-            count_one.clear()
-
-            theirGroup.append(idol_group)
-            theirName.append(idol_name)
+            line = line.rstrip('\n')
+            line = line.split(',')
+            theirGroup.append(line[0])
+            theirName.append(line[1])
+            theirPhoto.append(line[2])
 
         f.close()
+
         theIndex = randint(0, counterNumber - 1)
         theFinalGroup.append(theirGroup[theIndex])
         theFinalName.append(theirName[theIndex])
@@ -1467,27 +776,29 @@ async def idolguess(ctx, *, guess):
     else:
         await ctx.send(f">>> Sorry, that command is invalid for now...")
 
-pasta_eight = ">>> :astonished: \n\nhttps://scontent.fakl5-1.fna.fbcdn.net/v/t1.15752-9/99294388_247869029612059_3078739987789774848_n.jpg?_nc_cat=106&_nc_sid=b96e70&_nc_ohc=u9DVNYVFf9IAX_k-55Z&_nc_ht=scontent.fakl5-1.fna&oh=a1a452a18aaf694a24c1a97174b8ef4c&oe=5EEF5B60"
+pasta_eight = ">>> :astonished: \n\nhttps://media.discordapp.net/attachments/445423481727877120/471965756888973312/CB3A8953_1_1.jpg?width=919&height=613"
 
 pasta_nine = ">>> Never forget this team :triumph:\n\n https://www.youtube.com/watch?v=Hbhq7M0PG3Y"
 
-pasta_ten = ">>> :v: :thumbsup:  \n\nhttps://scontent.fakl5-1.fna.fbcdn.net/v/t1.15752-9/99291141_2921626921291871_4966866104270979072_n.jpg?_nc_cat=105&_nc_sid=b96e70&_nc_ohc=ous0fhh0_UgAX_VxHLA&_nc_ht=scontent.fakl5-1.fna&oh=2e985e37fca82e9cf7c75c366e27164b&oe=5EEC16FC"
+pasta_ten = ">>> :v: :thumbsup:  \n\nhttps://pbs.twimg.com/media/Djgt7uFU0AA-gFX.jpg:large"
 
-CHANNEL = your_channel_number_goes_here
+sad_role_channel = secret_codes.SAD_ROLE_CHANNEL
+pastaArray = [pasta_eight, pasta_nine, pasta_ten]
 
 @client.event
 async def copy_pasta():
+    pasta_interval = 60
     await client.wait_until_ready()
-    channel = client.get_channel(CHANNEL)
-    interval = 60
+    channel = client.get_channel(sad_role_channel)
+
 
     while not client.is_closed():
-        pastaArray = [pasta_eight, pasta_nine, pasta_ten]
-        await asyncio.sleep(interval)
+
+        await asyncio.sleep(pasta_interval)
         await channel.send(random.choice(pastaArray))
-        await asyncio.sleep(interval)
+        await asyncio.sleep(pasta_interval)
 
 
 client.loop.create_task(copy_pasta())
+client.run(secret_codes.MY_DISCORD_API_KEY)
 
-client.run(token)
