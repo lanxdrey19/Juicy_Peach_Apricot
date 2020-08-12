@@ -34,6 +34,8 @@ client = commands.Bot(command_prefix = '.')
 
 # Token
 
+my_discord_token = secret_codes.MY_DISCORD_API_KEY
+
 # For the bot's status
 
 status = cycle(secret_codes.BOT_CYCLE_MESSAGES)
@@ -800,5 +802,5 @@ async def copy_pasta():
 
 
 client.loop.create_task(copy_pasta())
-client.run(secret_codes.MY_DISCORD_API_KEY)
+client.run(my_discord_token)
 
