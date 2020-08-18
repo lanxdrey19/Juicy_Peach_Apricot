@@ -808,6 +808,7 @@ async def copy_pasta():
 
 @client.event
 async def reddit_updates():
+
     pasta_interval_reddit = secret_codes.wait_time
     await client.wait_until_ready()
     channel = client.get_channel(secret_codes.kpop_news_channel_id)
