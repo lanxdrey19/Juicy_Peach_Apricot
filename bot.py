@@ -9,6 +9,7 @@ import pyowm
 
 # reddit
 import praw
+import apraw
 
 import math
 import random
@@ -796,7 +797,6 @@ async def copy_pasta():
     await client.wait_until_ready()
     channel = client.get_channel(sad_role_channel)
 
-
     while not client.is_closed():
 
         await asyncio.sleep(pasta_interval)
@@ -809,21 +809,21 @@ async def copy_pasta():
 @client.event
 async def reddit_updates():
 
-    pasta_interval_reddit = secret_codes.wait_time
+    #old
     await client.wait_until_ready()
     channel = client.get_channel(secret_codes.kpop_news_channel_id)
+    reddit = apraw.Reddit(client_id=secret_codes.client_id, client_secret=secret_codes.client_secret,
+                         username=secret_codes.username, password=secret_codes.password,
+                         user_agent=secret_codes.user_agent)
+
+    subreddit = await reddit.subreddit('kpop')
+    #new_kpop = subreddit.new(limit=5)
 
     while not client.is_closed():
 
-        await asyncio.sleep(pasta_interval_reddit)
-        reddit = praw.Reddit(client_id=secret_codes.client_id, client_secret=secret_codes.client_secret,
-                             username=secret_codes.username, password=secret_codes.password,
-                             user_agent=secret_codes.user_agent)
-
-        subreddit = reddit.subreddit('kpop')
-        #new_kpop = subreddit.new(limit=5)
-
-        for post in subreddit.stream.submissions():
+        await asyncio.sleep(secret_codes.wait_time)
+        #async for post in subreddit.stream.submissions():
+        async for post in subreddit.new():
         #for post in new_kpop:
             await channel.send(post.url)
 
