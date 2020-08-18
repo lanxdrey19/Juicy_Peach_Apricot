@@ -7,7 +7,8 @@ import asyncio
 # for weather updates
 import pyowm
 
-# miscellaneous
+# reddit
+import praw
 
 import math
 import random
@@ -150,12 +151,14 @@ async def on_message(message):
 
 @client.event
 async def on_member_join(member):
-    print(f'{member} has joined the server.')
+    channel = client.get_channel(secret_codes.kpop_general_channel_id)
+    await channel.send(f'{member} has joined the server.')
 
 
 @client.event
 async def on_member_remove(member):
-    print(f'{member} has left the server.')
+    channel = client.get_channel(secret_codes.kpop_general_channel_id)
+    await channel.send(f'{member} has left the server.')
 
 
 # Commands
@@ -801,6 +804,30 @@ async def copy_pasta():
         await asyncio.sleep(pasta_interval)
 
 
+# reddit
+
+@client.event
+async def reddit_updates():
+    pasta_interval_reddit = secret_codes.wait_time
+    await client.wait_until_ready()
+    channel = client.get_channel(secret_codes.kpop_news_channel_id)
+
+    while not client.is_closed():
+
+        await asyncio.sleep(pasta_interval_reddit)
+        reddit = praw.Reddit(client_id=secret_codes.client_id, client_secret=secret_codes.client_secret,
+                             username=secret_codes.username, password=secret_codes.password,
+                             user_agent=secret_codes.user_agent)
+
+        subreddit = reddit.subreddit('kpop')
+        #new_kpop = subreddit.new(limit=5)
+
+        for post in subreddit.stream.submissions():
+        #for post in new_kpop:
+            await channel.send(post.url)
+
+
 client.loop.create_task(copy_pasta())
+client.loop.create_task(reddit_updates())
 client.run(my_discord_token)
 
