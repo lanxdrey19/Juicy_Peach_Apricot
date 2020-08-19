@@ -813,7 +813,7 @@ async def reddit_updates():
 
 
     #new
-    reset_limit = 100
+    reset_limit = 205
     await client.wait_until_ready()
     channel = client.get_channel(secret_codes.kpop_news_channel_id)
     reddit = apraw.Reddit(client_id=secret_codes.client_id, client_secret=secret_codes.client_secret,
