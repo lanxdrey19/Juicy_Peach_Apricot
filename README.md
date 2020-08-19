@@ -13,8 +13,8 @@ A fun discord bot (written in python) for a private server. Features include:
 
 Dependencies:
 
-pip install -U discord.py
+* pip install -U discord.py
 
-pip install praw
+* pip install praw
 
-pip install apraw
+* pip install apraw
