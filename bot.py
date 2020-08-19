@@ -804,28 +804,46 @@ async def copy_pasta():
         await asyncio.sleep(pasta_interval)
 
 
-# reddit
+# reddit runs once, not responsive
+already_posted = []
+
 
 @client.event
 async def reddit_updates():
 
-    #old
+
+    #new
+    reset_limit = 6
     await client.wait_until_ready()
     channel = client.get_channel(secret_codes.kpop_news_channel_id)
     reddit = apraw.Reddit(client_id=secret_codes.client_id, client_secret=secret_codes.client_secret,
-                         username=secret_codes.username, password=secret_codes.password,
+                        username=secret_codes.username, password=secret_codes.password,
                          user_agent=secret_codes.user_agent)
 
     subreddit = await reddit.subreddit('kpop')
     #new_kpop = subreddit.new(limit=5)
 
+
     while not client.is_closed():
 
-        await asyncio.sleep(secret_codes.wait_time)
-        #async for post in subreddit.stream.submissions():
-        async for post in subreddit.new():
+        #  #async for post in subreddit.stream.submissions():
+        async for post in subreddit.new(limit=5):
+            await asyncio.sleep(secret_codes.wait_time)
+
         #for post in new_kpop:
-            await channel.send(post.url)
+            if post.url not in already_posted:
+                await channel.send(post.url)
+                already_posted.append(post.url)
+                print(already_posted)
+
+            if len(already_posted) >= reset_limit:
+                already_posted.pop(0)
+
+
+
+
+
+
 
 
 client.loop.create_task(copy_pasta())
