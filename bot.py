@@ -813,7 +813,7 @@ async def reddit_updates():
 
 
     #new
-    reset_limit = 10
+    reset_limit = 100
     await client.wait_until_ready()
     channel = client.get_channel(secret_codes.kpop_news_channel_id)
     reddit = apraw.Reddit(client_id=secret_codes.client_id, client_secret=secret_codes.client_secret,
@@ -834,11 +834,9 @@ async def reddit_updates():
             if post.url not in already_posted:
                 await channel.send(post.url)
                 already_posted.append(post.url)
-                print(post.url + "was posted")
                 if len(already_posted) >= reset_limit:
                     already_posted.pop(0)
-                print("already posted:")
-                print(already_posted)
+
 
 
 
