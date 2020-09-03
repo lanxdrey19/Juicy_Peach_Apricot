@@ -782,6 +782,482 @@ async def idolguess(ctx, *, guess):
     else:
         await ctx.send(f">>> Sorry, that command is invalid for now...")
 
+# Avalon
+
+avalon_roles5 = ['Loyal', 'Percival', 'Merlin','Morgana', 'Assassin']
+avalon_roles6 = ['Loyal', 'Loyal', 'Percival', 'Merlin', 'Morgana', 'Assassin']
+avalon_roles7 = ['Loyal', 'Loyal', 'Percival', 'Merlin', 'Morgana', 'Assassin', 'Mordred']
+avalon_roles8 = ['Loyal', 'Loyal', 'Loyal', 'Percival', 'Merlin', 'Morgana', 'Assassin', 'Mordred']
+avalon_roles9 = ['Loyal', 'Loyal', 'Loyal', 'Loyal','Percival', 'Merlin', 'Morgana', 'Assassin', 'Mordred']
+avalon_roles10 = ['Loyal', 'Loyal', 'Loyal', 'Loyal', 'Percival', 'Merlin', 'Morgana', 'Assassin','Mordred','Lackey']
+avalon_channel = secret_codes.AVALON_CHANNEL
+
+game_phase = []
+avalon_players_mention = []
+avalon_players = []
+good_people = []
+bad_people = []
+fail_votes = []
+mission_participants = []
+has_voted = []
+pass_votes = []
+@client.command(help="Type .idolguess commands for more information about this command", aliases=['av'])
+async def avalon(ctx, *, command):
+    global long_message
+    if command.lower() == "join":
+        if len(game_phase) <= 0:
+            for name in avalon_players_mention:
+                if name == ctx.author.mention:
+                    await ctx.send(f'>>> {ctx.author.mention}, you have already joined matchmaking... ')
+                    return
+
+            if len(avalon_players_mention) == 10:
+                await ctx.send(f">>> Sorry. Ten people is the maximum number of players for Avalon")
+                return
+
+            avalon_players_mention.append(ctx.author.mention)
+            avalon_players.append(ctx.author)
+            current_players = len(avalon_players_mention)
+
+            await ctx.send(
+                f'>>> You have joined the game {ctx.author.mention}\n\nCurrent number of players: {current_players} ')
+
+        elif len(game_phase) > 0:
+            await ctx.send(f">>> Game has already started. Wait for the next game")
+            return
+
+    elif command.lower() == 'leave':
+        if len(game_phase) <= 0:
+            for name in avalon_players_mention:
+                if name == ctx.author.mention:
+                    avalon_players_mention.remove(name)
+                    await ctx.send(f'>>> You have left Avalon matchmaking {ctx.author.mention} ')
+                    return
+            await ctx.send(f'>>> You have not joined Avalon matchmaking yet {ctx.author.mention}')
+
+        elif len(game_phase) > 0:
+            await ctx.send(">>> You can not leave the game once it has started")
+
+    elif command.lower() == 'start':
+        if len(game_phase) <= 0:
+
+            if len(avalon_players_mention) < 5:
+                await ctx.send(f">>> Sorry {ctx.author.mention}, Avalon needs at least five players :cry:")
+                return
+            elif len(avalon_players_mention) >= 5:
+                game_phase.append(0)
+                await ctx.send(f">>> The game of Avalon has begun")
+
+                if len(avalon_players_mention) == 5:
+
+                    random.shuffle(avalon_roles5)
+                    random.shuffle(avalon_roles5)
+                    random.shuffle(avalon_roles5)
+                    random.shuffle(avalon_roles5)
+                    random.shuffle(avalon_roles5)
+
+                    the_merlin_index = avalon_roles5.index("Merlin")
+
+                    the_merlin = avalon_players_mention[the_merlin_index]
+
+                    the_morgana_index = avalon_roles5.index("Morgana")
+
+                    the_morgana = avalon_players_mention[the_morgana_index]
+
+                    the_assassin_index = avalon_roles5.index("Assassin")
+
+                    the_assassin = avalon_players_mention[the_assassin_index]
+
+                    merlinmorganaArray = [the_merlin, the_morgana]
+
+                    the_index_zero = avalon_players_mention.index(merlinmorganaArray[0])
+
+                    the_index_one = avalon_players_mention.index(merlinmorganaArray[1])
+
+                    random.shuffle(merlinmorganaArray)
+                    random.shuffle(merlinmorganaArray)
+                    random.shuffle(merlinmorganaArray)
+                    random.shuffle(merlinmorganaArray)
+                    random.shuffle(merlinmorganaArray)
+
+                    for avalon_player in avalon_players:
+                        their_index = avalon_players_mention.index(avalon_player.mention)
+                        their_role = avalon_roles5[their_index]
+
+                        await avalon_player.send(
+                            f'>>> The roles are\n\nGood:\nLoyal\nPercival\nMerlin\n\nBad:\nMorgana\nAssassin')
+
+                        if their_role == 'Loyal':
+                            good_people.append(avalon_player.mention)
+                            long_message = f'Your role:\n\n**{their_role}**\n\nYour alliance:\n\n**Good**\n\nAdditionally you know:\n\n**Nothing else**\n\nPlease also note your index number which is **{their_index}**'
+                        elif their_role == 'Percival':
+                            good_people.append(avalon_player.mention)
+                            long_message = f'Your role:\n\n**{their_role}**\n\nYour alliance:\n\n**Good**\n\nAdditionally you know:\n\n**One of {merlinmorganaArray[0]} (Index Number: {the_index_zero}) and {merlinmorganaArray[1]} (Index Number: {the_index_one}) is the Merlin, the other is the Morgana**\n\nPlease also note your index number which is **{their_index}**'
+                        elif their_role == 'Merlin':
+                            good_people.append(avalon_player.mention)
+                            long_message = f'Your role:\n\n**{their_role}**\n\nYour alliance:\n\n**Good**\n\nAdditionally you know:\n\n**The bad people are:\n{the_morgana} (Index Number: {the_morgana_index})\n{the_assassin} (Index Number: {the_assassin_index})**\n\nPlease also note your index number which is **{their_index}**'
+                        elif their_role == 'Morgana':
+                            bad_people.append(avalon_player.mention)
+                            long_message = f'Your role:\n\n**{their_role}**\n\nYour alliance:\n\n**Bad**\n\nAdditionally you know:\n\n**Including yourself, the other bad person is:\n{the_assassin} (Index Number: {the_assassin_index}) who is the Assassin**\n\nPlease also note your index number which is **{their_index}**'
+                        elif their_role == 'Assassin':
+                            bad_people.append(avalon_player.mention)
+                            long_message = f'Your role:\n\n**{their_role}**\n\nYour alliance:\n\n**Bad**\n\nAdditionally you know:\n\n**Including yourself, the other bad person is:\n{the_morgana} (Index Number: {the_morgana_index}) who is the Morgana**\n\nPlease also note your index number which is **{their_index}**'
+                        await avalon_player.send(f'>>> {long_message}')
+
+                elif len(avalon_players_mention) == 6:
+
+                    random.shuffle(avalon_roles6)
+                    random.shuffle(avalon_roles6)
+                    random.shuffle(avalon_roles6)
+                    random.shuffle(avalon_roles6)
+                    random.shuffle(avalon_roles6)
+
+                    the_merlin_index = avalon_roles6.index("Merlin")
+
+                    the_merlin = avalon_players_mention[the_merlin_index]
+
+                    the_morgana_index = avalon_roles6.index("Morgana")
+
+                    the_morgana = avalon_players_mention[the_morgana_index]
+
+                    the_assassin_index = avalon_roles6.index("Assassin")
+
+                    the_assassin = avalon_players_mention[the_assassin_index]
+
+                    merlinmorganaArray = [the_merlin, the_morgana]
+
+                    the_index_zero = avalon_players_mention.index(merlinmorganaArray[0])
+
+                    the_index_one = avalon_players_mention.index(merlinmorganaArray[1])
+
+                    random.shuffle(merlinmorganaArray)
+                    random.shuffle(merlinmorganaArray)
+                    random.shuffle(merlinmorganaArray)
+                    random.shuffle(merlinmorganaArray)
+                    random.shuffle(merlinmorganaArray)
+
+                    for avalon_player in avalon_players:
+                        their_index = avalon_players_mention.index(avalon_player.mention)
+                        their_role = avalon_roles6[their_index]
+
+                        await avalon_player.send(
+                            f'>>> The roles are\n\nGood:\nLoyal\nLoyal\nPercival\nMerlin\n\nBad:\nMorgana\nAssassin')
+
+                        if their_role == 'Loyal':
+                            good_people.append(avalon_player.mention)
+                            long_message = f'Your role:\n\n**{their_role}**\n\nYour alliance:\n\n**Good**\n\nAdditionally you know:\n\n**Nothing else**\n\nPlease also note your index number which is **{their_index}**'
+                        elif their_role == 'Percival':
+                            good_people.append(avalon_player.mention)
+                            long_message = f'Your role:\n\n**{their_role}**\n\nYour alliance:\n\n**Good**\n\nAdditionally you know:\n\n**One of {merlinmorganaArray[0]} (Index Number: {the_index_zero}) and {merlinmorganaArray[1]} (Index Number: {the_index_one}) is the Merlin, the other is the Morgana**\n\nPlease also note your index number which is **{their_index}**'
+                        elif their_role == 'Merlin':
+                            good_people.append(avalon_player.mention)
+                            long_message = f'Your role:\n\n**{their_role}**\n\nYour alliance:\n\n**Good**\n\nAdditionally you know:\n\n**The bad people are:\n{the_morgana} (Index Number: {the_morgana_index})\n{the_assassin} (Index Number: {the_assassin_index})**\n\nPlease also note your index number which is **{their_index}**'
+                        elif their_role == 'Morgana':
+                            bad_people.append(avalon_player.mention)
+                            long_message = f'Your role:\n\n**{their_role}**\n\nYour alliance:\n\n**Bad**\n\nAdditionally you know:\n\n**Including yourself, the other bad person is:\n{the_assassin} (Index Number: {the_assassin_index}) who is the Assassin**\n\nPlease also note your index number which is **{their_index}**'
+                        elif their_role == 'Assassin':
+                            bad_people.append(avalon_player.mention)
+                            long_message = f'Your role:\n\n**{their_role}**\n\nYour alliance:\n\n**Bad**\n\nAdditionally you know:\n\n**Including yourself, the other bad person is:\n{the_morgana} (Index Number: {the_morgana_index}) who is the Morgana**\n\nPlease also note your index number which is **{their_index}**'
+
+                        await avalon_player.send(f'>>> {long_message}')
+
+                elif len(avalon_players_mention) == 7:
+
+                    avalon_roles = ['Loyal', 'Loyal', 'Percival', 'Merlin', 'Morgana', 'Assassin', 'Mordred']
+
+                    random.shuffle(avalon_roles7)
+                    random.shuffle(avalon_roles7)
+                    random.shuffle(avalon_roles7)
+                    random.shuffle(avalon_roles7)
+                    random.shuffle(avalon_roles7)
+
+                    the_merlin_index = avalon_roles7.index("Merlin")
+
+                    the_merlin = avalon_players_mention[the_merlin_index]
+
+                    the_morgana_index = avalon_roles7.index("Morgana")
+
+                    the_morgana = avalon_players_mention[the_morgana_index]
+
+                    the_assassin_index = avalon_roles7.index("Assassin")
+
+                    the_assassin = avalon_players_mention[the_assassin_index]
+
+                    the_mordred_index = avalon_roles7.index("Mordred")
+
+                    the_mordred = avalon_players_mention[the_mordred_index]
+
+                    merlinmorganaArray = [the_merlin, the_morgana]
+
+                    the_index_zero = avalon_players_mention.index(merlinmorganaArray[0])
+
+                    the_index_one = avalon_players_mention.index(merlinmorganaArray[1])
+
+                    random.shuffle(merlinmorganaArray)
+                    random.shuffle(merlinmorganaArray)
+                    random.shuffle(merlinmorganaArray)
+                    random.shuffle(merlinmorganaArray)
+                    random.shuffle(merlinmorganaArray)
+
+                    for avalon_player in avalon_players:
+                        their_index = avalon_players_mention.index(avalon_player.mention)
+                        their_role = avalon_roles7[their_index]
+
+                        await avalon_player.send(
+                        f'>>> The roles are\n\nGood:\nLoyal\nLoyal\nPercival\nMerlin\n\nBad:\nMorgana\nAssassin\nMordred')
+
+                        if their_role == 'Loyal':
+                            good_people.append(avalon_player.mention)
+                            long_message = f'Your role:\n\n**{their_role}**\n\nYour alliance:\n\n**Good**\n\nAdditionally you know:\n\n**Nothing else**\n\nPlease also note your index number which is **{their_index}**'
+                        elif their_role == 'Percival':
+                            good_people.append(avalon_player.mention)
+                            long_message = f'Your role:\n\n**{their_role}**\n\nYour alliance:\n\n**Good**\n\nAdditionally you know:\n\n**One of {merlinmorganaArray[0]} (Index Number: {the_index_zero}) and {merlinmorganaArray[1]} (Index Number: {the_index_one}) is the Merlin, the other is the Morgana**\n\nPlease also note your index number which is **{their_index}**'
+                        elif their_role == 'Merlin':
+                            good_people.append(avalon_player.mention)
+                            long_message = f'Your role:\n\n**{their_role}**\n\nYour alliance:\n\n**Good**\n\nAdditionally you know:\n\n**Some of the bad people are:\n{the_morgana} (Index Number: {the_morgana_index})\n{the_assassin} (Index Number: {the_assassin_index})\nThere is another bad person called the Mordred but you do not know who they are**\n\nPlease also note your index number which is **{their_index}**'
+                        elif their_role == 'Morgana':
+                            bad_people.append(avalon_player.mention)
+                            long_message = f'Your role:\n\n**{their_role}**\n\nYour alliance:\n\n**Bad**\n\nAdditionally you know:\n\n**Including yourself, the other bad people are:\n{the_assassin} (Index Number: {the_assassin_index}) who is the Assassin\n{the_mordred} (Index Number: {the_mordred_index}) who is the Mordred**\n\nPlease also note your index number which is **{their_index}**'
+                        elif their_role == 'Assassin':
+                            bad_people.append(avalon_player.mention)
+                            long_message = f'Your role:\n\n**{their_role}**\n\nYour alliance:\n\n**Bad**\n\nAdditionally you know:\n\n**Including yourself, the other bad people are:\n{the_morgana} (Index Number: {the_morgana_index}) who is the Morgana\n{the_mordred} (Index Number: {the_mordred_index}) who is the Mordred**\n\nPlease also note your index number which is **{their_index}**'
+                        elif their_role == 'Mordred':
+                            bad_people.append(avalon_player.mention)
+                            long_message = f'Your role:\n\n**{their_role}**\n\nYour alliance:\n\n**Bad**\n\nAdditionally you know:\n\n**Including yourself, the other bad people are:\n{the_morgana} (Index Number: {the_morgana_index}) who is the Morgana\n{the_assassin} (Index Number: {the_assassin_index}) who is the Assassin**\n\nPlease also note your index number which is **{their_index}**'
+                        await avalon_player.send(f'>>> {long_message}')
+
+                elif len(avalon_players_mention) == 8:
+
+                    avalon_roles = ['Loyal', 'Loyal', 'Loyal', 'Percival', 'Merlin', 'Morgana', 'Assassin', 'Mordred']
+
+                    random.shuffle(avalon_roles8)
+                    random.shuffle(avalon_roles8)
+                    random.shuffle(avalon_roles8)
+                    random.shuffle(avalon_roles8)
+                    random.shuffle(avalon_roles8)
+
+                    the_merlin_index = avalon_roles8.index("Merlin")
+
+                    the_merlin = avalon_players_mention[the_merlin_index]
+
+                    the_morgana_index = avalon_roles8.index("Morgana")
+
+                    the_morgana = avalon_players_mention[the_morgana_index]
+
+                    the_assassin_index = avalon_roles8.index("Assassin")
+
+                    the_assassin = avalon_players_mention[the_assassin_index]
+
+                    the_mordred_index = avalon_roles8.index("Mordred")
+
+                    the_mordred = avalon_players_mention[the_mordred_index]
+
+                    merlinmorganaArray = [the_merlin, the_morgana]
+
+                    the_index_zero = avalon_players_mention.index(merlinmorganaArray[0])
+
+                    the_index_one = avalon_players_mention.index(merlinmorganaArray[1])
+
+                    random.shuffle(merlinmorganaArray)
+                    random.shuffle(merlinmorganaArray)
+                    random.shuffle(merlinmorganaArray)
+                    random.shuffle(merlinmorganaArray)
+                    random.shuffle(merlinmorganaArray)
+
+                    for avalon_player in avalon_players:
+                        their_index = avalon_players_mention.index(avalon_player.mention)
+                        their_role = avalon_roles8[their_index]
+
+                        await avalon_player.send(
+                            f'>>> The roles are\n\nGood:\nLoyal\nLoyal\nLoyal\nPercival\nMerlin\n\nBad:\nMorgana\nAssassin\nMordred')
+
+                        if their_role == 'Loyal':
+                            good_people.append(avalon_player.mention)
+                            long_message = f'Your role:\n\n**{their_role}**\n\nYour alliance:\n\n**Good**\n\nAdditionally you know:\n\n**Nothing else**\n\nPlease also note your index number which is **{their_index}**'
+                        elif their_role == 'Percival':
+                            good_people.append(avalon_player.mention)
+                            long_message = f'Your role:\n\n**{their_role}**\n\nYour alliance:\n\n**Good**\n\nAdditionally you know:\n\n**One of {merlinmorganaArray[0]} (Index Number: {the_index_zero}) and {merlinmorganaArray[1]} (Index Number: {the_index_one}) is the Merlin, the other is the Morgana**\n\nPlease also note your index number which is **{their_index}**'
+                        elif their_role == 'Merlin':
+                            good_people.append(avalon_player.mention)
+                            long_message = f'Your role:\n\n**{their_role}**\n\nYour alliance:\n\n**Good**\n\nAdditionally you know:\n\n**Some of the bad people are:\n{the_morgana} (Index Number: {the_morgana_index})\n{the_assassin} (Index Number: {the_assassin_index})\nThere is another bad person called the Mordred but you do not know who they are**\n\nPlease also note your index number which is **{their_index}**'
+                        elif their_role == 'Morgana':
+                            bad_people.append(avalon_player.mention)
+                            long_message = f'Your role:\n\n**{their_role}**\n\nYour alliance:\n\n**Bad**\n\nAdditionally you know:\n\n**Including yourself, the other bad people are:\n{the_assassin} (Index Number: {the_assassin_index}) who is the Assassin\n{the_mordred} (Index Number: {the_mordred_index}) who is the Mordred**\n\nPlease also note your index number which is **{their_index}**'
+                        elif their_role == 'Assassin':
+                            bad_people.append(avalon_player.mention)
+                            long_message = f'Your role:\n\n**{their_role}**\n\nYour alliance:\n\n**Bad**\n\nAdditionally you know:\n\n**Including yourself, the other bad people are:\n{the_morgana} (Index Number: {the_morgana_index}) who is the Morgana\n{the_mordred} (Index Number: {the_mordred_index}) who is the Mordred**\n\nPlease also note your index number which is **{their_index}**'
+                        elif their_role == 'Mordred':
+                            bad_people.append(avalon_player.mention)
+                            long_message = f'Your role:\n\n**{their_role}**\n\nYour alliance:\n\n**Bad**\n\nAdditionally you know:\n\n**Including yourself, the other bad people are:\n{the_morgana} (Index Number: {the_morgana_index}) who is the Morgana\n{the_assassin} (Index Number: {the_assassin_index}) who is the Assassin**\n\nPlease also note your index number which is **{their_index}**'
+                        await avalon_player.send(f'>>> {long_message}')
+
+                elif len(avalon_players_mention) == 9:
+
+                    avalon_roles = ['Loyal', 'Loyal', 'Loyal', 'Loyal', 'Percival', 'Merlin', 'Morgana', 'Assassin',
+                                    'Mordred']
+
+                    random.shuffle(avalon_roles9)
+                    random.shuffle(avalon_roles9)
+                    random.shuffle(avalon_roles9)
+                    random.shuffle(avalon_roles9)
+                    random.shuffle(avalon_roles9)
+
+
+
+                    the_merlin_index = avalon_roles9.index("Merlin")
+
+                    the_merlin = avalon_players_mention[the_merlin_index]
+
+                    the_morgana_index = avalon_roles9.index("Morgana")
+
+                    the_morgana = avalon_players_mention[the_morgana_index]
+
+                    the_assassin_index = avalon_roles9.index("Assassin")
+
+                    the_assassin = avalon_players_mention[the_assassin_index]
+
+                    the_mordred_index = avalon_roles9.index("Mordred")
+
+                    the_mordred = avalon_players_mention[the_mordred_index]
+
+                    merlinmorganaArray = [the_merlin, the_morgana]
+
+                    the_index_zero = avalon_players_mention.index(merlinmorganaArray[0])
+
+                    the_index_one = avalon_players_mention.index(merlinmorganaArray[1])
+
+                    random.shuffle(merlinmorganaArray)
+                    random.shuffle(merlinmorganaArray)
+                    random.shuffle(merlinmorganaArray)
+                    random.shuffle(merlinmorganaArray)
+                    random.shuffle(merlinmorganaArray)
+
+                    for avalon_player in avalon_players:
+                        their_index = avalon_players_mention.index(avalon_player.mention)
+                        their_role = avalon_roles9[their_index]
+
+                        await avalon_player.send(
+                            f'>>> The roles are\n\nGood:\nLoyal\nLoyal\nLoyal\nLoyal\nPercival\nMerlin\n\nBad:\nMorgana\nAssassin\nMordred')
+
+                        if their_role == 'Loyal':
+                            good_people.append(avalon_player.mention)
+                            long_message = f'Your role:\n\n**{their_role}**\n\nYour alliance:\n\n**Good**\n\nAdditionally you know:\n\n**Nothing else**\n\nPlease also note your index number which is **{their_index}**'
+                        elif their_role == 'Percival':
+                            good_people.append(avalon_player.mention)
+                            long_message = f'Your role:\n\n**{their_role}**\n\nYour alliance:\n\n**Good**\n\nAdditionally you know:\n\n**One of {merlinmorganaArray[0]} (Index Number: {the_index_zero}) and {merlinmorganaArray[1]} (Index Number: {the_index_one}) is the Merlin, the other is the Morgana**\n\nPlease also note your index number which is **{their_index}**'
+                        elif their_role == 'Merlin':
+                            good_people.append(avalon_player.mention)
+                            long_message = f'Your role:\n\n**{their_role}**\n\nYour alliance:\n\n**Good**\n\nAdditionally you know:\n\n**Some of the bad people are:\n{the_morgana} (Index Number: {the_morgana_index})\n{the_assassin} (Index Number: {the_assassin_index})\nThere is another bad person called the Mordred but you do not know who they are**\n\nPlease also note your index number which is **{their_index}**'
+                        elif their_role == 'Morgana':
+                            bad_people.append(avalon_player.mention)
+                            long_message = f'Your role:\n\n**{their_role}**\n\nYour alliance:\n\n**Bad**\n\nAdditionally you know:\n\n**Including yourself, the other bad people are:\n{the_assassin} (Index Number: {the_assassin_index}) who is the Assassin\n{the_mordred} (Index Number: {the_mordred_index}) who is the Mordred**\n\nPlease also note your index number which is **{their_index}**'
+                        elif their_role == 'Assassin':
+                            bad_people.append(avalon_player.mention)
+                            long_message = f'Your role:\n\n**{their_role}**\n\nYour alliance:\n\n**Bad**\n\nAdditionally you know:\n\n**Including yourself, the other bad people are:\n{the_morgana} (Index Number: {the_morgana_index}) who is the Morgana\n{the_mordred} (Index Number: {the_mordred_index}) who is the Mordred**\n\nPlease also note your index number which is **{their_index}**'
+                        elif their_role == 'Mordred':
+                            bad_people.append(avalon_player.mention)
+                            long_message = f'Your role:\n\n**{their_role}**\n\nYour alliance:\n\n**Bad**\n\nAdditionally you know:\n\n**Including yourself, the other bad people are:\n{the_morgana} (Index Number: {the_morgana_index}) who is the Morgana\n{the_assassin} (Index Number: {the_assassin_index}) who is the Assassin**\n\nPlease also note your index number which is **{their_index}**'
+                        await avalon_player.send(f'>>> {long_message}')
+
+                elif len(avalon_players_mention) == 10:
+
+                    avalon_roles = ['Loyal', 'Loyal', 'Loyal', 'Loyal', 'Percival', 'Merlin', 'Morgana', 'Assassin',
+                                    'Mordred', 'Lackey']
+
+
+                    random.shuffle(avalon_roles10)
+                    random.shuffle(avalon_roles10)
+                    random.shuffle(avalon_roles10)
+                    random.shuffle(avalon_roles10)
+                    random.shuffle(avalon_roles10)
+
+                    the_merlin_index = avalon_roles10.index("Merlin")
+
+                    the_merlin = avalon_players_mention[the_merlin_index]
+
+                    the_morgana_index = avalon_roles10.index("Morgana")
+
+                    the_morgana = avalon_players_mention[the_morgana_index]
+
+                    the_assassin_index = avalon_roles10.index("Assassin")
+
+                    the_assassin = avalon_players_mention[the_assassin_index]
+
+                    the_mordred_index = avalon_roles10.index("Mordred")
+
+                    the_mordred = avalon_players_mention[the_mordred_index]
+
+                    the_lackey_index = avalon_roles10.index("Lackey")
+
+                    the_lackey = avalon_players_mention[the_lackey_index]
+
+                    merlinmorganaArray = [the_merlin, the_morgana]
+
+                    the_index_zero = avalon_players_mention.index(merlinmorganaArray[0])
+
+                    the_index_one = avalon_players_mention.index(merlinmorganaArray[1])
+
+                    random.shuffle(merlinmorganaArray)
+                    random.shuffle(merlinmorganaArray)
+                    random.shuffle(merlinmorganaArray)
+                    random.shuffle(merlinmorganaArray)
+                    random.shuffle(merlinmorganaArray)
+
+                    for avalon_player in avalon_players:
+                        their_index = avalon_players_mention.index(avalon_player.mention)
+                        their_role = avalon_roles10[their_index]
+
+                        await avalon_player.send(
+                            f'>>> The roles are\n\nGood:\nLoyal\nLoyal\nLoyal\nLoyal\nPercival\nMerlin\n\nBad:\nMorgana\nAssassin\nMordred\nLackey')
+
+                        if their_role == 'Loyal':
+                            long_message = f'Your role:\n\n**{their_role}**\n\nYour alliance:\n\n**Good**\n\nAdditionally you know:\n\n**Nothing else**\n\nPlease also note your index number which is **{their_index}**'
+                        elif their_role == 'Percival':
+                            long_message = f'Your role:\n\n**{their_role}**\n\nYour alliance:\n\n**Good**\n\nAdditionally you know:\n\n**One of {merlinmorganaArray[0]} (Index Number: {the_index_zero}) and {merlinmorganaArray[1]} (Index Number: {the_index_one}) is the Merlin, the other is the Morgana**\n\nPlease also note your index number which is **{their_index}**'
+                        elif their_role == 'Merlin':
+                            long_message = f'Your role:\n\n**{their_role}**\n\nYour alliance:\n\n**Good**\n\nAdditionally you know:\n\n**Some of the bad people are:\n{the_morgana} (Index Number: {the_morgana_index})\n{the_assassin} (Index Number: {the_assassin_index})\n{the_lackey} (Index Number: {the_lackey_index})\nThere is another bad person called the Mordred but you do not know who they are**\n\nPlease also note your index number which is **{their_index}**'
+                        elif their_role == 'Morgana':
+                            long_message = f'Your role:\n\n**{their_role}**\n\nYour alliance:\n\n**Bad**\n\nAdditionally you know:\n\n**Including yourself, the other bad people are:\n{the_assassin} (Index Number: {the_assassin_index}) who is the Assassin\n{the_mordred} (Index Number: {the_mordred_index}) who is the Mordred\n{the_lackey} (Index Number: {the_lackey_index}) who is the Lackey**\n\nPlease also note your index number which is **{their_index}**'
+                        elif their_role == 'Assassin':
+                            long_message = f'Your role:\n\n**{their_role}**\n\nYour alliance:\n\n**Bad**\n\nAdditionally you know:\n\n**Including yourself, the other bad people are:\n{the_morgana} (Index Number: {the_morgana_index}) who is the Morgana\n{the_mordred} (Index Number: {the_mordred_index}) who is the Mordred\n{the_lackey} (Index Number: {the_lackey_index}) who is the Lackey**\n\nPlease also note your index number which is **{their_index}**'
+                        elif their_role == 'Mordred':
+                            long_message = f'Your role:\n\n**{their_role}**\n\nYour alliance:\n\n**Bad**\n\nAdditionally you know:\n\n**Including yourself, the other bad people are:\n{the_morgana} (Index Number: {the_morgana_index}) who is the Morgana\n{the_assassin} (Index Number: {the_assassin_index}) who is the Assassin\n{the_lackey} (Index Number: {the_lackey_index}) who is the Lackey**\n\nPlease also note your index number which is **{their_index}**'
+                        elif their_role == 'Lackey':
+                            long_message = f'Your role:\n\n**{their_role}**\n\nYour alliance:\n\n**Bad**\n\nAdditionally you know:\n\n**Including yourself, the other bad people are:\n{the_morgana} (Index Number: {the_morgana_index}) who is the Morgana\n{the_assassin} (Index Number: {the_assassin_index}) who is the Assassin\n{the_mordred} (Index Number: {the_mordred_index}) who is the Mordred**\n\nPlease also note your index number which is **{their_index}**'
+                        await avalon_player.send(f'>>> {long_message}')
+
+
+
+
+        elif len(game_phase) > 0:
+            await ctx.send(f">>> The game of Avalon has already started...")
+
+        elif len(game_phase) < 1:
+            await ctx.send(f'>>> {ctx.author.mention} Avalon matchmaking is not finished yet...')
+
+    else:
+        split_command = command.lower().split()
+        if split_command[0].lower() == "mission":
+            split_command.remove(0)
+
+            for person in split_command:
+                mission_participants.append(person)
+        elif split_command[0].lower() == "vote":
+
+            if split_command[1].lower() == "pass":
+                has_voted.append(ctx.author.mention)
+                pass_votes.append(1)
+
+            elif split_command[1].lower() == "fail":
+                has_voted.append(ctx.author.mention)
+                fail_votes.append(0)
+                
+            if len(mission_participants) == len(has_voted):
+                await avalon_channel.send(f">>> Mission has been completed\nPass votes: {len(pass_votes)}\n\n Fail votes:{len(fail_votes)}")
+
+        else:
+            await ctx.send(f">>> Invalid Command...")
+
 pasta_eight = ">>> :astonished: \n\nhttps://media.discordapp.net/attachments/445423481727877120/471965756888973312/CB3A8953_1_1.jpg?width=919&height=613"
 
 pasta_nine = ">>> Never forget this team :triumph:\n\n https://www.youtube.com/watch?v=Hbhq7M0PG3Y"
