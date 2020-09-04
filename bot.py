@@ -801,7 +801,7 @@ fail_votes = []
 mission_participants = []
 has_voted = []
 pass_votes = []
-@client.command(help="Type .idolguess commands for more information about this command", aliases=['av'])
+@client.command(help="will put soon", aliases=['av'])
 async def avalon(ctx, *, command):
     global long_message
     if command.lower() == "join":
@@ -1236,24 +1236,34 @@ async def avalon(ctx, *, command):
             await ctx.send(f'>>> {ctx.author.mention} Avalon matchmaking is not finished yet...')
 
     else:
+
         split_command = command.lower().split()
-        if split_command[0].lower() == "mission":
-            split_command.remove(0)
 
-            for person in split_command:
-                mission_participants.append(person)
-        elif split_command[0].lower() == "vote":
+        if len(game_phase) > 0:
+            if split_command[0].lower() == "mission":
+                split_command.pop(0)
 
-            if split_command[1].lower() == "pass":
-                has_voted.append(ctx.author.mention)
-                pass_votes.append(1)
+                for person in split_command:
+                    mission_participants.append(person)
+                    person_index = avalon_players_mention.index(person)
+                    normal_name = avalon_players[person_index]
+                    normal_name.send("You are now in a mission. Please type\n **.avalon vote pass** \n to pass the mission \n\n or \n\n **.avalon vote fail**\n to fail the mission")
+            elif split_command[0].lower() == "vote":
 
-            elif split_command[1].lower() == "fail":
-                has_voted.append(ctx.author.mention)
-                fail_votes.append(0)
-                
-            if len(mission_participants) == len(has_voted):
-                await avalon_channel.send(f">>> Mission has been completed\nPass votes: {len(pass_votes)}\n\n Fail votes:{len(fail_votes)}")
+                if split_command[1].lower() == "pass":
+                    has_voted.append(ctx.author.mention)
+                    pass_votes.append(1)
+
+                elif split_command[1].lower() == "fail":
+                    has_voted.append(ctx.author.mention)
+                    fail_votes.append(0)
+
+                if len(mission_participants) == len(has_voted):
+                    await avalon_channel.send(f">>> Mission has been completed\nPass votes: {len(pass_votes)}\n\n Fail votes:{len(fail_votes)}")
+                    mission_participants.clear()
+                    has_voted.clear()
+                    fail_votes.clear()
+                    pass_votes.clear()
 
         else:
             await ctx.send(f">>> Invalid Command...")
@@ -1303,7 +1313,7 @@ async def reddit_updates():
     while not client.is_closed():
 
         #  #async for post in subreddit.stream.submissions():
-        async for post in subreddit.new(limit=5):
+        async for post in subreddit.new(limit=1):
             await asyncio.sleep(secret_codes.wait_time)
 
         #for post in new_kpop:
