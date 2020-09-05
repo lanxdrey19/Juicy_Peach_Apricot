@@ -10,6 +10,8 @@ A fun discord bot (written in python) for a private server. Features include:
 
 * Conway's Game of Life simulation
 
+* Avalon (The Game)
+
 
 Dependencies:
 
