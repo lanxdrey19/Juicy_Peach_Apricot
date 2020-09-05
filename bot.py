@@ -198,7 +198,7 @@ async def rolespage(ctx, amount=1):
 async def commands(ctx):
     await ctx.send(">>> Please check your DMs for the list of all commands :relaxed:")
     await ctx.author.send(
-        '```css\nGeneral Commands:\n\n.8ball {your_question} - Ask the bot a question\n\n.cheerup - Try this one if you are feeling down\n\n.conway - A Conway Game of Life Simulator\n\n.dice - Rolls die\n\n.examszn - Get some words of wisdom from the bot if you are feeling stressed for your upcoming exams\n\n.hug {@person} - Try this one on someone. This will only work if you ping the user you want to hug\n\n.isonline - Check whether the bot is online\n\n.match {person1 and person2} - Ship yourself with your crush (For example, type .match Me and Sojin)\n\n.piglatin {your message} - Convert your message to Pig Latin\n\n.ping - Checks latency\n\n.stanloona {your message} - Convert your message to let others know you really stan LOOΠΔ\n\n.weather - Get the current weather in Auckland\n\nGame Commands:\n\n.idolguess commands - Displays the Guess the Idol Game commands\n\nProfile Commands:\n\n.profile commands - Displays all of the profile commands```')
+        '```css\nGeneral Commands:\n\n.8ball {your_question} - Ask the bot a question\n\n.cheerup - Try this one if you are feeling down\n\n.conway - A Conway Game of Life Simulator\n\n.dice - Rolls die\n\n.examszn - Get some words of wisdom from the bot if you are feeling stressed for your upcoming exams\n\n.hug {@person} - Try this one on someone. This will only work if you ping the user you want to hug\n\n.isonline - Check whether the bot is online\n\n.match {person1 and person2} - Ship yourself with your crush (For example, type .match Me and Sojin)\n\n.piglatin {your message} - Convert your message to Pig Latin\n\n.ping - Checks latency\n\n.stanloona {your message} - Convert your message to let others know you really stan LOOΠΔ\n\n.weather - Get the current weather in Auckland\n\nGame Commands:\n\n.idolguess commands - Displays the Guess the Idol Game commands\n\n.avalon commands - Displays the Avalon commands```')
 
 
 @client.command(help="Checks Latency")
@@ -804,7 +804,11 @@ pass_votes = []
 @client.command(help="will put soon", aliases=['av'])
 async def avalon(ctx, *, command):
     global long_message
-    if command.lower() == "join":
+    if command.lower() == 'commands':
+        await ctx.send(f">>> {ctx.author.mention} Please check your DMs for the list of all the Avalon commands :relaxed:")
+        await ctx.author.send(
+            '```css\n\n.avalon join - join game\n\n.avalon leave - leave game\n\n.avalon start - start game\n\n.avalon mission {@person1 @person2 @person3....} - send the mission team to do their mission\n\n.avalon vote pass - passes the mission if you are doing the mission\n\n.avalon vote fail - fails the mission if you are doing the mission\n\n```')
+    elif command.lower() == "join":
         if len(game_phase) <= 0:
             for name in avalon_players_mention:
                 if name == ctx.author.mention:
@@ -1247,16 +1251,18 @@ async def avalon(ctx, *, command):
                     mission_participants.append(person)
                     person_index = avalon_players_mention.index(person)
                     normal_name = avalon_players[person_index]
-                    normal_name.send("You are now in a mission. Please type\n **.avalon vote pass** \n to pass the mission \n\n or \n\n **.avalon vote fail**\n to fail the mission")
+                    await normal_name.send("You are now in a mission. Please type\n **.avalon vote pass** \n to pass the mission \n\n or \n\n **.avalon vote fail**\n to fail the mission")
             elif split_command[0].lower() == "vote":
 
                 if split_command[1].lower() == "pass":
                     has_voted.append(ctx.author.mention)
                     pass_votes.append(1)
+                    await ctx.author.send("You have successfully voted")
 
                 elif split_command[1].lower() == "fail":
                     has_voted.append(ctx.author.mention)
                     fail_votes.append(0)
+                    await ctx.author.send("You have successfully voted")
 
                 if len(mission_participants) == len(has_voted):
                     await avalon_channel.send(f">>> Mission has been completed\nPass votes: {len(pass_votes)}\n\n Fail votes:{len(fail_votes)}")
