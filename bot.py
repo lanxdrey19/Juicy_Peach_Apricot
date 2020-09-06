@@ -798,9 +798,14 @@ avalon_players = []
 good_people = []
 bad_people = []
 fail_votes = []
+final_merlin = []
 mission_participants = []
+yes_no_already_voted = []
 has_voted = []
 pass_votes = []
+score_array = []
+yes_votes = []
+no_votes = []
 @client.command(help="will put soon", aliases=['av'])
 async def avalon(ctx, *, command):
     global long_message
@@ -852,6 +857,15 @@ async def avalon(ctx, *, command):
                 game_phase.append(0)
                 await ctx.send(f">>> The game of Avalon has begun")
 
+                count_for_index_printing = 0
+                main_board = ""
+                for person in avalon_players_mention:
+                    main_board = f"{count_for_index_printing}: + {person}\n"
+                    count_for_index_printing = count_for_index_printing + 1
+
+                await ctx.send(f">>>Round {len(score_array) + 1}\n\nCurrent Players:\n\n{main_board}\n\nUnsure about the commands? Type\n**.avalon commands** to find out")
+
+
                 if len(avalon_players_mention) == 5:
 
                     random.shuffle(avalon_roles5)
@@ -873,6 +887,7 @@ async def avalon(ctx, *, command):
                     the_assassin = avalon_players_mention[the_assassin_index]
 
                     merlinmorganaArray = [the_merlin, the_morgana]
+                    final_merlin.append(the_merlin)
 
                     the_index_zero = avalon_players_mention.index(merlinmorganaArray[0])
 
@@ -929,6 +944,7 @@ async def avalon(ctx, *, command):
                     the_assassin = avalon_players_mention[the_assassin_index]
 
                     merlinmorganaArray = [the_merlin, the_morgana]
+                    final_merlin.append(the_merlin)
 
                     the_index_zero = avalon_players_mention.index(merlinmorganaArray[0])
 
@@ -992,6 +1008,7 @@ async def avalon(ctx, *, command):
                     the_mordred = avalon_players_mention[the_mordred_index]
 
                     merlinmorganaArray = [the_merlin, the_morgana]
+                    final_merlin.append(the_merlin)
 
                     the_index_zero = avalon_players_mention.index(merlinmorganaArray[0])
 
@@ -1057,6 +1074,7 @@ async def avalon(ctx, *, command):
                     the_mordred = avalon_players_mention[the_mordred_index]
 
                     merlinmorganaArray = [the_merlin, the_morgana]
+                    final_merlin.append(the_merlin)
 
                     the_index_zero = avalon_players_mention.index(merlinmorganaArray[0])
 
@@ -1125,6 +1143,7 @@ async def avalon(ctx, *, command):
                     the_mordred = avalon_players_mention[the_mordred_index]
 
                     merlinmorganaArray = [the_merlin, the_morgana]
+                    final_merlin.append(the_merlin)
 
                     the_index_zero = avalon_players_mention.index(merlinmorganaArray[0])
 
@@ -1196,6 +1215,7 @@ async def avalon(ctx, *, command):
                     the_lackey = avalon_players_mention[the_lackey_index]
 
                     merlinmorganaArray = [the_merlin, the_morgana]
+                    final_merlin.append(the_merlin)
 
                     the_index_zero = avalon_players_mention.index(merlinmorganaArray[0])
 
@@ -1238,7 +1258,41 @@ async def avalon(ctx, *, command):
 
         elif len(game_phase) < 1:
             await ctx.send(f'>>> {ctx.author.mention} Avalon matchmaking is not finished yet...')
+    elif command.lower() == 'reset':
+        await ctx.send("The game has been reset")
+    elif command.lower() == 'yes' and len(game_phase) == 2:
+        if ctx.author.mention in yes_no_already_voted:
+            await ctx.author.send("you have already voted....")
+            return
 
+        yes_votes.append(0)
+        yes_no_already_voted.append(ctx.author.mention)
+        await ctx.send(f">>> {ctx.author.mention} has voted yes")
+        if ( math.floor( (len(avalon_players_mention) + 2 ) / 2 ) == len(yes_votes) ):
+            await ctx.send("Your mission will go underway")
+            no_votes.clear()
+            yes_votes.clear()
+            yes_no_already_voted.clear()
+            for person in mission_participants:
+                person_index = avalon_players_mention.index(person)
+                normal_name = avalon_players[person_index]
+                await normal_name.send("You are now in a mission. Please type\n **.avalon vote pass** \n to pass the mission \n\n or \n\n **.avalon vote fail**\n to fail the mission")
+            game_phase.append(0)
+    elif command.lower() == 'no' and len(game_phase) == 2:
+        if ctx.author.mention in yes_no_already_voted:
+            await ctx.author.send("you have already voted....")
+            return
+
+        no_votes.append(0)
+        yes_no_already_voted.append(ctx.author.mention)
+        await ctx.send(f">>> {ctx.author.mention} has voted no")
+        if ( math.floor( (len(avalon_players_mention) + 1 ) / 2 ) == len(yes_votes) ):
+            await ctx.send("Please let the next person vote...")
+            game_phase.pop(0)
+            no_votes.clear()
+            yes_votes.clear()
+            yes_no_already_voted.clear()
+            mission_participants.clear()
     else:
 
         split_command = command.lower().split()
@@ -1247,29 +1301,121 @@ async def avalon(ctx, *, command):
             if split_command[0].lower() == "mission":
                 split_command.pop(0)
 
+
+
+                potential_candidates = ""
                 for person in split_command:
+                    potential_candidates = potential_candidates + person + "\n"
                     mission_participants.append(person)
-                    person_index = avalon_players_mention.index(person)
-                    normal_name = avalon_players[person_index]
-                    await normal_name.send("You are now in a mission. Please type\n **.avalon vote pass** \n to pass the mission \n\n or \n\n **.avalon vote fail**\n to fail the mission")
+                    if person not in avalon_players_mention:
+                        await ctx.send("Some of the people you specified are not in the current game. Please try again :flushed:")
+                        return
+                    #person_index = avalon_players_mention.index(person)
+                    #normal_name = avalon_players[person_index]
+                    #await normal_name.send("You are now in a mission. Please type\n **.avalon vote pass** \n to pass the mission \n\n or \n\n **.avalon vote fail**\n to fail the mission")
+
+                await ctx.send(f">>> {potential_candidates} have been selected to enter the mission\n\nType\n**.avalon yes**\nto advance this mission\n\nOR\n\n**.avalon no**\nto cancel this mission")
+                game_phase.append(0)
+
             elif split_command[0].lower() == "vote":
 
-                if split_command[1].lower() == "pass":
+                if ctx.author.mention in has_voted:
+                    await ctx.author.send("you have already voted....")
+                    return
+
+                elif split_command[1].lower() == "pass":
                     has_voted.append(ctx.author.mention)
-                    pass_votes.append(1)
+                    pass_votes.append(0)
                     await ctx.author.send("You have successfully voted")
+
 
                 elif split_command[1].lower() == "fail":
                     has_voted.append(ctx.author.mention)
                     fail_votes.append(0)
                     await ctx.author.send("You have successfully voted")
+                else:
+                    await ctx.author.send("Invalid command...")
 
                 if len(mission_participants) == len(has_voted):
                     await avalon_channel.send(f">>> Mission has been completed\nPass votes: {len(pass_votes)}\n\n Fail votes:{len(fail_votes)}")
+
+                    if len(fail_votes) < 2 and len(avalon_players_mention) > 6 and len(score_array) == 3:
+
+                        await avalon_channel.send("The mission has passed")
+                        score_array.append(1)
+
+                    elif len(mission_participants) == len(pass_votes):
+                        await avalon_channel.send("The mission has passed")
+                        score_array.append(1)
+
+                    else:
+                        await avalon_channel.send("The mission has failed")
+                        score_array.append(0)
+
+
+                    game_phase.pop(0)
                     mission_participants.clear()
                     has_voted.clear()
                     fail_votes.clear()
                     pass_votes.clear()
+
+                    if score_array.count(1) == 3:
+                        game_phase.append(0)
+                        await avalon_channel.send("It is time for the bad people to guess who the Merlin is")
+
+
+                    elif score_array.count(0) == 3:
+                        await avalon_channel.send("The bad team wins")
+                        tempString3 = ""
+                        for person in bad_people:
+                            tempString1 = tempString3 + person + "\n"
+                        await ctx.send(f">>> Congratulations {tempString3}")
+                        game_phase.clear()
+                        avalon_players_mention.clear()
+                        avalon_players.clear()
+                        good_people.clear()
+                        bad_people.clear()
+                        fail_votes.clear()
+                        final_merlin.clear()
+                        mission_participants.clear()
+                        yes_no_already_voted.clear()
+                        has_voted.clear()
+                        pass_votes.clear()
+                        score_array.clear()
+                        yes_votes.clear()
+                        no_votes.clear()
+
+
+            elif split_command[0].lower() == "merlin":
+                tempString1 = ""
+                if len(game_phase) == 4:
+                    if split_command[1].lower() == final_merlin[0]:
+                        await ctx.send(f">>> Correct! {final_merlin[0]} is the Merlin\n\n The Bad team wins")
+                        for person in bad_people:
+                            tempString1 = tempString1 + person + "\n"
+                        await ctx.send(f">>> Congratulations {tempString1}")
+                    else:
+                        await ctx.send(f">>> Sorry, the actual Merlin was {final_merlin[0]} is the Merlin\n\n The Good team wins")
+                        for person in good_people:
+                            tempString1 = tempString1 + person + "\n"
+                        await ctx.send(f">>> Congratulations {tempString1}")
+
+                    game_phase.clear()
+                    avalon_players_mention.clear()
+                    avalon_players.clear()
+                    good_people.clear()
+                    bad_people.clear()
+                    fail_votes.clear()
+                    final_merlin.clear()
+                    mission_participants.clear()
+                    yes_no_already_voted.clear()
+                    has_voted.clear()
+                    pass_votes.clear()
+                    score_array.clear()
+                    yes_votes.clear()
+                    no_votes.clear()
+                else:
+                    await ctx.send(f">>> Invalid Command for now...")
 
         else:
             await ctx.send(f">>> Invalid Command...")
