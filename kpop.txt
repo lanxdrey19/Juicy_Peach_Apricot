@@ -122,9 +122,9 @@ Red Velvet,Yeri,https://pbs.twimg.com/media/EOaj3CrUwAADleg?format=jpg&name=larg
 S.I.S,J-Sun,https://gfycat.com/ScientificHandyAppaloosa
 S.I.S,Dal,https://media.discordapp.net/attachments/349125594736492544/589487361872625752/D8rOX_UUIAER9Hv.png?width=226&height=338
 S.I.S,Minzy,https://cdn.discordapp.com/attachments/349125624499011584/663164208103424075/ENaowTbUYAA1Osk.png
-S.I.S ge,Gaeul,https://gfycat.com/cheeryselfreliantafricanwildcat
-S.I.S ge,Anne,https://media.discordapp.net/attachments/349125649564303361/662774802188075053/ENXSkahUYAAa08U.png?width=602&height=586
-S.I.S ge,Sebin,https://media.discordapp.net/attachments/349125724906455042/662773499307229204/ENYfqViX0AAlIlE.png?width=391&height=586
+S.I.S,Gaeul,https://gfycat.com/cheeryselfreliantafricanwildcat
+S.I.S,Anne,https://media.discordapp.net/attachments/349125649564303361/662774802188075053/ENXSkahUYAAa08U.png?width=602&height=586
+S.I.S,Sebin,https://media.discordapp.net/attachments/349125724906455042/662773499307229204/ENYfqViX0AAlIlE.png?width=391&height=586
 Sonamoo,Sumin,https://pbs.twimg.com/media/ELkohPxVUAEaIRE?format=jpg&name=large
 Sonamoo,Minjae,https://pbs.twimg.com/media/DutS750XcAAkjdf?format=jpg&name=4096x4096
 Sonamoo,D.ana,https://pbs.twimg.com/media/EAEz_NwVUAAUad5?format=jpg&name=4096x4096
