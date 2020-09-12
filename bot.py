@@ -1610,6 +1610,19 @@ async def copy_pasta():
         await asyncio.sleep(pasta_interval)
 
 
+wisdomArray = [secret_codes.WISDOM_1, secret_codes.WISDOM_2, secret_codes.WISDOM_3, secret_codes.WISDOM_4, secret_codes.WISDOM_5, secret_codes.WISDOM_6, secret_codes.WISDOM_7, secret_codes.WISDOM_8, secret_codes.WISDOM_9, secret_codes.WISDOM_10]
+@client.event
+async def wisdom_messages():
+    project_pasta_interval = 600
+    await client.wait_until_ready()
+    project_channel = client.get_channel(secret_codes.BOT_WISDOM_ID_CHANNEL)
+
+    while not client.is_closed():
+
+        await asyncio.sleep(project_pasta_interval)
+        await project_channel.send(random.choice(wisdomArray))
+        await asyncio.sleep(project_pasta_interval)
+
 # reddit
 already_posted = []
 
@@ -1652,7 +1665,7 @@ async def reddit_updates():
 
 
 
-
+client.loop.create_task(wisdom_messages())
 client.loop.create_task(copy_pasta())
 client.loop.create_task(reddit_updates())
 client.run(my_discord_token)
