@@ -1,6 +1,6 @@
 # Juicy_Peach_Apricot
 
-A fun discord bot (written in python) for a private server. Features include:
+A fun discord bot written in python. Features include:
 
 * Various commands including checking latency and current weather
 
