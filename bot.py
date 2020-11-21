@@ -1588,48 +1588,12 @@ async def avalon(ctx, *, command):
         else:
             await ctx.send(f">>> Invalid Command...")
 
-pasta_eight = ">>> :astonished: \n\nhttps://media.discordapp.net/attachments/445423481727877120/471965756888973312/CB3A8953_1_1.jpg?width=919&height=613"
-
-pasta_nine = ">>> Never forget this team :triumph:\n\n https://www.youtube.com/watch?v=Hbhq7M0PG3Y"
-
-pasta_ten = ">>> :v: :thumbsup:  \n\nhttps://pbs.twimg.com/media/Djgt7uFU0AA-gFX.jpg:large"
-
-sad_role_channel = secret_codes.SAD_ROLE_CHANNEL
-pastaArray = [pasta_eight, pasta_nine, pasta_ten]
-
-@client.event
-async def copy_pasta():
-    pasta_interval = 60
-    await client.wait_until_ready()
-    channel = client.get_channel(sad_role_channel)
-
-    while not client.is_closed():
-
-        await asyncio.sleep(pasta_interval)
-        await channel.send(random.choice(pastaArray))
-        await asyncio.sleep(pasta_interval)
-
-
-wisdomArray = [secret_codes.WISDOM_1, secret_codes.WISDOM_2, secret_codes.WISDOM_3, secret_codes.WISDOM_4, secret_codes.WISDOM_5, secret_codes.WISDOM_6, secret_codes.WISDOM_7, secret_codes.WISDOM_8, secret_codes.WISDOM_9, secret_codes.WISDOM_10]
-@client.event
-async def wisdom_messages():
-    project_pasta_interval = 600
-    await client.wait_until_ready()
-    project_channel = client.get_channel(secret_codes.BOT_WISDOM_ID_CHANNEL)
-
-    while not client.is_closed():
-
-        await asyncio.sleep(project_pasta_interval)
-        await project_channel.send(random.choice(wisdomArray))
-        await asyncio.sleep(project_pasta_interval)
-
 # reddit
 already_posted = []
 
 
 @client.event
 async def reddit_updates():
-
 
     #new
     reset_limit = 205
@@ -1656,17 +1620,6 @@ async def reddit_updates():
                 if len(already_posted) >= reset_limit:
                     already_posted.pop(0)
 
-
-
-
-
-
-
-
-
-
-client.loop.create_task(wisdom_messages())
-client.loop.create_task(copy_pasta())
 client.loop.create_task(reddit_updates())
 client.run(my_discord_token)
 
