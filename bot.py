@@ -101,7 +101,6 @@ async def on_raw_reaction_remove(payload):
         else:
             print("role not found")
 
-
 @client.event
 async def on_message(message):
 
@@ -160,6 +159,46 @@ async def on_member_join(member):
 async def on_member_remove(member):
     channel = client.get_channel(secret_codes.kpop_general_channel_id)
     await channel.send(f'{member} has left the server.')
+
+
+# adding roles in kpop planet discord server
+@client.command(pass_context=True)
+async def addmain(ctx, *, role_name_request):
+    member = ctx.message.author
+    if role_name_request.lower() == 'test':
+        final_role = discord.utils.get(member.guild.roles, name='Test')
+        if final_role is not None:
+            await member.add_roles(final_role)
+            await ctx.send("Role added")
+        else:
+            await ctx.send("role can not be found in system")
+    else:
+        await ctx.send("role not found...")
+    #await ctx.send("hello")
+    #guild_id = 689772319362646127
+    #await ctx.send("hello1")
+    #guild = discord.utils.find(lambda g: g.id == guild_id, client.guilds)
+    #await ctx.send("hello2")
+
+    #await ctx.send("hello3")
+
+    #if role_name_request.lower() == "test":
+        #await ctx.send("hello4")
+        #group_name_role = discord.utils.get(guild.roles, name="Test")
+        #await ctx.send("hello5")
+        #if group_name_role is not None:
+            #member = discord.utils.find(lambda m: m.id == ctx.user_id, guild.members)
+            #member = ctx.author.mention
+            #if member is not None:
+                #await member.add_roles(group_name_role)
+            #else:
+                #await ctx.send("member not found")
+
+            #await ctx.send("role added")
+        #else:
+            #await ctx.send('role not matched')
+    #else:
+        #await ctx.send("could not find role")
 
 
 # Commands
@@ -245,7 +284,7 @@ async def _8ball(ctx, *, question):
 
 
 @client.command(
-    help="Ship yourself with your crush (For example, type .match Thomas and Nayeon)Displays details of Sadbot")
+    help="Ship yourself with your crush (For example, type .match Thomas and Nayeon")
 async def match(ctx, *, question):
     await ctx.send(f'>>> Shipping {question}...\nCompatibility: {randint(0, 100)}%')
 
