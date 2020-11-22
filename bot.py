@@ -116,12 +116,17 @@ async def on_message(message):
             emoji = '🏓'
             await message.add_reaction(emoji)
 
+
     for word in coolWords8:
         if message.content.count(word) > 0:
             emoji = '✅'
             emoji2 = '❌'
             await message.add_reaction(emoji)
             await message.add_reaction(emoji2)
+
+    if message.channel.id == secret_codes.kpop_roles_channel_id:
+        await asyncio.sleep(3)
+        await message.channel.purge(limit=1)
 
     if message.author == client.user:
         return
