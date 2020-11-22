@@ -179,34 +179,29 @@ async def addmain(ctx, *, role_name_request):
             await ctx.send("role can not be found in system")
     else:
         await ctx.send("role not found...")
-    #await ctx.send("hello")
-    #guild_id = 689772319362646127
-    #await ctx.send("hello1")
-    #guild = discord.utils.find(lambda g: g.id == guild_id, client.guilds)
-    #await ctx.send("hello2")
 
-    #await ctx.send("hello3")
-
-    #if role_name_request.lower() == "test":
-        #await ctx.send("hello4")
-        #group_name_role = discord.utils.get(guild.roles, name="Test")
-        #await ctx.send("hello5")
-        #if group_name_role is not None:
-            #member = discord.utils.find(lambda m: m.id == ctx.user_id, guild.members)
-            #member = ctx.author.mention
-            #if member is not None:
-                #await member.add_roles(group_name_role)
-            #else:
-                #await ctx.send("member not found")
-
-            #await ctx.send("role added")
-        #else:
-            #await ctx.send('role not matched')
-    #else:
-        #await ctx.send("could not find role")
+@client.command(pass_context=True)
+async def removemain(ctx, *, role_name_request):
+    member = ctx.message.author
+    if role_name_request.lower() == 'test':
+        final_role = discord.utils.get(member.guild.roles, name='Test')
+        if final_role is not None:
+            await member.remove_roles(final_role)
+            await ctx.send("Role removed")
+        else:
+            await ctx.send("role can not be found in system")
+    else:
+        await ctx.send("role not found...")
 
 
 # Commands
+@client.command(help="create quick announcement")
+async def quickannounce(ctx, amount=1):
+    await ctx.channel.purge(limit=amount)
+    line = ""
+    await ctx.send(f">>> {line}")
+
+
 @client.command(help="create general announcement")
 async def generalannounce(ctx, amount=1):
     await ctx.channel.purge(limit=amount)
