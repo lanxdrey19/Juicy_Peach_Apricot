@@ -168,90 +168,100 @@ async def on_member_remove(member):
 # adding roles in kpop planet discord server
 @client.command(pass_context=True)
 async def addmain(ctx, *, role_name_request):
-    await ctx.send(".loL Haha".lower())
     final_role = None
     member = ctx.message.author
-    for thing in member.roles:
-        await ctx.send(thing.id)
     for main_role in member.guild.roles:
-        if main_role.id != 689772319362646127:
-            await ctx.send(main_role)
-        else:
-            await ctx.send("everyone role")
-        await ctx.send("reach")
         for member_role in member.roles:
-            if member_role.id != 689772319362646127:
-                await ctx.send(member_role)
-            else:
-                await ctx.send("everyone role")
-            await ctx.send("reach2")
             if member_role == main_role and member_role.id != 689772319362646127 and member_role.id != 691185229196427336 and member_role.id != 689775233325989918:
+                await ctx.send(ctx.author.mention)
                 await ctx.send("You can only have one main role...")
                 return
 
-        await ctx.send("reach 3")
-
         if main_role.id != 689772319362646127:
-            await ctx.send(role_name_request.lower())
-            await ctx.send(str(main_role).lower())
-            if role_name_request.lower() == str(main_role).lower():
-                await ctx.send("reach 3.25")
+            if role_name_request.lower() == str(main_role).lower() and role_name_request.lower()[0] != '.':
                 final_role = discord.utils.get(member.guild.roles, name=str(main_role))
-                await ctx.send("reach 3.75")
-        await ctx.send("reach 4")
-    await ctx.send('done with loop')
+
     if final_role is not None:
-        await ctx.send('entered here')
         if final_role in member.roles:
-            await ctx.send(f"The role: {str(final_role)} has already been added")
+            await ctx.send(ctx.author.mention)
+            await ctx.send(f"The main role: {str(final_role)} has already been added")
         else:
             await member.add_roles(final_role)
-            await ctx.send(f"The role: {str(final_role)} has been added")
+            await ctx.send(ctx.author.mention)
+            await ctx.send(f"The main role: {str(final_role)} has been added")
     else:
-        await ctx.send(f"The role: {role_name_request} was not found...")
+        await ctx.send(ctx.author.mention)
+        await ctx.send(f"The main role: {role_name_request} was not found...")
 
 @client.command(pass_context=True)
 async def removemain(ctx, *, role_name_request):
-    await ctx.send(".loL Haha".lower())
+
     final_role = None
     member = ctx.message.author
-    for thing in member.roles:
-        await ctx.send(thing.id)
     for main_role in member.guild.roles:
-
         if main_role.id != 689772319362646127:
-            await ctx.send(role_name_request.lower())
-            await ctx.send(str(main_role).lower())
-            if role_name_request.lower() == str(main_role).lower():
-                await ctx.send("reach 3.25")
+
+            if role_name_request.lower() == str(main_role).lower() and role_name_request.lower()[0] != '.':
+
                 final_role = discord.utils.get(member.guild.roles, name=str(main_role))
-                await ctx.send("reach 3.75")
-        await ctx.send("reach 4")
-    await ctx.send('done with loop')
-    
+
     if final_role is not None:
-        await ctx.send('entered here')
         if final_role in member.roles:
             await member.remove_roles(final_role)
+            await ctx.send(ctx.author.mention)
+            await ctx.send(f"The sub role: {str(final_role)} has been removed")
+        else:
+            await ctx.send(ctx.author.mention)
+            await ctx.send(f"The sub role: {str(final_role)} is not currently in your roles....")
+    else:
+        await ctx.send(ctx.author.mention)
+        await ctx.send(f"The sub role: {role_name_request} was not found...")
+
+@client.command(pass_context=True)
+async def addsub(ctx, *, role_name_request):
+    final_role = None
+    member = ctx.message.author
+    for main_role in member.guild.roles:
+        if main_role.id != 689772319362646127:
+            if ("." + role_name_request.lower()) == str(main_role).lower():
+                final_role = discord.utils.get(member.guild.roles, name=(str(main_role)) )
+
+    if final_role is not None:
+        if final_role in member.roles:
+            await ctx.send(ctx.author.mention)
+            await ctx.send(f"The sub role: {str(final_role)} has already been added")
+        else:
+            await member.add_roles(final_role)
+            await ctx.send(ctx.author.mention)
+            await ctx.send(f"The sub role: {str(final_role)} has been added")
+    else:
+        await ctx.send(ctx.author.mention)
+        await ctx.send(f"The sub role: {role_name_request} was not found...")
+
+@client.command(pass_context=True)
+async def removesub(ctx, *, role_name_request):
+    final_role = None
+    member = ctx.message.author
+    for main_role in member.guild.roles:
+        if main_role.id != 689772319362646127:
+
+            if ("." + role_name_request.lower()) == str(main_role).lower():
+
+                final_role = discord.utils.get(member.guild.roles, name=(str(main_role)) )
+
+    if final_role is not None:
+
+        if final_role in member.roles:
+            await member.remove_roles(final_role)
+            await ctx.send(ctx.author.mention)
             await ctx.send(f"The role: {str(final_role)} has been removed")
         else:
+            await ctx.send(ctx.author.mention)
             await ctx.send(f"The role: {str(final_role)} is not currently in your roles....")
     else:
+        await ctx.send(ctx.author.mention)
         await ctx.send(f"The role: {role_name_request} was not found...")
-    #member = ctx.message.author
-    #if role_name_request.lower() == 'test':
-        #final_role = discord.utils.get(member.guild.roles, name='Test')
-        #if final_role is not None:
-            #if final_role in member.roles:
-                #await member.remove_roles(final_role)
-                #await ctx.send("Role removed")
-            #else:
-                #await member.add_roles(final_role)
-                #await ctx.send("You already don't have this role")
-        #else:
-            #await ctx.send("role can not be found in system")
-    #else:
-        #await ctx.send("role not found...")
+
 
 
 # Commands
@@ -1695,6 +1705,7 @@ already_posted = []
 async def reddit_updates():
 
     #new
+    global post
     reset_limit = 205
     await client.wait_until_ready()
     channel = client.get_channel(secret_codes.kpop_news_channel_id)
@@ -1707,17 +1718,21 @@ async def reddit_updates():
 
 
     while not client.is_closed():
+        try:
+            #  #async for post in subreddit.stream.submissions():
+            async for post in subreddit.new(limit=1):
+                await asyncio.sleep(secret_codes.wait_time)
 
-        #  #async for post in subreddit.stream.submissions():
-        async for post in subreddit.new(limit=1):
-            await asyncio.sleep(secret_codes.wait_time)
+                # for post in new_kpop:
+                if post.url not in already_posted:
+                    await channel.send(post.url)
+                    already_posted.append(post.url)
+                    if len(already_posted) >= reset_limit:
+                        already_posted.pop(0)
+        except Exception as e:
+            await channel.send(str(e))
+            await channel.send("Please check the error trace")
 
-        #for post in new_kpop:
-            if post.url not in already_posted:
-                await channel.send(post.url)
-                already_posted.append(post.url)
-                if len(already_posted) >= reset_limit:
-                    already_posted.pop(0)
 
 client.loop.create_task(reddit_updates())
 client.run(my_discord_token)
