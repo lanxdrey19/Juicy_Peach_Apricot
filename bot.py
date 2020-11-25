@@ -263,7 +263,6 @@ async def removesub(ctx, *, role_name_request):
         await ctx.send(f"The sub role: {role_name_request} was not found...")
 
 
-
 # Commands
 @client.command(help="create quick announcement")
 async def quickannounce(ctx, amount=1):
@@ -271,14 +270,6 @@ async def quickannounce(ctx, amount=1):
     line = ""
     await ctx.send(f">>> {line}")
 
-@client.command()
-async def photo(ctx,*,guess):
-    await ctx.send("hello! who dis")
-    x = os.listdir("./photos")
-    for item in x:
-        await ctx.send("lol")
-        await ctx.send(file=discord.File("photos/"+ str(item)))
-        await ctx.send(item)
 
 @client.command(help="create general announcement")
 async def generalannounce(ctx, amount=1):
@@ -428,15 +419,6 @@ async def isonline(ctx):
 
 cheerup_players = []
 slides = [0]
-
-@client.command()
-async def photo2(ctx,*,guess):
-    await ctx.send("hello! who dis")
-    x = os.listdir("./photos")
-    for item in x:
-        await ctx.send("lol")
-        await ctx.send(file=discord.File("photos/"+ str(item)))
-        await ctx.send(item)
 
 @client.command(help="Try this one if you are feeling down")
 async def cheerup(ctx):
@@ -767,6 +749,14 @@ async def weather(ctx):
     final_message = f'>>> {secret_codes.WEATHER_PART_OF_MESSAGE}:\n\n**{detailed_description}**\n\n:dash: Wind Speed: {round(wind["speed"] * 1.6)} kilometres/hour {wind_direction} (@ {wind["deg"]}°)\n:thermometer_face: Current Temperature: {round(temperature["temp"])}°C, Maximum: {round(temperature["temp_max"])}°C, Minimum: {round(temperature["temp_min"])}°C\n:sweat_drops: Humidity: {humidity}% with {cloud_coverage}% cloud coverage\n:thermometer: Pressure: {pressures["press"]} hPa\n:sunny: UV Level: {round(uv_level)} ({uv_message}) with a {exposure_risk} exposure risk\n:clock: Current Time: {current_time}'
     await ctx.send(final_message)
 
+@client.command()
+async def photo2(ctx,*,guess):
+    await ctx.send("hello! who dis")
+    x = os.listdir("./photos")
+    for item in x:
+        await ctx.send("lol")
+        await ctx.send(file=discord.File("photos/"+ str(item)))
+        await ctx.send(item)
 
 # Idol Guess
 
@@ -787,27 +777,18 @@ async def idolguess(ctx, *, guess):
     elif guess == 'start' and len(hasStarted) == 0:
         hasStarted.append(0)
 
-        theirGroup = []
-        theirName = []
-        theirPhoto = []
-        counterNumber = 0
-        f = open("kpop.txt", "r")
-        for line in f:
-            counterNumber = counterNumber + 1
-            line = line.rstrip('\n')
-            line = line.split(',')
-            theirGroup.append(line[0])
-            theirName.append(line[1])
-            theirPhoto.append(line[2])
-
-        f.close()
-
+        image_list = os.listdir("./photos")
+        counterNumber = len(image_list)
         theIndex = randint(0, counterNumber - 1)
-        theFinalGroup.append(theirGroup[theIndex])
-        theFinalName.append(theirName[theIndex])
-        theFinalPhoto.append(theirPhoto[theIndex])
+        finalFromData = str(image_list[theIndex])
+        finalArrayForm = finalFromData.split(',')
+        theFinalGroup.append(finalArrayForm[0].strip())
+        finalNameRaw = finalArrayForm[1]
+        theFinalName.append(finalNameRaw[0:len(finalNameRaw) - 4].strip())
 
-        await ctx.send(f">>> Who is this?\n{theFinalPhoto[0]}")
+        await ctx.send(f">>> Lives remaining: {4 - len(hasStarted)}  ")
+        await ctx.send(">>> Who is this?")
+        await ctx.send(file=discord.File("photos/"+ str(finalFromData)))
         await asyncio.sleep(30)
 
     elif guess.lower() == theFinalName[0].lower() and len(hasStarted) != 0:
@@ -817,27 +798,18 @@ async def idolguess(ctx, *, guess):
         theFinalPhoto.clear()
         longScore.append(0)
 
-        theirGroup = []
-        theirName = []
-        theirPhoto = []
-        counterNumber = 0
-        f = open("kpop.txt", "r")
-        for line in f:
-            counterNumber = counterNumber + 1
-            line = line.rstrip('\n')
-            line = line.split(',')
-            theirGroup.append(line[0])
-            theirName.append(line[1])
-            theirPhoto.append(line[2])
-
-        f.close()
-
+        image_list = os.listdir("./photos")
+        counterNumber = len(image_list)
         theIndex = randint(0, counterNumber - 1)
-        theFinalGroup.append(theirGroup[theIndex])
-        theFinalName.append(theirName[theIndex])
-        theFinalPhoto.append(theirPhoto[theIndex])
+        finalFromData = str(image_list[theIndex])
+        finalArrayForm = finalFromData.split(',')
+        theFinalGroup.append(finalArrayForm[0].strip())
+        finalNameRaw = finalArrayForm[1]
+        theFinalName.append(finalNameRaw[0:len(finalNameRaw) - 4].strip())
 
-        await ctx.send(f">>> Current score: {len(longScore)}\n\nWho is this?\n{theFinalPhoto[0]}")
+        await ctx.send(f">>> Lives remaining: {4 - len(hasStarted)}  ")
+        await ctx.send(">>> Who is this?")
+        await ctx.send(file=discord.File("photos/" + str(finalFromData)))
 
     elif ((guess.lower() != theFinalName[0].lower()) or (guess.lower() == 'skip')) and len(
             hasStarted) != 0 and guess.lower() != 'quit' and guess.lower() != 'start':
@@ -854,32 +826,22 @@ async def idolguess(ctx, *, guess):
             longScore.clear()
             return
 
-        await ctx.send(f">>> Lives remaining: {4 - len(hasStarted)}  ")
         theFinalName.clear()
         theFinalGroup.clear()
         theFinalPhoto.clear()
 
-        theirGroup = []
-        theirName = []
-        theirPhoto = []
-        counterNumber = 0
-        f = open("kpop.txt", "r")
-        for line in f:
-            counterNumber = counterNumber + 1
-            line = line.rstrip('\n')
-            line = line.split(',')
-            theirGroup.append(line[0])
-            theirName.append(line[1])
-            theirPhoto.append(line[2])
-
-        f.close()
-
+        image_list = os.listdir("./photos")
+        counterNumber = len(image_list)
         theIndex = randint(0, counterNumber - 1)
-        theFinalGroup.append(theirGroup[theIndex])
-        theFinalName.append(theirName[theIndex])
-        theFinalPhoto.append(theirPhoto[theIndex])
+        finalFromData = str(image_list[theIndex])
+        finalArrayForm = finalFromData.split(',')
+        theFinalGroup.append(finalArrayForm[0].strip())
+        finalNameRaw = finalArrayForm[1]
+        theFinalName.append(finalNameRaw[0:len(finalNameRaw) - 4].strip())
 
-        await ctx.send(f">>> Current score: {len(longScore)}\n\nWho is this?\n{theFinalPhoto[0]}")
+        await ctx.send(f">>> Lives remaining: {4 - len(hasStarted)}  ")
+        await ctx.send(">>> Who is this?")
+        await ctx.send(file=discord.File("photos/" + str(finalFromData)))
 
     elif guess.lower() == 'quit':
         await ctx.send(
