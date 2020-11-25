@@ -271,6 +271,18 @@ async def quickannounce(ctx, amount=1):
     line = ""
     await ctx.send(f">>> {line}")
 
+@client.command()
+async def photo(ctx,*,guess):
+    await ctx.send("hello! who dis")
+    x = os.listdir("./photos")
+    for item in x:
+        await ctx.send("lol")
+        await ctx.send(file=discord.File("photos/"+ str(item)))
+        await ctx.send(item)
+
+
+
+
 
 @client.command(help="create general announcement")
 async def generalannounce(ctx, amount=1):
