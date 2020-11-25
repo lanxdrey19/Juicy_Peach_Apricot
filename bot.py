@@ -280,10 +280,6 @@ async def photo(ctx,*,guess):
         await ctx.send(file=discord.File("photos/"+ str(item)))
         await ctx.send(item)
 
-
-
-
-
 @client.command(help="create general announcement")
 async def generalannounce(ctx, amount=1):
     await ctx.channel.purge(limit=amount)
@@ -433,6 +429,15 @@ async def isonline(ctx):
 cheerup_players = []
 slides = [0]
 
+@client.command()
+async def photo2(ctx,*,guess):
+    await ctx.send("hello! who dis")
+    x = os.listdir("./photos")
+    for item in x:
+        await ctx.send("lol")
+        await ctx.send(file=discord.File("photos/"+ str(item)))
+        await ctx.send(item)
+
 @client.command(help="Try this one if you are feeling down")
 async def cheerup(ctx):
     for people in cheerup_players:
@@ -440,24 +445,14 @@ async def cheerup(ctx):
             await ctx.send('You already have a slideshow going on...')
             return
     cheerup_players.append(ctx.author.mention)
-    theirGroup = []
-    theirName = []
-    theirPhoto = []
-    counterNumber = 0
-    f = open("kpop.txt", "r")
-    for line in f:
-        counterNumber = counterNumber + 1
-        line = line.rstrip('\n')
-        line = line.split(',')
-        theirGroup.append(line[0])
-        theirName.append(line[1])
-        theirPhoto.append(line[2])
-
-    f.close()
-
+    image_list = os.listdir("./photos")
+    counterNumber = len(image_list)
     theIndex = randint(0, counterNumber - 1)
-    finalGroup = theirGroup[theIndex]
-    finalName = theirName[theIndex]
+    finalFromData = str(image_list[theIndex])
+    finalArrayForm = finalFromData.split(',')
+    finalGroup = finalArrayForm[0]
+    finalNameRaw = finalArrayForm[1]
+    finalName = finalNameRaw[0:len(finalNameRaw) - 4]
 
     cheers = [f'{finalGroup} {finalName} hopes you are having a nice day today! :relaxed:',
               f'Best wishes :smiling_face_with_3_hearts:\nfrom {finalGroup} {finalName}',
@@ -493,27 +488,22 @@ async def cheerup(ctx):
 
     msg1 = await ctx.send(f">>> :blush: Here is a photo to cheer you up! :blush:\n\n")
     msg2 = await ctx.send(f'>>> {random.choice(cheers)}')
-    msg3 = await ctx.send(f'{theirPhoto[theIndex]}')
+    await ctx.send(file=discord.File("photos/"+ str(finalFromData)))
 
     interval = 5
     await asyncio.sleep(interval)
-
     while not client.is_closed():
 
-        f = open("kpop.txt", "r")
-        for line in f:
-            counterNumber = counterNumber + 1
-            line = line.rstrip('\n')
-            line = line.split(',')
-            theirGroup.append(line[0])
-            theirName.append(line[1])
-            theirPhoto.append(line[2])
-
-        f.close()
-
+        await ctx.channel.purge(limit=1)
+        cheerup_players.append(ctx.author.mention)
+        image_list = os.listdir("./photos")
+        counterNumber = len(image_list)
         theIndex = randint(0, counterNumber - 1)
-        finalGroup = theirGroup[theIndex]
-        finalName = theirName[theIndex]
+        finalFromData = str(image_list[theIndex])
+        finalArrayForm = finalFromData.split(',')
+        finalGroup = finalArrayForm[0]
+        finalNameRaw = finalArrayForm[1]
+        finalName = finalNameRaw[0:len(finalNameRaw) - 4]
 
         cheers = [f'{finalGroup} {finalName} hopes you are having a nice day today! :relaxed:',
                   f'Best wishes :smiling_face_with_3_hearts:\nfrom {finalGroup} {finalName}',
@@ -549,7 +539,7 @@ async def cheerup(ctx):
 
         await msg1.edit(content=f">>> :blush: Here is another photo to cheer you up! :blush:\n\n")
         await msg2.edit(content=f'>>> {random.choice(cheers)}')
-        await msg3.edit(content=f'{theirPhoto[theIndex]}')
+        await ctx.send(file=discord.File("photos/"+ str(finalFromData)))
         await asyncio.sleep(interval)
         slides.append(0)
         if len(slides) == 10:
