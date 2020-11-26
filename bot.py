@@ -43,10 +43,13 @@ my_discord_token = secret_codes.MY_DISCORD_API_KEY
 status = cycle(secret_codes.BOT_CYCLE_MESSAGES)
 @client.event
 async def on_ready():
-    change_status.start()
-    # await client.change_presence(status=discord.Status.online, activity=discord.Game('Always Be Your Girl (너의 소녀가 되어줄게)'))
-    print('Bot is ready.')
-    print('We have logged in as {0.user}'.format(client))
+    try:
+        change_status.start()
+        # await client.change_presence(status=discord.Status.online, activity=discord.Game('Always Be Your Girl (너의 소녀가 되어줄게)'))
+        print('Bot is ready.')
+        print('We have logged in as {0.user}'.format(client))
+    except Exception as e:
+        print(str(e))
 
 
 @tasks.loop(seconds=20)
@@ -477,7 +480,7 @@ async def cheerup(ctx):
     while not client.is_closed():
 
         await ctx.channel.purge(limit=1)
-        cheerup_players.append(ctx.author.mention)
+
         image_list = os.listdir("./photos")
         counterNumber = len(image_list)
         theIndex = randint(0, counterNumber - 1)
@@ -807,6 +810,7 @@ async def idolguess(ctx, *, guess):
         finalNameRaw = finalArrayForm[1]
         theFinalName.append(finalNameRaw[0:len(finalNameRaw) - 4].strip())
 
+        await ctx.send(f">>> You are Correct! :white_check_mark: ")
         await ctx.send(f">>> Lives remaining: {4 - len(hasStarted)}  ")
         await ctx.send(">>> Who is this?")
         await ctx.send(file=discord.File("photos/" + str(finalFromData)))
@@ -814,7 +818,6 @@ async def idolguess(ctx, *, guess):
     elif ((guess.lower() != theFinalName[0].lower()) or (guess.lower() == 'skip')) and len(
             hasStarted) != 0 and guess.lower() != 'quit' and guess.lower() != 'start':
         hasStarted.append(0)
-
         await ctx.send(f">>> Sorry, the answer was {theFinalName[0]} from {theFinalGroup[0]} ")
 
         if len(hasStarted) == 4:
