@@ -169,34 +169,28 @@ async def on_member_remove(member):
     await channel.send(f'{member} has left the server.')
 
 # adding roles in kpop planet discord server
-@client.command(pass_context=True,aliases=['+main'])
+@client.command(pass_context=True,aliases=['+'])
 async def addmain(ctx, *, role_name_request):
     final_role = None
     member = ctx.message.author
     for main_role in member.guild.roles:
-        for member_role in member.roles:
-            if member_role == main_role and member_role.id != 689772319362646127 and member_role.id != 691185229196427336 and member_role.id != 689775233325989918 and str(member_role)[0] != '.':
-                await ctx.send(ctx.author.mention)
-                await ctx.send("You can only have one main role...")
-                return
-
         if main_role.id != 689772319362646127:
-            if role_name_request.lower() == str(main_role).lower() and role_name_request.lower()[0] != '.':
+            if role_name_request.lower() == str(main_role).lower():
                 final_role = discord.utils.get(member.guild.roles, name=str(main_role))
 
     if final_role is not None:
         if final_role in member.roles:
             await ctx.send(ctx.author.mention)
-            await ctx.send(f"The main role: {str(final_role)} has already been added")
+            await ctx.send(f"The role: {str(final_role)} has already been added")
         else:
             await member.add_roles(final_role)
             await ctx.send(ctx.author.mention)
-            await ctx.send(f"The main role: {str(final_role)} has been added")
+            await ctx.send(f"The role: {str(final_role)} has been added")
     else:
         await ctx.send(ctx.author.mention)
-        await ctx.send(f"The main role: {role_name_request} was not found...")
+        await ctx.send(f"The role: {role_name_request} was not found...")
 
-@client.command(pass_context=True,aliases=['-main'])
+@client.command(pass_context=True,aliases=['-'])
 async def removemain(ctx, *, role_name_request):
 
     final_role = None
@@ -204,7 +198,7 @@ async def removemain(ctx, *, role_name_request):
     for main_role in member.guild.roles:
         if main_role.id != 689772319362646127:
 
-            if role_name_request.lower() == str(main_role).lower() and role_name_request.lower()[0] != '.':
+            if role_name_request.lower() == str(main_role).lower():
 
                 final_role = discord.utils.get(member.guild.roles, name=str(main_role))
 
@@ -212,58 +206,13 @@ async def removemain(ctx, *, role_name_request):
         if final_role in member.roles:
             await member.remove_roles(final_role)
             await ctx.send(ctx.author.mention)
-            await ctx.send(f"The main role: {str(final_role)} has been removed")
+            await ctx.send(f"The role: {str(final_role)} has been removed")
         else:
             await ctx.send(ctx.author.mention)
-            await ctx.send(f"The main role: {str(final_role)} is not currently in your roles....")
+            await ctx.send(f"The role: {str(final_role)} is not currently in your roles....")
     else:
         await ctx.send(ctx.author.mention)
-        await ctx.send(f"The main role: {role_name_request} was not found...")
-
-@client.command(pass_context=True,aliases=['+sub'])
-async def addsub(ctx, *, role_name_request):
-    final_role = None
-    member = ctx.message.author
-    for main_role in member.guild.roles:
-        if main_role.id != 689772319362646127:
-            if ("." + role_name_request.lower()) == str(main_role).lower():
-                final_role = discord.utils.get(member.guild.roles, name=(str(main_role)) )
-
-    if final_role is not None:
-        if final_role in member.roles:
-            await ctx.send(ctx.author.mention)
-            await ctx.send(f"The sub role: {str(final_role)} has already been added")
-        else:
-            await member.add_roles(final_role)
-            await ctx.send(ctx.author.mention)
-            await ctx.send(f"The sub role: {str(final_role)} has been added")
-    else:
-        await ctx.send(ctx.author.mention)
-        await ctx.send(f"The sub role: {role_name_request} was not found...")
-
-@client.command(pass_context=True ,aliases=['-sub'])
-async def removesub(ctx, *, role_name_request):
-    final_role = None
-    member = ctx.message.author
-    for main_role in member.guild.roles:
-        if main_role.id != 689772319362646127:
-
-            if ("." + role_name_request.lower()) == str(main_role).lower():
-
-                final_role = discord.utils.get(member.guild.roles, name=(str(main_role)) )
-
-    if final_role is not None:
-
-        if final_role in member.roles:
-            await member.remove_roles(final_role)
-            await ctx.send(ctx.author.mention)
-            await ctx.send(f"The sub role: {str(final_role)} has been removed")
-        else:
-            await ctx.send(ctx.author.mention)
-            await ctx.send(f"The sub role: {str(final_role)} is not currently in your roles....")
-    else:
-        await ctx.send(ctx.author.mention)
-        await ctx.send(f"The sub role: {role_name_request} was not found...")
+        await ctx.send(f"The role: {role_name_request} was not found...")
 
 
 # Commands
