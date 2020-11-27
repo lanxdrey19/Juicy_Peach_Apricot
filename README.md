@@ -12,6 +12,10 @@ A fun discord bot written in python. Features include:
 
 * Avalon (The Game)
 
+* Role Assignment
+
+* Fetching posts from certain subreddits
+
 
 Dependencies:
 
