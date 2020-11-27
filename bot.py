@@ -174,7 +174,7 @@ async def addmain(ctx, *, role_name_request):
     final_role = None
     member = ctx.message.author
     for main_role in member.guild.roles:
-        if main_role.id != 689772319362646127:
+        if main_role.id != 689772319362646127 and main_role.id != 689775233325989918 and main_role.id != 745263173518491690 and main_role.id != 691190515043008564 and main_role.id != 700910886612893807:
             if role_name_request.lower() == str(main_role).lower():
                 final_role = discord.utils.get(member.guild.roles, name=str(main_role))
 
@@ -196,7 +196,7 @@ async def removemain(ctx, *, role_name_request):
     final_role = None
     member = ctx.message.author
     for main_role in member.guild.roles:
-        if main_role.id != 689772319362646127:
+        if main_role.id != 689772319362646127 and main_role.id != 689775233325989918 and main_role.id != 745263173518491690 and main_role.id != 691190515043008564 and main_role.id != 700910886612893807:
 
             if role_name_request.lower() == str(main_role).lower():
 
