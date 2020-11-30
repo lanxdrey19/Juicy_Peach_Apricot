@@ -340,6 +340,17 @@ async def piglatin(ctx, *, arg):
         big_message = big_message + " " + med_message + " "
     await ctx.send(f">>> {big_message}")
 
+@client.command(help="find all idols in the database", aliases=['ai'])
+async def allidols(ctx):
+    image_list = os.listdir("./photos")
+    for idols in image_list:
+        finalArrayForm = idols.split(',')
+        finalGroup = finalArrayForm[0].strip()
+        finalNameRaw = finalArrayForm[1]
+        finalName = finalNameRaw[0:len(finalNameRaw) - 4].strip()
+        await ctx.send(f">>> {finalGroup} {finalName}")
+    await ctx.send(f">>> End of List")
+
 
 online_counter = [0]
 
@@ -384,9 +395,9 @@ async def cheerup(ctx):
     theIndex = randint(0, counterNumber - 1)
     finalFromData = str(image_list[theIndex])
     finalArrayForm = finalFromData.split(',')
-    finalGroup = finalArrayForm[0]
+    finalGroup = finalArrayForm[0].strip()
     finalNameRaw = finalArrayForm[1]
-    finalName = finalNameRaw[0:len(finalNameRaw) - 4]
+    finalName = finalNameRaw[0:len(finalNameRaw) - 4].strip()
 
     cheers = [f'{finalGroup} {finalName} hopes you are having a nice day today! :relaxed:',
               f'Best wishes :smiling_face_with_3_hearts:\nfrom {finalGroup} {finalName}',
@@ -435,9 +446,9 @@ async def cheerup(ctx):
         theIndex = randint(0, counterNumber - 1)
         finalFromData = str(image_list[theIndex])
         finalArrayForm = finalFromData.split(',')
-        finalGroup = finalArrayForm[0]
+        finalGroup = finalArrayForm[0].strip()
         finalNameRaw = finalArrayForm[1]
-        finalName = finalNameRaw[0:len(finalNameRaw) - 4]
+        finalName = finalNameRaw[0:len(finalNameRaw) - 4].strip()
 
         cheers = [f'{finalGroup} {finalName} hopes you are having a nice day today! :relaxed:',
                   f'Best wishes :smiling_face_with_3_hearts:\nfrom {finalGroup} {finalName}',
