@@ -31,6 +31,9 @@ import sys
 import os
 import secret_codes
 
+# date and time outside of current country
+import dateutil.parser
+
 # Bot prefix
 client = commands.Bot(command_prefix = '.')
 
@@ -133,6 +136,33 @@ async def on_message(message):
 
     if message.author == client.user:
         return
+
+    try:
+        embeds = message.embeds  # return list of embeds
+        firstIteration = True
+        for embed in embeds:
+            if firstIteration:
+
+                dateNoT = embed.to_dict()['timestamp'].split('T')
+                threeItems = dateNoT[0].split('-')
+                finaldate = ""
+                firstSmallIteration = True
+                for item in threeItems:
+                    if firstSmallIteration:
+                        finaldate = finaldate + item[2:4]
+                        firstSmallIteration = False
+                    else:
+                        finaldate = finaldate + item
+
+                await message.channel.send(f"```css\n{finaldate} Twitter Update```")
+                await message.channel.send(embed.to_dict()['description'])
+                firstIteration = False
+
+            if 'image' in embed.to_dict():
+                await message.channel.send(embed.to_dict()['image']['url'])
+
+    except Exception as e:
+        pass
 
     for word in coolWords6:
         if message.content.count(word) > 0:
@@ -350,7 +380,6 @@ async def allidols(ctx):
         finalName = finalNameRaw[0:len(finalNameRaw) - 4].strip()
         await ctx.send(f">>> {finalGroup} {finalName}")
     await ctx.send(f">>> End of List")
-
 
 online_counter = [0]
 
@@ -711,15 +740,6 @@ async def weather(ctx):
 
     final_message = f'>>> {secret_codes.WEATHER_PART_OF_MESSAGE}:\n\n**{detailed_description}**\n\n:dash: Wind Speed: {round(wind["speed"] * 1.6)} kilometres/hour {wind_direction} (@ {wind["deg"]}°)\n:thermometer_face: Current Temperature: {round(temperature["temp"])}°C, Maximum: {round(temperature["temp_max"])}°C, Minimum: {round(temperature["temp_min"])}°C\n:sweat_drops: Humidity: {humidity}% with {cloud_coverage}% cloud coverage\n:thermometer: Pressure: {pressures["press"]} hPa\n:sunny: UV Level: {round(uv_level)} ({uv_message}) with a {exposure_risk} exposure risk\n:clock: Current Time: {current_time}'
     await ctx.send(final_message)
-
-@client.command()
-async def photo2(ctx,*,guess):
-    await ctx.send("hello! who dis")
-    x = os.listdir("./photos")
-    for item in x:
-        await ctx.send("lol")
-        await ctx.send(file=discord.File("photos/"+ str(item)))
-        await ctx.send(item)
 
 # Idol Guess
 
@@ -1659,6 +1679,7 @@ async def reddit_updates():
         except Exception as e:
             await channel.send(str(e))
             await channel.send("Please check the error trace")
+
 
 
 client.loop.create_task(reddit_updates())
