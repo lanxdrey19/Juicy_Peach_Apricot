@@ -140,6 +140,7 @@ async def on_message(message):
     try:
         embeds = message.embeds  # return list of embeds
         firstIteration = True
+        await message.channel.purge(limit=1)
         for embed in embeds:
             if firstIteration:
 
