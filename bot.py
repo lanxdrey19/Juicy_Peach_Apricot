@@ -136,34 +136,37 @@ async def on_message(message):
 
     if message.author == client.user:
         return
+    cordArray = [secret_codes.CORD_1,secret_codes.CORD_2,secret_codes.CORD_3]
 
-    try:
-        embeds = message.embeds  # return list of embeds
-        firstIteration = True
-        await message.channel.purge(limit=1)
-        for embed in embeds:
-            if firstIteration:
+    for array in cordArray:
+        if message.channel.id in array:
+            try:
+                embeds = message.embeds  # return list of embeds
+                firstIteration = True
+                await message.channel.purge(limit=1)
+                for embed in embeds:
+                    if firstIteration:
 
-                dateNoT = embed.to_dict()['timestamp'].split('T')
-                threeItems = dateNoT[0].split('-')
-                finaldate = ""
-                firstSmallIteration = True
-                for item in threeItems:
-                    if firstSmallIteration:
-                        finaldate = finaldate + item[2:4]
-                        firstSmallIteration = False
-                    else:
-                        finaldate = finaldate + item
+                        dateNoT = embed.to_dict()['timestamp'].split('T')
+                        threeItems = dateNoT[0].split('-')
+                        finaldate = ""
+                        firstSmallIteration = True
+                        for item in threeItems:
+                            if firstSmallIteration:
+                                finaldate = finaldate + item[2:4]
+                                firstSmallIteration = False
+                            else:
+                                finaldate = finaldate + item
 
-                await message.channel.send(f"```css\n{finaldate} Twitter Update```")
-                await message.channel.send(embed.to_dict()['description'])
-                firstIteration = False
+                        await message.channel.send(f"```css\n{finaldate} Twitter Update```")
+                        await message.channel.send(embed.to_dict()['description'])
+                        firstIteration = False
 
-            if 'image' in embed.to_dict():
-                await message.channel.send(embed.to_dict()['image']['url'])
+                    if 'image' in embed.to_dict():
+                        await message.channel.send(embed.to_dict()['image']['url'])
 
-    except Exception as e:
-        pass
+            except Exception as e:
+                pass
 
     for word in coolWords6:
         if message.content.count(word) > 0:
@@ -370,6 +373,7 @@ async def piglatin(ctx, *, arg):
         med_message = thing[-1] + thing[:-1] + "e"
         big_message = big_message + " " + med_message + " "
     await ctx.send(f">>> {big_message}")
+
 
 @client.command(help="find all idols in the database", aliases=['ai'])
 async def allidols(ctx):
