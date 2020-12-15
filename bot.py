@@ -136,37 +136,36 @@ async def on_message(message):
 
     if message.author == client.user:
         return
-    cordArray = [secret_codes.CORD_1,secret_codes.CORD_2,secret_codes.CORD_3]
 
-    for array in cordArray:
-        if message.channel.id in array:
-            try:
-                embeds = message.embeds  # return list of embeds
-                firstIteration = True
-                await message.channel.purge(limit=1)
-                for embed in embeds:
-                    if firstIteration:
+    if message.content.startswith(".format") or message.content.startswith(".f"):
 
-                        dateNoT = embed.to_dict()['timestamp'].split('T')
-                        threeItems = dateNoT[0].split('-')
-                        finaldate = ""
-                        firstSmallIteration = True
-                        for item in threeItems:
-                            if firstSmallIteration:
-                                finaldate = finaldate + item[2:4]
-                                firstSmallIteration = False
-                            else:
-                                finaldate = finaldate + item
+        try:
+            embeds = message.embeds
+            firstIteration = True
+            await message.channel.purge(limit=1)
+            for embed in embeds:
+                if firstIteration:
 
-                        await message.channel.send(f"```css\n{finaldate} Twitter Update```")
-                        await message.channel.send(embed.to_dict()['description'])
-                        firstIteration = False
+                    dateNoT = embed.to_dict()['timestamp'].split('T')
+                    threeItems = dateNoT[0].split('-')
+                    finaldate = ""
+                    firstSmallIteration = True
+                    for item in threeItems:
+                        if firstSmallIteration:
+                            finaldate = finaldate + item[2:4]
+                            firstSmallIteration = False
+                        else:
+                            finaldate = finaldate + item
 
-                    if 'image' in embed.to_dict():
-                        await message.channel.send(embed.to_dict()['image']['url'])
+                    await message.channel.send(f"```css\n{finaldate} Twitter Update```")
+                    await message.channel.send(embed.to_dict()['description'])
+                    firstIteration = False
 
-            except Exception as e:
-                pass
+                if 'image' in embed.to_dict():
+                    await message.channel.send(embed.to_dict()['image']['url'])
+
+        except Exception as e:
+            await message.channel.send("an error occurred...")
 
     for word in coolWords6:
         if message.content.count(word) > 0:
