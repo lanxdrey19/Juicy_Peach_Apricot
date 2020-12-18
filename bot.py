@@ -17,7 +17,8 @@ from itertools import cycle
 from random import randint
 
 #
-from datetime import datetime, timedelta
+from datetime import datetime, date, timedelta
+import pytz
 import time
 import sched
 
@@ -141,21 +142,16 @@ async def on_message(message):
 
         try:
             embeds = message.embeds
-            firstIteration = True
             await message.channel.purge(limit=1)
+            firstIteration = True
             for embed in embeds:
-                if firstIteration:
 
-                    dateNoT = embed.to_dict()['timestamp'].split('T')
-                    threeItems = dateNoT[0].split('-')
-                    finaldate = ""
-                    firstSmallIteration = True
-                    for item in threeItems:
-                        if firstSmallIteration:
-                            finaldate = finaldate + item[2:4]
-                            firstSmallIteration = False
-                        else:
-                            finaldate = finaldate + item
+                if firstIteration:
+                    UTC = pytz.utc
+                    timeZ = pytz.timezone('Asia/Seoul')
+                    dt_K = datetime.now(timeZ)
+                    utc_K = dt_K.astimezone(UTC)
+                    finaldate = utc_K.strftime("%y%m%d")
 
                     await message.channel.send(f"```css\n{finaldate} Twitter Update```")
                     await message.channel.send(embed.to_dict()['description'])
