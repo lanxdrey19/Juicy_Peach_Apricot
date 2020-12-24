@@ -1542,11 +1542,6 @@ async def avalon(ctx, *, command):
 
                     elif score_array.count(0) == 3:
                         await avalon_channel.send("The bad team wins")
-                        tempStringFinal = ""
-                        for someBadPerson in bad_people:
-                            tempStringFinal += someBadPerson + "\n"
-                        avalon_channel = client.get_channel(secret_codes.AVALON_CHANNEL)
-                        await avalon_channel.send(f">>> Congratulations\n{tempStringFinal}")
                         game_phase.clear()
                         avalon_players_mention.clear()
                         avalon_players.clear()
@@ -1597,21 +1592,14 @@ async def avalon(ctx, *, command):
 
 
             elif split_command[0].lower() == "merlin" and len(game_phase) == 4:
-                tempString1 = ""
-                tempString4 = ""
                 if len(game_phase) == 4:
                     person = split_command[1]
                     editedPerson = "<@" + person[3:len(person)]
                     if editedPerson == final_merlin[0]:
-                        await ctx.send(f">>> Correct! {final_merlin[0]} is the Merlin\n\n The Bad team wins")
-                        for person in bad_people:
-                            tempString1 += person + "\n"
-                        await ctx.send(f">>> Congratulations\n{tempString1}")
+                        await ctx.send(f">>> Correct! {final_merlin[0]} is the Merlin\n\nThe Bad team wins")
+
                     else:
-                        await ctx.send(f">>> Sorry, the actual Merlin was {final_merlin[0]} is the Merlin\n\n The Good team wins")
-                        for someone in good_people:
-                            tempString4 += someone + "\n"
-                        await ctx.send(f">>> Congratulations\n{tempString4}")
+                        await ctx.send(f">>> Sorry, the actual Merlin was {final_merlin[0]} is the Merlin\n\nThe Good team wins")
 
                     game_phase.clear()
                     avalon_players_mention.clear()
@@ -1646,7 +1634,7 @@ async def avalon(ctx, *, command):
                 if ctx.author.mention != lady_owner[0]:
                     await ctx.send("You do not own the lady of the lake")
                 elif len(lady_use) > 0:
-                    await ctx.send("You have already used the lady of the lake for this round")
+                    await ctx.send("The lady of the lake has already been used for this round")
 
                 elif editedPerson not in avalon_players_mention:
                     await ctx.send("Could not find the person you want to inspect")
