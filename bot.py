@@ -1542,11 +1542,11 @@ async def avalon(ctx, *, command):
 
                     elif score_array.count(0) == 3:
                         await avalon_channel.send("The bad team wins")
-                        tempString3 = ""
-                        for person in bad_people:
-                            tempString3 = tempString3 + person + "\n"
+                        tempStringFinal = ""
+                        for someBadPerson in bad_people:
+                            tempStringFinal += someBadPerson + "\n"
                         avalon_channel = client.get_channel(secret_codes.AVALON_CHANNEL)
-                        await avalon_channel.send(f">>> Congratulations\n{tempString3}")
+                        await avalon_channel.send(f">>> Congratulations\n{tempStringFinal}")
                         game_phase.clear()
                         avalon_players_mention.clear()
                         avalon_players.clear()
@@ -1598,19 +1598,20 @@ async def avalon(ctx, *, command):
 
             elif split_command[0].lower() == "merlin" and len(game_phase) == 4:
                 tempString1 = ""
+                tempString4 = ""
                 if len(game_phase) == 4:
                     person = split_command[1]
                     editedPerson = "<@" + person[3:len(person)]
                     if editedPerson == final_merlin[0]:
                         await ctx.send(f">>> Correct! {final_merlin[0]} is the Merlin\n\n The Bad team wins")
                         for person in bad_people:
-                            tempString1 = tempString1 + person + "\n"
+                            tempString1 += person + "\n"
                         await ctx.send(f">>> Congratulations\n{tempString1}")
                     else:
                         await ctx.send(f">>> Sorry, the actual Merlin was {final_merlin[0]} is the Merlin\n\n The Good team wins")
-                        for person in good_people:
-                            tempString1 = tempString1 + person + "\n"
-                        await ctx.send(f">>> Congratulations\n{tempString1}")
+                        for someone in good_people:
+                            tempString4 += someone + "\n"
+                        await ctx.send(f">>> Congratulations\n{tempString4}")
 
                     game_phase.clear()
                     avalon_players_mention.clear()
