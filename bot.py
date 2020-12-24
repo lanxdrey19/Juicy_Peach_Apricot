@@ -839,7 +839,7 @@ async def idolguess(ctx, *, guess):
         await ctx.send(f">>> Sorry, that command is invalid for now...")
 
 # Avalon
-rounds_array = [ [2,2,2,3,3,3] , [3,3,3,4,4,4], [2,4,3,4,4,4] , [3,3,4,5,5,5], [3,4,4,5,5,5]]
+rounds_array = [ [2,3,2,3,3] , [2,3,4,3,4], [2,3,3,4,4] , [3,4,4,5,5], [3,4,4,5,5],[3,4,4,5,5]]
 hammer_number = []
 hammer_number.append(secret_codes.HAMMER_NUMBER)
 avalon_roles5 = ['Loyal', 'Percival', 'Merlin','Morgana', 'Assassin']
@@ -848,7 +848,7 @@ avalon_roles7 = ['Loyal', 'Loyal', 'Percival', 'Merlin', 'Morgana', 'Assassin', 
 avalon_roles8 = ['Loyal', 'Loyal', 'Loyal', 'Percival', 'Merlin', 'Morgana', 'Assassin', 'Mordred']
 avalon_roles9 = ['Loyal', 'Loyal', 'Loyal', 'Loyal','Percival', 'Merlin', 'Morgana', 'Assassin', 'Mordred']
 avalon_roles10 = ['Loyal', 'Loyal', 'Loyal', 'Loyal', 'Percival', 'Merlin', 'Morgana', 'Assassin','Mordred','Lackey']
-avalon_channel = secret_codes.AVALON_CHANNEL
+
 
 game_phase = []
 avalon_players_mention = []
@@ -881,7 +881,7 @@ async def avalon(ctx, *, command):
     if command.lower() == 'commands':
         await ctx.send(f">>> {ctx.author.mention} Please check your DMs for the list of all the Avalon commands :relaxed:")
         await ctx.author.send(
-            '```css\n\n.avalon join - join game\n\n.avalon leave - leave game\n\n.avalon start - start game\n\n.avalon reset - resets game\n\n.avalon mission {@person1 @person2 @person3....} - send the mission team to do their mission\n\n.avalon yes - accepts the current mission proposal\n\n.avalon no - declines the current mission proposal\n\n.avalon vote pass - passes the mission if you are doing the mission\n\n.avalon vote fail - fails the mission if you are doing the mission\n\n.avalon lady {@person} - checks the role of the person\n\n\n\n```')
+            '```css\n\n.avalon join - join game\n\n.avalon leave - leave game\n\n.avalon start - start game\n\n.avalon reset - resets game\n\n.avalon mission {@person1 @person2 @person3....} - send the mission team to do their mission\n\n.avalon yes - accepts the current mission proposal\n\n.avalon no - declines the current mission proposal\n\n.avalon vote pass - passes the mission if you are doing the mission\n\n.avalon vote fail - fails the mission if you are doing the mission\n\n.avalon lady {@person} - checks the role of the person\n\n.avalon merlin {@person} - guess who the merlin is when the good people have passed three missions\n\n\n\n```')
     elif command.lower() == "join":
         if len(game_phase) <= 0:
             #for name in avalon_players_mention:
@@ -942,7 +942,7 @@ async def avalon(ctx, *, command):
                     main_board = main_board + f"{count_for_index_printing}: {person}\n"
                     count_for_index_printing = count_for_index_printing + 1
 
-                await ctx.send(f">>> Round: {len(score_array) + 1}\n\nCurrent Players:\n\n{main_board}\n\nIt is now {current_chooser[0]}'s turn.\n\nPlease nominate {rounds_array[len(avalon_players_mention) - 1 ][len(score_array)]} people to participate in the mission. You can nominate yourself.\n\nThe Hammer lands on {hammer_owner[0]}. There is { (hammer_number[0] - len(turns_done) )  } turns left before they have full control of the proposal of the mission\n\n{lady_owner[0]} has the lady of the lake. You can use this at the start of the third round\n\nUnsure about the commands? Type  **.avalon commands** to find out")
+                await ctx.send(f">>> Round: {len(score_array) + 1}\n\nCurrent Players:\n\n{main_board}\n\nIt is now {current_chooser[0]}'s turn.\n\nPlease nominate {rounds_array[len(avalon_players_mention) - 5 ][len(score_array)]} people to participate in the mission. You can nominate yourself.\n\nThe Hammer lands on {hammer_owner[0]}. There is { (hammer_number[0] - len(turns_done) )  } turns left before they have full control of the proposal of the mission\n\n{lady_owner[0]} has the lady of the lake. You can use this at the start of the third round\n\nUnsure about the commands? Type  **.avalon commands** to find out")
 
 
                 if len(avalon_players_mention) == 5:
@@ -1372,9 +1372,9 @@ async def avalon(ctx, *, command):
         hammer_time.clear()
 
     elif command.lower() == 'yes' and len(game_phase) == 2:
-        if ctx.author.mention in yes_no_already_voted:
-            await ctx.author.send("you have already voted....")
-            return
+        #if ctx.author.mention in yes_no_already_voted:
+         #   await ctx.author.send("you have already voted....")
+          #  return
 
         yes_votes.append(0)
         yes_no_already_voted.append(ctx.author.mention)
@@ -1391,14 +1391,14 @@ async def avalon(ctx, *, command):
                 await normal_name.send("You are now in a mission. Please type\n **.avalon vote pass** \n to pass the mission \n\n or \n\n **.avalon vote fail**\n to fail the mission")
             game_phase.append(0)
     elif command.lower() == 'no' and len(game_phase) == 2:
-        if ctx.author.mention in yes_no_already_voted:
-            await ctx.author.send("you have already voted....")
-            return
+        #if ctx.author.mention in yes_no_already_voted:
+         #   await ctx.author.send("you have already voted....")
+          #  return
 
         no_votes.append(0)
         yes_no_already_voted.append(ctx.author.mention)
         await ctx.send(f">>> {ctx.author.mention} has voted no")
-        if ( math.floor( (len(avalon_players_mention) + 1 ) / 2 ) == len(yes_votes) ):
+        if ( math.floor( (len(avalon_players_mention) + 1 ) / 2 ) == len(no_votes) ):
             await ctx.send("Please let the next person vote...")
             game_phase.pop(0)
             no_votes.clear()
@@ -1422,12 +1422,14 @@ async def avalon(ctx, *, command):
 
             if hammer_owner[0] == current_chooser[0]:
                 await ctx.send(f">>> Its Hammer time\n\n{hammer_owner[0]}'s mission proposals will go through")
+                hammer_owner.clear()
                 hammer_time.append(0)
+
                 turns_done.clear()
                 return
 
             await ctx.send(
-                f">>>Round: {len(score_array) + 1}\n\nCurrent Players:\n\n{main_board}\n\nIt is now {current_chooser[0]}'s turn.\n\nPlease nominate {rounds_array[len(avalon_players_mention) - 1][len(score_array)]} people to particpate in the mission. You can nominate yourself.\n\nThe Hammer lands on {hammer_owner[0]}. There is {(hammer_number[0] - len(turns_done))} turns left before they have full control of the proposal of the mission\n\n{lady_owner[0]} has the lady of the lake. You can use this at the start of the third round\n\nUnsure about the commands? Type\n**.avalon commands** to find out")
+                f">>>Round: {len(score_array) + 1}\n\nCurrent Players:\n\n{main_board}\n\nIt is now {current_chooser[0]}'s turn.\n\nPlease nominate {rounds_array[len(avalon_players_mention) - 5][len(score_array)]} people to particpate in the mission. You can nominate yourself.\n\nThe Hammer lands on {hammer_owner[0]}. There is {(hammer_number[0] - len(turns_done))} turns left before they have full control of the proposal of the mission\n\n{lady_owner[0]} has the lady of the lake. You can use this at the start of the third round\n\nUnsure about the commands? Type\n**.avalon commands** to find out")
 
 
     else:
@@ -1439,9 +1441,9 @@ async def avalon(ctx, *, command):
 
                 split_command.pop(0)
 
-                if rounds_array[len(avalon_players_mention) - 1][len(score_array)] != len(split_command):
+                if rounds_array[len(avalon_players_mention) - 5][len(score_array)] != len(split_command):
 
-                    await ctx.send(f">>> You have nominated {len(split_command)} people. However you must nominate {rounds_array[len(avalon_players_mention) - 1][len(score_array)]} people... ")
+                    await ctx.send(f">>> You have nominated {len(split_command)} people. However you must nominate {rounds_array[len(avalon_players_mention) - 5][len(score_array)]} people... ")
                     return
 
                 potential_candidates = ""
@@ -1449,16 +1451,16 @@ async def avalon(ctx, *, command):
                 for person in split_command:
                     potential_candidates = potential_candidates + person + "\n"
                     editedPerson = "<@" + person[3:len(person)]
-                    mission_participants.append( editedPerson )
+                    mission_participants.append(editedPerson)
 
 
                     if editedPerson not in avalon_players_mention:
                         await ctx.send("Some of the people you specified are not in the current game. Please try again :flushed:")
                         return
 
-                    if editedPerson in mission_participants:
-                        await ctx.send(f"{person} has already been selected in the mission. Please try again :flushed:")
-                        return
+                    #if editedPerson in mission_participants:
+                     #   await ctx.send(f"{person} has already been selected in the mission. Please try again :flushed:")
+                      #  return
 
 
                     ####something important
@@ -1470,6 +1472,7 @@ async def avalon(ctx, *, command):
                 game_phase.append(0)
 
                 if len(hammer_time) > 0:
+                    game_phase.append(0)
                     await ctx.send(f">>> {potential_candidates} have been selected to enter the mission")
                     hammer_time.clear()
                     for person in mission_participants:
@@ -1482,18 +1485,20 @@ async def avalon(ctx, *, command):
 
 
             elif split_command[0].lower() == "vote" and len(game_phase) == 3:
+                split_command.pop(0)
 
-                if ctx.author.mention in has_voted:
-                    await ctx.author.send("you have already voted....")
-                    return
+                #if ctx.author.mention in has_voted:
+                #    await ctx.author.send("you have already voted....")
+                #    return
 
-                elif split_command[1].lower() == "pass":
+                if split_command[0].lower() == "pass":
+
                     has_voted.append(ctx.author.mention)
                     pass_votes.append(0)
                     await ctx.author.send("You have successfully voted")
 
 
-                elif split_command[1].lower() == "fail":
+                elif split_command[0].lower() == "fail":
                     has_voted.append(ctx.author.mention)
                     fail_votes.append(0)
                     await ctx.author.send("You have successfully voted")
@@ -1501,7 +1506,9 @@ async def avalon(ctx, *, command):
                     await ctx.author.send("Invalid command...")
 
                 if len(mission_participants) == len(has_voted):
-                    await avalon_channel.send(f">>> Mission has been completed\nPass votes: {len(pass_votes)}\n\n Fail votes:{len(fail_votes)}")
+
+                    avalon_channel = client.get_channel(secret_codes.AVALON_CHANNEL)
+                    await avalon_channel.send(f">>> Mission has been completed\nPass votes: {len(pass_votes)}\n\nFail votes: {len(fail_votes)}")
 
                     if len(fail_votes) < 2 and len(avalon_players_mention) > 6 and len(score_array) == 3:
 
@@ -1516,7 +1523,7 @@ async def avalon(ctx, *, command):
                         await avalon_channel.send("The mission has failed")
                         score_array.append(0)
 
-
+                    game_phase.pop(0)
                     game_phase.pop(0)
                     mission_participants.clear()
                     has_voted.clear()
@@ -1527,6 +1534,8 @@ async def avalon(ctx, *, command):
 
                     if score_array.count(1) == 3:
                         game_phase.append(0)
+                        game_phase.append(0)
+                        game_phase.append(0)
                         await avalon_channel.send("It is time for the bad people to guess who the Merlin is")
                         return
 
@@ -1536,7 +1545,8 @@ async def avalon(ctx, *, command):
                         tempString3 = ""
                         for person in bad_people:
                             tempString3 = tempString3 + person + "\n"
-                        await avalon.channel.send(f">>> Congratulations {tempString3}")
+                        avalon_channel = client.get_channel(secret_codes.AVALON_CHANNEL)
+                        await avalon_channel.send(f">>> Congratulations\n{tempString3}")
                         game_phase.clear()
                         avalon_players_mention.clear()
                         avalon_players.clear()
@@ -1580,25 +1590,27 @@ async def avalon(ctx, *, command):
                     count_for_index_printing = 0
                     main_board = ""
                     for person in avalon_players_mention:
-                        main_board = f"{count_for_index_printing}: + {person}\n"
+                        main_board = main_board + f"{count_for_index_printing}: {person}\n"
                         count_for_index_printing = count_for_index_printing + 1
                     await avalon_channel.send(
-                        f">>>Round: {len(score_array) + 1}\n\nCurrent Players:\n\n{main_board}\n\nIt is now {current_chooser[0]}'s turn.\n\nPlease nominate {rounds_array[len(avalon_players_mention) - 1][len(score_array)]} people to particpate in the mission. You can nominate yourself.\n\nThe Hammer lands on {hammer_owner[0]}. There is {(hammer_number[0] - len(turns_done))} turns left before they have full control of the proposal of the mission\n\n{lady_owner[0]} has the lady of the lake. You can use this at the start of the third round\n\nUnsure about the commands? Type\n**.avalon commands** to find out")
+                        f">>> Round: {len(score_array) + 1}\n\nCurrent Players:\n\n{main_board}\n\nIt is now {current_chooser[0]}'s turn.\n\nPlease nominate {rounds_array[len(avalon_players_mention) - 5][len(score_array)]} people to participate in the mission. You can nominate yourself.\n\nThe Hammer lands on {hammer_owner[0]}. There is {(hammer_number[0] - len(turns_done))} turns left before they have full control of the proposal of the mission\n\n{lady_owner[0]} has the lady of the lake. You can use this at the start of the third round\n\nUnsure about the commands? Type\n**.avalon commands** to find out")
 
 
             elif split_command[0].lower() == "merlin" and len(game_phase) == 4:
                 tempString1 = ""
                 if len(game_phase) == 4:
-                    if split_command[1].lower() == final_merlin[0]:
+                    person = split_command[1]
+                    editedPerson = "<@" + person[3:len(person)]
+                    if editedPerson == final_merlin[0]:
                         await ctx.send(f">>> Correct! {final_merlin[0]} is the Merlin\n\n The Bad team wins")
                         for person in bad_people:
                             tempString1 = tempString1 + person + "\n"
-                        await ctx.send(f">>> Congratulations {tempString1}")
+                        await ctx.send(f">>> Congratulations\n{tempString1}")
                     else:
                         await ctx.send(f">>> Sorry, the actual Merlin was {final_merlin[0]} is the Merlin\n\n The Good team wins")
                         for person in good_people:
                             tempString1 = tempString1 + person + "\n"
-                        await ctx.send(f">>> Congratulations {tempString1}")
+                        await ctx.send(f">>> Congratulations\n{tempString1}")
 
                     game_phase.clear()
                     avalon_players_mention.clear()
@@ -1624,36 +1636,39 @@ async def avalon(ctx, *, command):
                     lady_use.clear()
                     turns_done.clear()
                     hammer_time.clear()
+                    return
                 else:
                     await ctx.send(f">>> Invalid Command for now...")
             elif split_command[0].lower() == "lady":
-
+                person = split_command[1]
+                editedPerson = "<@" + person[3:len(person)]
                 if ctx.author.mention != lady_owner[0]:
                     await ctx.send("You do not own the lady of the lake")
                 elif len(lady_use) > 0:
                     await ctx.send("You have already used the lady of the lake for this round")
 
-                elif split_command[1].lower() not in avalon_players_mention:
+                elif editedPerson not in avalon_players_mention:
                     await ctx.send("Could not find the person you want to inspect")
-                elif len(score_array) > 1:
+                elif len(score_array) < 2:
                     await ctx.send("You can not use the lady of the lake before the start of round 3")
 
                 else:
-                    if split_command[1].lower() in good_people:
+                    if editedPerson in good_people:
 
-                        await ctx.author.send(f"{split_command[1].lower()} is Good")
+                        await ctx.author.send(f"{editedPerson} is Good")
 
                     else:
 
-                        await ctx.author.send(f"{split_command[1].lower()} is Bad")
+                        await ctx.author.send(f"{editedPerson} is Bad")
 
                     lady_owner_index.clear()
                     lady_owner.clear()
                     lady_use.append(0)
 
-                    lady_owner.append(split_command[1].lower())
-                    lady_owner_index.append(avalon_players_mention.index[lady_owner[0]])
-                    await avalon.channel.send(f">>> {lady_owner[0]} now owns the lady of the lake")
+                    lady_owner.append(editedPerson)
+                    lady_owner_index.append(avalon_players_mention.index(editedPerson))
+                    avalon_channel = client.get_channel(secret_codes.AVALON_CHANNEL)
+                    await avalon_channel.send(f">>> {editedPerson} now owns the lady of the lake")
         else:
             await ctx.send(f">>> Invalid Command...")
 
