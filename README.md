@@ -29,3 +29,5 @@ Dependencies:
 
 * pip install pytz
 
+* pip install python-dotenv
+
