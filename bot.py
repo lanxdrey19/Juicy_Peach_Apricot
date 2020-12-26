@@ -885,10 +885,10 @@ async def avalon(ctx, *, command):
             '```css\n\n.avalon join - join game\n\n.avalon leave - leave game\n\n.avalon start - start game\n\n.avalon reset - resets game\n\n.avalon mission {@person1 @person2 @person3....} - send the mission team to do their mission\n\n.avalon yes - accepts the current mission proposal\n\n.avalon no - declines the current mission proposal\n\n.avalon vote pass - passes the mission if you are doing the mission\n\n.avalon vote fail - fails the mission if you are doing the mission\n\n.avalon lady {@person} - checks the role of the person\n\n.avalon merlin {@person} - guess who the merlin is when the good people have passed three missions\n\n\n\n```')
     elif command.lower() == "join":
         if len(game_phase) <= 0:
-            #for name in avalon_players_mention:
-            #    if name == ctx.author.mention:
-            #        await ctx.send(f'>>> {ctx.author.mention}, you have already joined matchmaking... ')
-            #        return
+            for name in avalon_players_mention:
+                if name == ctx.author.mention:
+                    await ctx.send(f'>>> {ctx.author.mention}, you have already joined matchmaking... ')
+                    return
 
             if len(avalon_players_mention) == 10:
                 await ctx.send(f">>> Sorry. Ten people is the maximum number of players for Avalon")
@@ -1373,9 +1373,9 @@ async def avalon(ctx, *, command):
         hammer_time.clear()
 
     elif command.lower() == 'yes' and len(game_phase) == 2:
-        #if ctx.author.mention in yes_no_already_voted:
-         #   await ctx.author.send("you have already voted....")
-          #  return
+        if ctx.author.mention in yes_no_already_voted:
+            await ctx.author.send("you have already voted....")
+            return
 
         yes_votes.append(0)
         yes_no_already_voted.append(ctx.author.mention)
@@ -1392,9 +1392,9 @@ async def avalon(ctx, *, command):
                 await normal_name.send("You are now in a mission. Please type\n **.avalon vote pass** \n to pass the mission \n\n or \n\n **.avalon vote fail**\n to fail the mission")
             game_phase.append(0)
     elif command.lower() == 'no' and len(game_phase) == 2:
-        #if ctx.author.mention in yes_no_already_voted:
-         #   await ctx.author.send("you have already voted....")
-          #  return
+        if ctx.author.mention in yes_no_already_voted:
+            await ctx.author.send("you have already voted....")
+            return
 
         no_votes.append(0)
         yes_no_already_voted.append(ctx.author.mention)
@@ -1459,11 +1459,11 @@ async def avalon(ctx, *, command):
                         await ctx.send("Some of the people you specified are not in the current game. Please try again :flushed:")
                         return
 
-                    #if editedPerson in mission_participants:
-                     #   await ctx.send(f"{person} has already been selected in the mission. Please try again :flushed:")
-                      #  return
+                    if editedPerson in mission_participants:
+                        await ctx.send(f"{person} has already been selected in the mission. Please try again :flushed:")
+                        return
 
-
+                    mission_participants.append(editedPerson)
                     ####something important
                     #person_index = avalon_players_mention.index(person)
                     #normal_name = avalon_players[person_index]
@@ -1488,9 +1488,9 @@ async def avalon(ctx, *, command):
             elif split_command[0].lower() == "vote" and len(game_phase) == 3:
                 split_command.pop(0)
 
-                #if ctx.author.mention in has_voted:
-                #    await ctx.author.send("you have already voted....")
-                #    return
+                if ctx.author.mention in has_voted:
+                    await ctx.author.send("you have already voted....")
+                    return
 
                 if split_command[0].lower() == "pass":
 
