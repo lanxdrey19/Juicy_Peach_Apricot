@@ -401,6 +401,7 @@ async def isonline(ctx):
         if len(online_counter) == 5:
             await asyncio.sleep(interval)
             await m0.edit(content=f"Bot is online :relaxed:. Last updated at: {now}")
+            online_counter.clear()
             return
 
 cheerup_players = []
