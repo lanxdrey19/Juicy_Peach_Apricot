@@ -30,7 +30,8 @@ from discord.utils import get
 # Secret stuff
 import sys
 import os
-import secret_codes
+import dotenv
+dotenv.load_dotenv(override=True)
 
 # date and time outside of current country
 import dateutil.parser
@@ -40,11 +41,13 @@ client = commands.Bot(command_prefix = '.')
 
 # Token
 
-my_discord_token = secret_codes.MY_DISCORD_API_KEY
+my_discord_token = os.getenv("MY_DISCORD_API_KEY")
 
 # For the bot's status
+cycleMessages = os.getenv("BOT_CYCLE_MESSAGES")
+longCycle = cycleMessages.split(",")
 
-status = cycle(secret_codes.BOT_CYCLE_MESSAGES)
+status = cycle(longCycle)
 @client.event
 async def on_ready():
     try:
@@ -67,17 +70,18 @@ async def change_status():
 async def on_raw_reaction_add(payload):
     global role
     message_id = payload.message_id
-    if message_id == secret_codes.SAD_ROLES_MESSAGE_ID:
+    if message_id == int(os.getenv("SAD_ROLES_MESSAGE_ID")):
         guild_id = payload.guild_id
         guild = discord.utils.find(lambda g: g.id == guild_id, client.guilds)
 
-        if payload.emoji.name == secret_codes.SAD_EMOTE_1:
-            role = discord.utils.get(guild.roles, name=secret_codes.SAD_ROLE_1)
-        elif payload.emoji.name == secret_codes.SAD_EMOTE_2:
-            role = discord.utils.get(guild.roles, name=secret_codes.SAD_ROLE_2)
+        if payload.emoji.name == os.getenv("SAD_EMOTE_1"):
+            role = discord.utils.get(guild.roles, name=os.getenv("SAD_ROLE_1"))
+        elif payload.emoji.name == os.getenv("SAD_EMOTE_2"):
+            role = discord.utils.get(guild.roles, name=os.getenv("SAD_ROLE_2"))
 
         if role is not None:
             member = discord.utils.find(lambda m: m.id == payload.user_id, guild.members)
+
             if member is not None:
                 await member.add_roles(role)
             else:
@@ -90,17 +94,19 @@ async def on_raw_reaction_add(payload):
 async def on_raw_reaction_remove(payload):
     global role
     sadboi_message_id = payload.message_id
-    if sadboi_message_id == secret_codes.SAD_ROLES_MESSAGE_ID:
+    if sadboi_message_id == int(os.getenv("SAD_ROLES_MESSAGE_ID")):
         guild_id = payload.guild_id
         guild = discord.utils.find(lambda g: g.id == guild_id, client.guilds)
 
-        if payload.emoji.name == secret_codes.SAD_EMOTE_1:
-            role = discord.utils.get(guild.roles, name=secret_codes.SAD_ROLE_1)
-        elif payload.emoji.name == secret_codes.SAD_EMOTE_2:
-            role = discord.utils.get(guild.roles, name=secret_codes.SAD_ROLE_2)
+        if payload.emoji.name == os.getenv("SAD_EMOTE_1"):
+            role = discord.utils.get(guild.roles, name=os.getenv("SAD_ROLE_1"))
+        elif payload.emoji.name == os.getenv("SAD_EMOTE_2"):
+            role = discord.utils.get(guild.roles, name=os.getenv("SAD_ROLE_2"))
+
 
         if role is not None:
             member = discord.utils.find(lambda m: m.id == payload.user_id, guild.members)
+
             if member is not None:
                 await member.remove_roles(role)
             else:
@@ -131,7 +137,7 @@ async def on_message(message):
             await message.add_reaction(emoji)
             await message.add_reaction(emoji2)
 
-    if message.channel.id == secret_codes.kpop_roles_channel_id:
+    if message.channel.id == int(os.getenv("kpop_roles_channel_id")):
         await asyncio.sleep(2)
         await message.channel.purge(limit=1)
 
@@ -186,17 +192,6 @@ async def on_message(message):
     await client.process_commands(message)
 
 
-@client.event
-async def on_member_join(member):
-    channel = client.get_channel(secret_codes.kpop_general_channel_id)
-    await channel.send(f'{member} has joined the server.')
-
-
-@client.event
-async def on_member_remove(member):
-    channel = client.get_channel(secret_codes.kpop_general_channel_id)
-    await channel.send(f'{member} has left the server.')
-
 # adding roles in kpop planet discord server
 @client.command(pass_context=True,aliases=['+'])
 async def addmain(ctx, *, role_name_request):
@@ -210,18 +205,17 @@ async def addmain(ctx, *, role_name_request):
     if final_role is not None:
         if final_role in member.roles:
             await ctx.send(ctx.author.mention)
-            await ctx.send(f"The role: {str(final_role)} has already been added")
+            await ctx.send(f"The role: `{str(final_role)}` has already been added")
         else:
             await member.add_roles(final_role)
             await ctx.send(ctx.author.mention)
-            await ctx.send(f"The role: {str(final_role)} has been added")
+            await ctx.send(f"The role: `{str(final_role)}` has been added")
     else:
         await ctx.send(ctx.author.mention)
-        await ctx.send(f"The role: {role_name_request} was not found...")
+        await ctx.send(f"The role: `{role_name_request}` was not found...")
 
 @client.command(pass_context=True,aliases=['-'])
 async def removemain(ctx, *, role_name_request):
-
     final_role = None
     member = ctx.message.author
     for main_role in member.guild.roles:
@@ -235,13 +229,13 @@ async def removemain(ctx, *, role_name_request):
         if final_role in member.roles:
             await member.remove_roles(final_role)
             await ctx.send(ctx.author.mention)
-            await ctx.send(f"The role: {str(final_role)} has been removed")
+            await ctx.send(f"The role: `{str(final_role)}` has been removed")
         else:
             await ctx.send(ctx.author.mention)
-            await ctx.send(f"The role: {str(final_role)} is not currently in your roles....")
+            await ctx.send(f"The role: `{str(final_role)}` is not currently in your roles....")
     else:
         await ctx.send(ctx.author.mention)
-        await ctx.send(f"The role: {role_name_request} was not found...")
+        await ctx.send(f"The role: `{role_name_request}` was not found...")
 
 
 # Commands
@@ -696,8 +690,11 @@ async def weather(ctx):
     await client.wait_until_ready()
 
     #while not client.is_closed():
-    owm = pyowm.OWM(secret_codes.OWM_API_KEY)
-    observation = owm.weather_at_place(secret_codes.MY_CITY_AND_COUNTRY)
+
+    owm = pyowm.OWM(os.getenv("OWM_API_KEY"))
+
+    observation = owm.weather_at_place(os.getenv("MY_CITY_AND_COUNTRY"))
+
     w = observation.get_weather()
     temperature = w.get_temperature('celsius')
     detailed_description = w.get_detailed_status().capitalize()
@@ -705,7 +702,9 @@ async def weather(ctx):
     wind = w.get_wind()
     humidity = w.get_humidity()
     pressures = w.get_pressure()
-    uvi = owm.uvindex_around_coords(secret_codes.THE_LATITUDE, secret_codes.THE_LONGTITUDE)
+
+    uvi = owm.uvindex_around_coords(float(os.getenv("THE_LATITUDE")), float(os.getenv("THE_LONGITUDE") ) )
+
     uv_level = uvi.get_value()
     exposure_risk = uvi.get_exposure_risk()
     current_time = uvi.get_reception_time(timeformat='date')
@@ -738,8 +737,9 @@ async def weather(ctx):
     elif wind["deg"] > 285 and wind["deg"] < 345:
         wind_direction = 'South-East'
 
-    final_message = f'>>> {secret_codes.WEATHER_PART_OF_MESSAGE}:\n\n**{detailed_description}**\n\n:dash: Wind Speed: {round(wind["speed"] * 1.6)} kilometres/hour {wind_direction} (@ {wind["deg"]}°)\n:thermometer_face: Current Temperature: {round(temperature["temp"])}°C, Maximum: {round(temperature["temp_max"])}°C, Minimum: {round(temperature["temp_min"])}°C\n:sweat_drops: Humidity: {humidity}% with {cloud_coverage}% cloud coverage\n:thermometer: Pressure: {pressures["press"]} hPa\n:sunny: UV Level: {round(uv_level)} ({uv_message}) with a {exposure_risk} exposure risk\n:clock: Current Time: {current_time}'
+    final_message = f'>>> {os.getenv("WEATHER_PART_OF_MESSAGE")}\n\n**{detailed_description}**\n\n:dash: Wind Speed: {round(wind["speed"] * 1.6)} kilometres/hour {wind_direction} (@ {wind["deg"]}°)\n:thermometer_face: Current Temperature: {round(temperature["temp"])}°C, Maximum: {round(temperature["temp_max"])}°C, Minimum: {round(temperature["temp_min"])}°C\n:sweat_drops: Humidity: {humidity}% with {cloud_coverage}% cloud coverage\n:thermometer: Pressure: {pressures["press"]} hPa\n:sunny: UV Level: {round(uv_level)} ({uv_message}) with a {exposure_risk} exposure risk\n:clock: Current Time: {current_time}'
     await ctx.send(final_message)
+
 
 # Idol Guess
 
@@ -756,7 +756,7 @@ longScore = []
 async def idolguess(ctx, *, guess):
     if guess == 'commands':
         await ctx.send(
-            "```css\n\n.idolguess start - Starts the game\n\n.idolguess {the name of the person} - Make your guess (For example, type .idolguess sojin)\n\n.idolguess skip - Skips the current idol you have to guess at the cost of one life\n\n.idolguess quit - Quits the whole game overall```")
+            "```css\n\n.idolguess start - Starts the game\n\n.idolguess {the name of the person} - Make your guess (For example, type .idolguess sojin)\n\n.idolguess skip - Skips the current idol you have to guess at the cost of one life\n\n.idolguess quit - Quits the whole game overall\n\n.allidols - Retrieve all the idols in the database```")
     elif guess == 'start' and len(hasStarted) == 0:
         hasStarted.append(0)
 
@@ -841,7 +841,7 @@ async def idolguess(ctx, *, guess):
 # Avalon
 rounds_array = [ [2,3,2,3,3] , [2,3,4,3,4], [2,3,3,4,4] , [3,4,4,5,5], [3,4,4,5,5],[3,4,4,5,5]]
 hammer_number = []
-hammer_number.append(secret_codes.HAMMER_NUMBER)
+hammer_number.append(int(os.getenv("HAMMER_NUMBER")))
 avalon_roles5 = ['Loyal', 'Percival', 'Merlin','Morgana', 'Assassin']
 avalon_roles6 = ['Loyal', 'Loyal', 'Percival', 'Merlin', 'Morgana', 'Assassin']
 avalon_roles7 = ['Loyal', 'Loyal', 'Percival', 'Merlin', 'Morgana', 'Assassin', 'Mordred']
@@ -1507,7 +1507,7 @@ async def avalon(ctx, *, command):
 
                 if len(mission_participants) == len(has_voted):
 
-                    avalon_channel = client.get_channel(secret_codes.AVALON_CHANNEL)
+                    avalon_channel = client.get_channel(int(os.getenv("AVALON_CHANNEL")))
                     await avalon_channel.send(f">>> Mission has been completed\nPass votes: {len(pass_votes)}\n\nFail votes: {len(fail_votes)}")
 
                     if len(fail_votes) < 2 and len(avalon_players_mention) > 6 and len(score_array) == 3:
@@ -1656,7 +1656,7 @@ async def avalon(ctx, *, command):
 
                     lady_owner.append(editedPerson)
                     lady_owner_index.append(avalon_players_mention.index(editedPerson))
-                    avalon_channel = client.get_channel(secret_codes.AVALON_CHANNEL)
+                    avalon_channel = client.get_channel(int(os.getenv("AVALON_CHANNEL")))
                     await avalon_channel.send(f">>> {editedPerson} now owns the lady of the lake")
         else:
             await ctx.send(f">>> Invalid Command...")
@@ -1672,10 +1672,10 @@ async def reddit_updates():
     global post
     reset_limit = 205
     await client.wait_until_ready()
-    channel = client.get_channel(secret_codes.kpop_news_channel_id)
-    reddit = apraw.Reddit(client_id=secret_codes.client_id, client_secret=secret_codes.client_secret,
-                        username=secret_codes.username, password=secret_codes.password,
-                         user_agent=secret_codes.user_agent)
+    channel = client.get_channel(int(os.getenv("kpop_news_channel_id")))
+    reddit = apraw.Reddit(client_id=os.getenv("reddit_client_id"), client_secret=os.getenv("reddit_client_secret"),
+                          username=os.getenv("reddit_username"), password=os.getenv("reddit_password"),
+                          user_agent=os.getenv("reddit_user_agent"))
 
     subreddit = await reddit.subreddit('kpop')
     #new_kpop = subreddit.new(limit=5)
@@ -1685,7 +1685,7 @@ async def reddit_updates():
         try:
             #  #async for post in subreddit.stream.submissions():
             async for post in subreddit.new(limit=1):
-                await asyncio.sleep(secret_codes.wait_time)
+                await asyncio.sleep(int(os.getenv("reddit_wait_time")))
 
                 # for post in new_kpop:
                 if post.url not in already_posted:
