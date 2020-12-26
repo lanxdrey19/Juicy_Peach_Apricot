@@ -24,3 +24,8 @@ Dependencies:
 * pip install praw
 
 * pip install apraw
+
+* pip install pwowm
+
+* pip install pytz
+
