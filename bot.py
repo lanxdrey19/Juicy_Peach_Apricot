@@ -1685,7 +1685,7 @@ async def reddit_updates():
     while not client.is_closed():
         try:
             #  #async for post in subreddit.stream.submissions():
-            async for post in subreddit.new(limit=1):
+            async for post in subreddit.hot(limit=1):
                 await asyncio.sleep(int(os.getenv("reddit_wait_time")))
 
                 # for post in new_kpop:
@@ -1695,8 +1695,8 @@ async def reddit_updates():
                     if len(already_posted) >= reset_limit:
                         already_posted.pop(0)
         except Exception as e:
-            await channel.send(str(e))
-            await channel.send("Please check the error trace")
+            print(str(e))
+            print("Please check the error trace")
 
 
 
