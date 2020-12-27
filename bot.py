@@ -281,7 +281,7 @@ async def rolespage(ctx, amount=1):
 async def commands(ctx):
     await ctx.send(">>> Please check your DMs for the list of all commands :relaxed:")
     await ctx.author.send(
-        '```css\nGeneral Commands:\n\n.8ball {your_question} - Ask the bot a question\n\n.cheerup - Try this one if you are feeling down\n\n.conway - A Conway Game of Life Simulator\n\n.dice - Rolls die\n\n.examszn - Get some words of wisdom from the bot if you are feeling stressed for your upcoming exams\n\n.hug {@person} - Try this one on someone. This will only work if you ping the user you want to hug\n\n.isonline - Check whether the bot is online\n\n.match {person1 and person2} - Ship yourself with your crush (For example, type .match Me and Sojin)\n\n.format {twitter link with embed} - retrieves images/gif of twitter embed and returns the date it was posted on\n\n.piglatin {your message} - Convert your message to Pig Latin\n\n.ping - Checks latency\n\n.stanloona {your message} - Convert your message to let others know you really stan LOOΠΔ\n\n.weather {city} - Get the current weather in the city you specified\n\nGame Commands:\n\n.idolguess commands - Displays the Guess the Idol Game commands\n\n.avalon commands - Displays the Avalon commands```')
+        '```css\nGeneral Commands:\n\n.8ball {your_question} - Ask the bot a question\n\n.cheerup - Try this one if you are feeling down\n\n.conway - A Conway Game of Life Simulator\n\n.dice - Rolls die\n\n.examszn - Get some words of wisdom from the bot if you are feeling stressed for your upcoming exams\n\n.hug {@person} - Try this one on someone. This will only work if you ping the user you want to hug\n\n.isonline - Check whether the bot is online\n\n.match {person1 and person2} - Ship yourself with your crush (For example, type .match Me and Sojin)\n\n.format {twitter link with embed} - retrieves images/gif of twitter embed and returns the date it was posted on\n\n.piglatin {your message} - Convert your message to Pig Latin\n\n.ping - Checks latency\n\n.stanloona {your message} - Convert your message to let others know you really stan LOOΠΔ\n\n.weather {city or country} - Get the current weather in the location you have specified\n\nGame Commands:\n\n.idolguess commands - Displays the Guess the Idol Game commands\n\n.avalon commands - Displays the Avalon commands```')
 
 
 @client.command(help="Checks Latency")
@@ -691,18 +691,18 @@ async def weather(ctx,*,city: str):
 
     try:
         owm = pyowm.OWM(os.getenv("OWM_API_KEY"))
+        mgr = owm.weather_manager()
         try:
-            observation = owm.weather_at_place(city)
+            obs = mgr.weather_at_place(city)
         except Exception as e:
             await ctx.send(str(e))
             return
-        w = observation.get_weather()
-        temperature = w.get_temperature('celsius')
-        detailed_description = w.get_detailed_status().upper()
-        cloud_coverage = w.get_clouds()
-        wind = w.get_wind()
-        humidity = w.get_humidity()
-        pressures = w.get_pressure()
+        w = obs.weather
+        detailed_desc = w.detailed_status
+        temperature = w.temperature('celsius')
+        cloud_coverage = w.clouds
+        wind = w.wind()
+        humidity = w.humidity
 
         wind_direction = ""
         if wind["deg"] >=345 or wind["deg"] <= 15:
@@ -722,7 +722,7 @@ async def weather(ctx,*,city: str):
         elif wind["deg"] > 285 and wind["deg"] < 345:
             wind_direction = 'South-East'
 
-        big_message = f'>>> **Weather Forecast in {city.upper()}**\n\n**{detailed_description}**\n\n:dash: Wind Speed: {round(wind["speed"] * 1.6)} kilometres/hour {wind_direction} (@ {wind["deg"]}°)\n:thermometer_face: Current Temperature: {round(temperature["temp"])}°C, Maximum: {round(temperature["temp_max"])}°C, Minimum: {round(temperature["temp_min"])}°C\n:sweat_drops: Humidity: {humidity}% with {cloud_coverage}% cloud coverage\n:thermometer: Pressure: {pressures["press"]} hPa'
+        big_message = f'>>> **Weather Forecast in {city.upper()}**\n\n**{detailed_desc.upper()}**\n\n:dash: Wind Speed: {round(wind["speed"] * 1.6)} kilometres/hour {wind_direction} (@ {wind["deg"]}°)\n:thermometer: Current Temperature: {round(temperature["temp"])}°C, Maximum: {round(temperature["temp_max"])}°C, Minimum: {round(temperature["temp_min"])}°C\n:sweat_drops: Humidity: {humidity}% with {cloud_coverage}% cloud coverage\n'
         await ctx.send(big_message)
     except Exception as e:
         await ctx.send(str(e))
@@ -1666,15 +1666,15 @@ async def reddit_updates():
     subreddit = await reddit.subreddit('kpop')
     #new_kpop = subreddit.new(limit=5)
 
-
     while not client.is_closed():
         try:
             #  #async for post in subreddit.stream.submissions():
-            async for post in subreddit.top(limit=1):
+            async for post in subreddit.hot(limit=10):
                 await asyncio.sleep(int(os.getenv("reddit_wait_time")))
 
                 # for post in new_kpop:
                 if post.url not in already_posted:
+                    await channel.send(post.title)
                     await channel.send(post.url)
                     already_posted.append(post.url)
                     if len(already_posted) >= reset_limit:
