@@ -281,7 +281,7 @@ async def rolespage(ctx, amount=1):
 async def commands(ctx):
     await ctx.send(">>> Please check your DMs for the list of all commands :relaxed:")
     await ctx.author.send(
-        '```css\nGeneral Commands:\n\n.8ball {your_question} - Ask the bot a question\n\n.cheerup - Try this one if you are feeling down\n\n.conway - A Conway Game of Life Simulator\n\n.dice - Rolls die\n\n.examszn - Get some words of wisdom from the bot if you are feeling stressed for your upcoming exams\n\n.hug {@person} - Try this one on someone. This will only work if you ping the user you want to hug\n\n.isonline - Check whether the bot is online\n\n.match {person1 and person2} - Ship yourself with your crush (For example, type .match Me and Sojin)\n\n.format {twitter link with embed} - retrieves images/gif of twitter embed and returns the date it was posted on\n\n.piglatin {your message} - Convert your message to Pig Latin\n\n.ping - Checks latency\n\n.stanloona {your message} - Convert your message to let others know you really stan LOOΠΔ\n\n.weather - Get the current weather in Auckland\n\nGame Commands:\n\n.idolguess commands - Displays the Guess the Idol Game commands\n\n.avalon commands - Displays the Avalon commands```')
+        '```css\nGeneral Commands:\n\n.8ball {your_question} - Ask the bot a question\n\n.cheerup - Try this one if you are feeling down\n\n.conway - A Conway Game of Life Simulator\n\n.dice - Rolls die\n\n.examszn - Get some words of wisdom from the bot if you are feeling stressed for your upcoming exams\n\n.hug {@person} - Try this one on someone. This will only work if you ping the user you want to hug\n\n.isonline - Check whether the bot is online\n\n.match {person1 and person2} - Ship yourself with your crush (For example, type .match Me and Sojin)\n\n.format {twitter link with embed} - retrieves images/gif of twitter embed and returns the date it was posted on\n\n.piglatin {your message} - Convert your message to Pig Latin\n\n.ping - Checks latency\n\n.stanloona {your message} - Convert your message to let others know you really stan LOOΠΔ\n\n.weather {city} - Get the current weather in the city you specified\n\nGame Commands:\n\n.idolguess commands - Displays the Guess the Idol Game commands\n\n.avalon commands - Displays the Avalon commands```')
 
 
 @client.command(help="Checks Latency")
@@ -685,62 +685,47 @@ async def conway(ctx):
 
         await asyncio.sleep(2)
 
-@client.command(help="Get a current update of the weather in Auckland",aliases=['w'])
-async def weather(ctx):
 
-    await client.wait_until_ready()
+@client.command(help="Get a current update of the weather of the city specified",aliases=['w'])
+async def weather(ctx,*,city: str):
 
-    #while not client.is_closed():
+    try:
+        owm = pyowm.OWM(os.getenv("OWM_API_KEY"))
+        try:
+            observation = owm.weather_at_place(city)
+        except Exception as e:
+            await ctx.send(str(e))
+            return
+        w = observation.get_weather()
+        temperature = w.get_temperature('celsius')
+        detailed_description = w.get_detailed_status().upper()
+        cloud_coverage = w.get_clouds()
+        wind = w.get_wind()
+        humidity = w.get_humidity()
+        pressures = w.get_pressure()
 
-    owm = pyowm.OWM(os.getenv("OWM_API_KEY"))
+        wind_direction = ""
+        if wind["deg"] >=345 or wind["deg"] <= 15:
+            wind_direction = 'East'
+        elif wind["deg"] > 15 and wind["deg"] < 75:
+            wind_direction = 'North-East'
+        elif wind["deg"] >= 75 and wind["deg"] <= 105:
+            wind_direction = 'North'
+        elif wind["deg"] > 105 and wind["deg"] < 165:
+            wind_direction = 'North-West'
+        elif wind["deg"] >= 165 and wind["deg"] <= 195:
+            wind_direction = 'West'
+        elif wind["deg"] > 195 and wind["deg"] < 255:
+            wind_direction = 'South-West'
+        elif wind["deg"] >= 255 and wind["deg"] <= 285:
+            wind_direction = 'South'
+        elif wind["deg"] > 285 and wind["deg"] < 345:
+            wind_direction = 'South-East'
 
-    observation = owm.weather_at_place(os.getenv("MY_CITY_AND_COUNTRY"))
-
-    w = observation.get_weather()
-    temperature = w.get_temperature('celsius')
-    detailed_description = w.get_detailed_status().capitalize()
-    cloud_coverage = w.get_clouds()
-    wind = w.get_wind()
-    humidity = w.get_humidity()
-    pressures = w.get_pressure()
-
-    uvi = owm.uvindex_around_coords(float(os.getenv("THE_LATITUDE")), float(os.getenv("THE_LONGITUDE") ) )
-
-    uv_level = uvi.get_value()
-    exposure_risk = uvi.get_exposure_risk()
-    current_time = uvi.get_reception_time(timeformat='date')
-
-    if round(uv_level) >= 11:
-        uv_message = "Extreme"
-    elif round(uv_level) >= 8:
-        uv_message = "Very High"
-    elif round(uv_level) >= 6:
-        uv_message = "High"
-    elif round(uv_level) >= 3:
-        uv_message = "Moderate"
-    else:
-        uv_message = "Low"
-
-    if wind["deg"] >= 345 or wind["deg"] <= 15:
-        wind_direction = 'East'
-    elif wind["deg"] > 15 and wind["deg"] < 75:
-        wind_direction = 'North-East'
-    elif wind["deg"] >= 75 and wind["deg"] <= 105:
-        wind_direction = 'North'
-    elif wind["deg"] > 105 and wind["deg"] < 165:
-        wind_direction = 'North-West'
-    elif wind["deg"] >= 165 and wind["deg"] <= 195:
-        wind_direction = 'West'
-    elif wind["deg"] > 195 and wind["deg"] < 255:
-        wind_direction = 'South-West'
-    elif wind["deg"] >= 255 and wind["deg"] <= 285:
-        wind_direction = 'South'
-    elif wind["deg"] > 285 and wind["deg"] < 345:
-        wind_direction = 'South-East'
-
-    final_message = f'>>> {os.getenv("WEATHER_PART_OF_MESSAGE")}\n\n**{detailed_description}**\n\n:dash: Wind Speed: {round(wind["speed"] * 1.6)} kilometres/hour {wind_direction} (@ {wind["deg"]}°)\n:thermometer_face: Current Temperature: {round(temperature["temp"])}°C, Maximum: {round(temperature["temp_max"])}°C, Minimum: {round(temperature["temp_min"])}°C\n:sweat_drops: Humidity: {humidity}% with {cloud_coverage}% cloud coverage\n:thermometer: Pressure: {pressures["press"]} hPa\n:sunny: UV Level: {round(uv_level)} ({uv_message}) with a {exposure_risk} exposure risk\n:clock: Current Time: {current_time}'
-    await ctx.send(final_message)
-
+        big_message = f'>>> **Weather Forecast in {city.upper()}**\n\n**{detailed_description}**\n\n:dash: Wind Speed: {round(wind["speed"] * 1.6)} kilometres/hour {wind_direction} (@ {wind["deg"]}°)\n:thermometer_face: Current Temperature: {round(temperature["temp"])}°C, Maximum: {round(temperature["temp_max"])}°C, Minimum: {round(temperature["temp_min"])}°C\n:sweat_drops: Humidity: {humidity}% with {cloud_coverage}% cloud coverage\n:thermometer: Pressure: {pressures["press"]} hPa'
+        await ctx.send(big_message)
+    except Exception as e:
+        await ctx.send(str(e))
 
 # Idol Guess
 
@@ -1685,7 +1670,7 @@ async def reddit_updates():
     while not client.is_closed():
         try:
             #  #async for post in subreddit.stream.submissions():
-            async for post in subreddit.hot(limit=1):
+            async for post in subreddit.top(limit=1):
                 await asyncio.sleep(int(os.getenv("reddit_wait_time")))
 
                 # for post in new_kpop:
@@ -1695,8 +1680,8 @@ async def reddit_updates():
                     if len(already_posted) >= reset_limit:
                         already_posted.pop(0)
         except Exception as e:
-            print(str(e))
-            print("Please check the error trace")
+            await channel.send(str(e))
+
 
 
 
