@@ -400,7 +400,7 @@ async def isonline(ctx):
         online_counter.append(0)
         if len(online_counter) == 5:
             await asyncio.sleep(interval)
-            await m0.edit(content=f"Bot is online :relaxed:. Last updated at: {now}")
+            await m0.edit(content=f"Bot is online :relaxed:. Last updated at: {now} GMT")
             online_counter.clear()
             return
 
@@ -455,15 +455,14 @@ async def cheerup(ctx):
               f'{finalGroup} {finalName} knows good times are coming for a good person like you! :chart_with_upwards_trend:']
 
 
-    msg1 = await ctx.send(f">>> :blush: Here is a photo to cheer you up! :blush:\n\n")
-    msg2 = await ctx.send(f'>>> {random.choice(cheers)}')
+    await ctx.send(f">>> :blush: Here is a photo to cheer you up! :blush:\n\n")
+    await ctx.send(f'>>> {random.choice(cheers)}')
     await ctx.send(file=discord.File("photos/"+ str(finalFromData)))
 
     interval = 5
     await asyncio.sleep(interval)
     while not client.is_closed():
 
-        await ctx.channel.purge(limit=1)
 
         image_list = os.listdir("./photos")
         counterNumber = len(image_list)
@@ -505,10 +504,9 @@ async def cheerup(ctx):
                   f'{finalGroup} {finalName} is here to remind you of the good times! :fireworks:',
                   f'{finalGroup} {finalName} knows good times are coming for a good person like you! :chart_with_upwards_trend:']
 
-
-        await msg1.edit(content=f">>> :blush: Here is another photo to cheer you up! :blush:\n\n")
-        await msg2.edit(content=f'>>> {random.choice(cheers)}')
-        await ctx.send(file=discord.File("photos/"+ str(finalFromData)))
+        await ctx.send(f">>> :blush: Here is another photo to cheer you up! :blush:\n\n")
+        await ctx.send(f'>>> {random.choice(cheers)}')
+        await ctx.send(file=discord.File("photos/" + str(finalFromData)))
         await asyncio.sleep(interval)
         slides.append(0)
         if len(slides) == 10:
