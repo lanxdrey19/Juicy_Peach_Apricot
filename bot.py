@@ -151,15 +151,13 @@ async def on_message(message):
             await message.channel.purge(limit=1)
             firstIteration = True
             for embed in embeds:
-
                 if firstIteration:
                     UTC = pytz.utc
                     timeZ = pytz.timezone('Asia/Seoul')
                     dt_K = datetime.now(timeZ)
                     utc_K = dt_K.astimezone(UTC)
                     finaldate = utc_K.strftime("%y%m%d")
-
-                    await message.channel.send(f"```css\n{finaldate} Twitter Update```")
+                    await message.channel.send(f"```css\n{finaldate} Twitter Update {embed.to_dict()['author']['name']}```")
                     await message.channel.send(embed.to_dict()['description'])
                     firstIteration = False
 
@@ -191,6 +189,19 @@ async def on_message(message):
 
     await client.process_commands(message)
 
+start_time = time.time()
+@client.command(pass_context=True)
+async def uptime(ctx):
+        current_time = time.time()
+        difference = int(round(current_time - start_time))
+        text = str(timedelta(seconds=difference))
+        embed = discord.Embed(colour=0xc8dc6c)
+        embed.add_field(name="Uptime", value=text)
+        embed.set_footer(text="Juicy Peach Apricot")
+        try:
+            await ctx.send(embed=embed)
+        except discord.HTTPException:
+            await ctx.send("Current uptime: " + text)
 
 # adding roles in kpop planet discord server
 @client.command(pass_context=True,aliases=['+'])
@@ -281,7 +292,7 @@ async def rolespage(ctx, amount=1):
 async def commands(ctx):
     await ctx.send(">>> Please check your DMs for the list of all commands :relaxed:")
     await ctx.author.send(
-        '```css\nGeneral Commands:\n\n.8ball {your_question} - Ask the bot a question\n\n.cheerup - Try this one if you are feeling down\n\n.conway - A Conway Game of Life Simulator\n\n.dice - Rolls die\n\n.examszn - Get some words of wisdom from the bot if you are feeling stressed for your upcoming exams\n\n.hug {@person} - Try this one on someone. This will only work if you ping the user you want to hug\n\n.isonline - Check whether the bot is online\n\n.match {person1 and person2} - Ship yourself with your crush (For example, type .match Me and Sojin)\n\n.format {twitter link with embed} - retrieves images/gif of twitter embed and returns the date it was posted on\n\n.piglatin {your message} - Convert your message to Pig Latin\n\n.ping - Checks latency\n\n.stanloona {your message} - Convert your message to let others know you really stan LOOΠΔ\n\n.weather {city or country} - Get the current weather in the location you have specified\n\nGame Commands:\n\n.idolguess commands - Displays the Guess the Idol Game commands\n\n.avalon commands - Displays the Avalon commands```')
+        '```css\nGeneral Commands:\n\n.8ball {your_question} - Ask the bot a question\n\n.cheerup - Try this one if you are feeling down\n\n.conway - A Conway Game of Life Simulator\n\n.dice - Rolls die\n\n.examszn - Get some words of wisdom from the bot if you are feeling stressed for your upcoming exams\n\n.format {twitter link with embed} - retrieves images/gif of twitter embed and returns the date it was posted on\n\n.hug {@person} - Try this one on someone. This will only work if you ping the user you want to hug\n\n.isonline - Check whether the bot is online\n\n.match {person1 and person2} - Ship yourself with your crush (For example, type .match Me and Sojin)\n\n.piglatin {your message} - Convert your message to Pig Latin\n\n.ping - Checks latency\n\n.stanloona {your message} - Convert your message to let others know you really stan LOOΠΔ\n\n.weather {city or country} - Get the current weather in the location you have specified\n\n.uptime - retrieves the uptime of the bot\n\nGame Commands:\n\n.idolguess commands - Displays the Guess the Idol Game commands\n\n.avalon commands - Displays the Avalon commands```')
 
 
 @client.command(help="Checks Latency")
