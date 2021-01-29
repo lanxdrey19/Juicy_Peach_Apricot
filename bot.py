@@ -157,7 +157,7 @@ async def on_message(message):
                     dt_K = datetime.now(timeZ)
                     utc_K = dt_K.astimezone(UTC)
                     finaldate = utc_K.strftime("%y%m%d")
-                    await message.channel.send(f"```css\n{finaldate} Twitter Update {embed.to_dict()['author']['name']}```")
+                    await message.channel.send(f"```css\n{finaldate} Twitter Update - {embed.to_dict()['author']['name']}```")
                     await message.channel.send(embed.to_dict()['description'])
                     firstIteration = False
 
@@ -292,7 +292,7 @@ async def rolespage(ctx, amount=1):
 async def commands(ctx):
     await ctx.send(">>> Please check your DMs for the list of all commands :relaxed:")
     await ctx.author.send(
-        '```css\nGeneral Commands:\n\n.8ball {your_question} - Ask the bot a question\n\n.cheerup - Try this one if you are feeling down\n\n.conway - A Conway Game of Life Simulator\n\n.dice - Rolls die\n\n.examszn - Get some words of wisdom from the bot if you are feeling stressed for your upcoming exams\n\n.format {twitter link with embed} - retrieves images/gif of twitter embed and returns the date it was posted on\n\n.hug {@person} - Try this one on someone. This will only work if you ping the user you want to hug\n\n.isonline - Check whether the bot is online\n\n.match {person1 and person2} - Ship yourself with your crush (For example, type .match Me and Sojin)\n\n.piglatin {your message} - Convert your message to Pig Latin\n\n.ping - Checks latency\n\n.stanloona {your message} - Convert your message to let others know you really stan LOOΠΔ\n\n.weather {city or country} - Get the current weather in the location you have specified\n\n.uptime - retrieves the uptime of the bot\n\nGame Commands:\n\n.idolguess commands - Displays the Guess the Idol Game commands\n\n.avalon commands - Displays the Avalon commands```')
+        '```css\nGeneral Commands:\n\n.8ball {your_question} - Ask the bot a question\n\n.cheerup - Try this one if you are feeling down\n\n.conway - A Conway Game of Life Simulator\n\n.dice - Rolls die\n\n.format {twitter link with embed} - Retrieves images/gif of twitter embed and returns the date it was posted on\n\n.hug {@person} - Try this one on someone. This will only work if you ping the user you want to hug\n\n.isonline - Check whether the bot is online\n\n.match {person1 and person2} - Ship yourself with your crush (For example, type .match Me and Sojin)\n\n.piglatin {your message} - Convert your message to Pig Latin\n\n.ping - Checks latency\n\n.stanloona {your message} - Convert your message to let others know you really stan LOOΠΔ\n\n.weather {city or country} - Get the current weather in the location you have specified\n\n.uptime - Retrieves the uptime of the bot\n\nGame Commands:\n\n.idolguess commands - Displays the Guess the Idol Game commands\n\n.avalon commands - Displays the Avalon commands```')
 
 
 @client.command(help="Checks Latency")
@@ -349,12 +349,6 @@ async def dice(ctx):
     await ctx.send(f'>>> :game_die: **Rolls game die** :game_die:\n{randint(1, 6)}')
 
 
-@client.command(help="Get some words of wisdom from the bot if you are feeling stressed for your upcoming exams")
-async def examszn(ctx):
-    await ctx.send(
-        '>>> https://scontent.fakl6-1.fna.fbcdn.net/v/t1.15752-9/82276376_604105316813162_5652167650046902272_n.jpg?_nc_cat=110&_nc_ohc=sJgWVpNAbHAAX-17ANX&_nc_ht=scontent.fakl6-1.fna&oh=0da1366686ae449cf1c6f4a1e6f68d20&oe=5EBE1A66')
-
-
 @client.command(help="Convert your message to let others know you really stan LOONA", aliases=['sl'])
 async def stanloona(ctx, *, arg):
     temp = arg.split()
@@ -378,6 +372,7 @@ async def piglatin(ctx, *, arg):
 @client.command(help="find all idols in the database", aliases=['ai'])
 async def allidols(ctx):
     image_list = os.listdir("./photos")
+    image_list.sort()
     for idols in image_list:
         finalArrayForm = idols.split(',')
         finalGroup = finalArrayForm[0].strip()
