@@ -372,7 +372,7 @@ async def piglatin(ctx, *, arg):
 @client.command(help="find all idols in the database", aliases=['ai'])
 async def allidols(ctx):
     image_list = os.listdir("./photos")
-    image_list.sort()
+    image_list.sort(key=lambda x: x.lower())
     for idols in image_list:
         finalArrayForm = idols.split(',')
         finalGroup = finalArrayForm[0].strip()
