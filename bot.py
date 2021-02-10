@@ -190,7 +190,7 @@ async def on_message(message):
     await client.process_commands(message)
 
 start_time = time.time()
-@client.command(pass_context=True)
+@client.command(pass_context=True,help="gets uptime of bot")
 async def uptime(ctx):
         current_time = time.time()
         difference = int(round(current_time - start_time))
@@ -250,32 +250,6 @@ async def removemain(ctx, *, role_name_request):
 
 
 # Commands
-@client.command(help="create quick announcement")
-async def quickannounce(ctx, amount=1):
-    await ctx.channel.purge(limit=amount)
-    line = ""
-    await ctx.send(f">>> {line}")
-
-
-@client.command(help="create general announcement")
-async def generalannounce(ctx, amount=1):
-    await ctx.channel.purge(limit=amount)
-    await ctx.send(">>> @everyone")
-    f = open("generalannouncement.txt", "r")
-    lines = f.readlines()
-    for line in lines:
-        await ctx.send(f">>> {line}")
-
-
-@client.command(help="create kpop announcement")
-async def kpopannounce(ctx, amount=1):
-    await ctx.channel.purge(limit=amount)
-    await ctx.send(">>> <@&721507758637056102>")
-    f = open("kpopannouncement.txt", "r")
-    lines = f.readlines()
-    for line in lines:
-        await ctx.send(f">>> {line}")
-
 @client.command(help="create welcome page")
 async def welcomepage(ctx, amount=1):
     await ctx.channel.purge(limit=amount)
@@ -339,7 +313,7 @@ async def _8ball(ctx, *, question):
 
 
 @client.command(
-    help="Ship yourself with your crush (For example, type .match Thomas and Nayeon")
+    help="Ship yourself with your crush (For example, type .match Me and Sojin")
 async def match(ctx, *, question):
     await ctx.send(f'>>> Shipping {question}...\nCompatibility: {randint(0, 100)}%')
 
@@ -369,7 +343,7 @@ async def piglatin(ctx, *, arg):
     await ctx.send(f">>> {big_message}")
 
 
-@client.command(help="find all idols in the database", aliases=['ai'])
+@client.command(help="retrieves all idols in the database", aliases=['ai'])
 async def allidols(ctx):
     image_list = os.listdir("./photos")
     image_list.sort(key=lambda x: x.lower())
@@ -742,7 +716,7 @@ hasStarted = []
 longScore = []
 
 
-@client.command(help="Type .idolguess commands for more information about this command", aliases=['ig'])
+@client.command(help="Type '.idolguess commands' for more information about how to play Idol Guess", aliases=['ig'])
 async def idolguess(ctx, *, guess):
     if guess == 'commands':
         await ctx.send(
@@ -865,7 +839,7 @@ lady_use = []
 turns_done = []
 hammer_time = []
 
-@client.command(help="will put soon", aliases=['av'])
+@client.command(help="Type '.avalon commands' for more information about how to play Avalon", aliases=['av'])
 async def avalon(ctx, *, command):
     global long_message
     if command.lower() == 'commands':
