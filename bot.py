@@ -215,15 +215,21 @@ async def addmain(ctx, *, role_name_request):
 
     if final_role is not None:
         if final_role in member.roles:
-            await ctx.send(ctx.author.mention)
-            await ctx.send(f"The role: `{str(final_role)}` has already been added")
+            embed = discord.Embed(colour=0xc8dc6c)
+            text = f"{ctx.author.mention} you already have the `{str(final_role)}` role..."
+            embed.add_field(name="Unsuccessful", value=text)
+            await ctx.send(embed=embed)
         else:
+            embed = discord.Embed(colour=0xc8dc6c)
+            text = f"{ctx.author.mention} you added the `{str(final_role)}` role"
+            embed.add_field(name="Success", value=text)
+            await ctx.send(embed=embed)
             await member.add_roles(final_role)
-            await ctx.send(ctx.author.mention)
-            await ctx.send(f"The role: `{str(final_role)}` has been added")
     else:
-        await ctx.send(ctx.author.mention)
-        await ctx.send(f"The role: `{role_name_request}` was not found...")
+        embed = discord.Embed(colour=0xc8dc6c)
+        text = f"{ctx.author.mention} the role: `{role_name_request}` was not found... "
+        embed.add_field(name="Unsuccessful", value=text)
+        await ctx.send(embed=embed)
 
 @client.command(pass_context=True,aliases=['-'])
 async def removemain(ctx, *, role_name_request):
@@ -238,15 +244,21 @@ async def removemain(ctx, *, role_name_request):
 
     if final_role is not None:
         if final_role in member.roles:
+            embed = discord.Embed(colour=0xc8dc6c)
+            text = f"{ctx.author.mention} you removed the `{str(final_role)}` role"
+            embed.add_field(name="Success", value=text)
+            await ctx.send(embed=embed)
             await member.remove_roles(final_role)
-            await ctx.send(ctx.author.mention)
-            await ctx.send(f"The role: `{str(final_role)}` has been removed")
         else:
-            await ctx.send(ctx.author.mention)
-            await ctx.send(f"The role: `{str(final_role)}` is not currently in your roles....")
+            embed = discord.Embed(colour=0xc8dc6c)
+            text = f"{ctx.author.mention} the role `{str(final_role)}` is not one of your current roles..."
+            embed.add_field(name="Unsuccessful", value=text)
+            await ctx.send(embed=embed)
     else:
-        await ctx.send(ctx.author.mention)
-        await ctx.send(f"The role: `{role_name_request}` was not found...")
+        embed = discord.Embed(colour=0xc8dc6c)
+        text = f"{ctx.author.mention} the role: `{role_name_request}` was not found... "
+        embed.add_field(name="Unsuccessful", value=text)
+        await ctx.send(embed=embed)
 
 
 # Commands
@@ -271,24 +283,38 @@ async def commands(ctx):
 
 @client.command(help="Checks Latency")
 async def ping(ctx):
-    await ctx.send(f'>>> Pong!\nLatency: {round(client.latency * 1000)} ms')
+    embed = discord.Embed(colour=0xc8dc6c)
+    text = f"Latency: {round(client.latency * 1000)} ms"
+    embed.add_field(name="Pong!", value=text)
+    await ctx.send(embed=embed)
 
 
 @client.command(help="Try this one on someone. This will only work if you ping the user you want to hug")
 async def hug(ctx, member: discord.Member):
-    await ctx.send(f'>>> OwO (>^.^)> (っ´∀｀)っ (っ⇀⑃↼)っ {member.mention} ⊂(・﹏・⊂) ლ(･ω･*ლ) <(^.^<) OwO')
+    embed = discord.Embed(colour=0xc8dc6c)
+    title = f"Hugging {member}"
+    text = f"OwO (>^.^)> (っ´∀｀)っ (っ⇀⑃↼)っ {member} ⊂(・﹏・⊂) ლ(･ω･*ლ) <(^.^<) OwO"
+    embed.add_field(name=title, value=text)
+    await ctx.send(embed=embed)
 
 
 @hug.error
 async def hug_error(ctx, error):
     if isinstance(error, discord.ext.commands.errors.BadArgument):
-        await ctx.send('>>> Error: User not found **OR** "@" is missing at the start.\nPlease try again...')
-
+        embed = discord.Embed(colour=0xc8dc6c)
+        title = "Unsuccessful"
+        text = 'User not found **OR** "@" is missing at the start. Please try again...'
+        embed.add_field(name=title, value=text)
+        await ctx.send(embed=embed)
 
 @client.event
 async def on_command_error(ctx, error):
     if isinstance(error, discord.ext.commands.errors.BadArgument):
-        await ctx.send('>>> Error: Enter appropriate arguments.\nPlease try again...')
+        embed = discord.Embed(colour=0xc8dc6c)
+        title = "Unsuccessful"
+        text = 'Enter the appropriate arguments. Please try again...'
+        embed.add_field(name=title, value=text)
+        await ctx.send(embed=embed)
 
 
 @client.command(help="Ask it a question (Will not work if no arguments are entered)", aliases=['8ball'])
@@ -309,18 +335,30 @@ async def _8ball(ctx, *, question):
                  'Ha HAaaAAAaaaAA',
                  'Are you kidding me? Of course!',
                  'Are you kidding me? Of course not!']
-    await ctx.send(f'>>> Question: {question}?\nAnswer: {random.choice(responses)}')
+    embed = discord.Embed(colour=0xc8dc6c)
+    title = f"{question}?"
+    text = f'{random.choice(responses)}'
+    embed.add_field(name=title, value=text)
+    await ctx.send(embed=embed)
 
 
 @client.command(
     help="Ship yourself with your crush (For example, type .match Me and Sojin")
 async def match(ctx, *, question):
-    await ctx.send(f'>>> Shipping {question}...\nCompatibility: {randint(0, 100)}%')
+    embed = discord.Embed(colour=0xc8dc6c)
+    title = f"Shipping {question}..."
+    text = f'Compatibility: {randint(0, 100)}%'
+    embed.add_field(name=title, value=text)
+    await ctx.send(embed=embed)
 
 
 @client.command(help="Rolls die")
 async def dice(ctx):
-    await ctx.send(f'>>> :game_die: **Rolls game die** :game_die:\n{randint(1, 6)}')
+    embed = discord.Embed(colour=0xc8dc6c)
+    title = f"Rolls Game Die"
+    text = f'{randint(1, 6)}'
+    embed.add_field(name=title, value=text)
+    await ctx.send(embed=embed)
 
 
 @client.command(help="Convert your message to let others know you really stan LOONA", aliases=['sl'])
@@ -330,7 +368,11 @@ async def stanloona(ctx, *, arg):
     for thing in temp:
         med_message = " Stan " + thing + " Loona "
         big_message = big_message + med_message
-    await ctx.send(f">>> {big_message}")
+    embed = discord.Embed(colour=0xc8dc6c)
+    title = f"STAN LOONA"
+    text = f'{big_message}'
+    embed.add_field(name=title, value=text)
+    await ctx.send(embed=embed)
 
 
 @client.command(help="Convert your message to Pig Latin", aliases=['pl'])
@@ -340,7 +382,11 @@ async def piglatin(ctx, *, arg):
     for thing in temp:
         med_message = thing[-1] + thing[:-1] + "e"
         big_message = big_message + " " + med_message + " "
-    await ctx.send(f">>> {big_message}")
+    embed = discord.Embed(colour=0xc8dc6c)
+    title = f"Pig Latin Message"
+    text = f'{big_message}'
+    embed.add_field(name=title, value=text)
+    await ctx.send(embed=embed)
 
 
 @client.command(help="retrieves all idols in the database", aliases=['ai'])
@@ -363,7 +409,10 @@ async def isonline(ctx):
     await client.wait_until_ready()
 
     interval = 3
-    m0 = await ctx.send('If the emoji is changing approximately 3 to 6 seconds, the bot is online\n\n:flushed:')
+    embed = discord.Embed(title="Is the Bot Online", description=f'If the emoji is changing approximately every 3 to 6 seconds, the bot is online',
+                          colour=0xc8dc6c)
+
+    m0 = await ctx.send(embed=embed)
 
     await asyncio.sleep(interval)
     while not client.is_closed():
@@ -376,11 +425,15 @@ async def isonline(ctx):
         final_choice3 = random.choice(emojis)
         final_choice4 = random.choice(emojis)
         final_choice5 = random.choice(emojis)
-        await m0.edit(content=f'Look at these animals :relaxed:\n\n{final_choice} {final_choice2} {final_choice3} {final_choice4} {final_choice5}')
+        embednew = discord.Embed(title="Is the Bot Online",
+                              description=f'Look at these animals :relaxed:\n\n{final_choice} {final_choice2} {final_choice3} {final_choice4} {final_choice5}',
+                              colour=0xc8dc6c)
+        await m0.edit(embed=embednew)
         online_counter.append(0)
         if len(online_counter) == 5:
             await asyncio.sleep(interval)
-            await m0.edit(content=f"Bot is online :relaxed:. Last updated at: {now} GMT")
+            embedlast = discord.Embed(title="Is the Bot Online",description=f"Bot is online :relaxed:. Last updated at: {now} GMT",colour=0xc8dc6c)
+            await m0.edit(embed=embedlast)
             online_counter.clear()
             return
 
@@ -391,7 +444,11 @@ slides = [0]
 async def cheerup(ctx):
     for people in cheerup_players:
         if people == ctx.author.mention:
-            await ctx.send('You already have a slideshow going on...')
+            embedtemp = discord.Embed(colour=0xc8dc6c)
+            titletemp = "Slideshow in Progress"
+            texttemp = f"Please wait until your current slideshow has finished"
+            embedtemp.add_field(name=titletemp, value=texttemp)
+            await ctx.send(embed=embedtemp)
             return
     cheerup_players.append(ctx.author.mention)
     image_list = os.listdir("./photos")
@@ -434,10 +491,10 @@ async def cheerup(ctx):
               f'{finalGroup} {finalName} is here to remind you of the good times! :fireworks:',
               f'{finalGroup} {finalName} knows good times are coming for a good person like you! :chart_with_upwards_trend:']
 
-
-    await ctx.send(f">>> :blush: Here is a photo to cheer you up! :blush:\n\n")
-    await ctx.send(f'>>> {random.choice(cheers)}')
-    await ctx.send(file=discord.File("photos/"+ str(finalFromData)))
+    embed = discord.Embed(title="Cheer Up!",description=f'{random.choice(cheers)}',colour=0xc8dc6c)
+    file = discord.File(("photos/"+ str(finalFromData)),filename="image.jpg")
+    embed.set_image(url="attachment://image.jpg")
+    await ctx.send(file=file,embed=embed)
 
     interval = 5
     await asyncio.sleep(interval)
@@ -484,13 +541,18 @@ async def cheerup(ctx):
                   f'{finalGroup} {finalName} is here to remind you of the good times! :fireworks:',
                   f'{finalGroup} {finalName} knows good times are coming for a good person like you! :chart_with_upwards_trend:']
 
-        await ctx.send(f">>> :blush: Here is another photo to cheer you up! :blush:\n\n")
-        await ctx.send(f'>>> {random.choice(cheers)}')
-        await ctx.send(file=discord.File("photos/" + str(finalFromData)))
+        embed = discord.Embed(title="Cheer Up!", description=f'{random.choice(cheers)}', colour=0xc8dc6c)
+        file = discord.File(("photos/" + str(finalFromData)), filename="image.jpg")
+        embed.set_image(url="attachment://image.jpg")
+        await ctx.send(file=file, embed=embed)
         await asyncio.sleep(interval)
         slides.append(0)
         if len(slides) == 10:
-            await ctx.send(f">>> You may start a new slideshow {ctx.author.mention}")
+            embed = discord.Embed(colour=0xc8dc6c)
+            title = "Slideshow Finished"
+            text = f" You may start a new slideshow {ctx.author.mention}"
+            embed.add_field(name=title, value=text)
+            await ctx.send(embed=embed)
             slides.clear()
             for people in cheerup_players:
                 if people == ctx.author.mention:
@@ -504,7 +566,11 @@ conway_players = []
 async def conway(ctx):
     for people in conway_players:
         if people == ctx.author.mention:
-            await ctx.send('You already have a simulation going on...')
+            embedtemp = discord.Embed(colour=0xc8dc6c)
+            titletemp = "Error"
+            texttemp = f"You already have a simulation going on"
+            embedtemp.add_field(name=titletemp, value=texttemp)
+            await ctx.send(embed=embedtemp)
             return
     conway_players.append(ctx.author.mention)
     s = ['w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', '\n', 'w',
@@ -540,10 +606,16 @@ async def conway(ctx):
 
     final_display = "".join(s)
 
-    m0 = await ctx.send(f'>>> {final_display}')
+
 
     generation = [0]
-    m1 = await ctx.send(f'>>> Generation: {len(generation)}')
+
+
+    embed = discord.Embed(title="Game of Life",colour=0xc8dc6c)
+    title = f'Generation: {len(generation)}'
+    text = f"{final_display}"
+    embed.add_field(name=title, value=text)
+    m0 = await ctx.send(embed=embed)
     await asyncio.sleep(2)
 
     IsOver = [0]
@@ -629,13 +701,21 @@ async def conway(ctx):
 
         generation.append(0)
 
-        await m0.edit(content=f'>>> {final_next_display}')
-        await m1.edit(content=f'>>> Generation: {len(generation)}')
+        embed = discord.Embed(title="Game of Life", colour=0xc8dc6c)
+        title = f'Generation: {len(generation)}'
+        text = f"{final_display}"
+        embed.add_field(name=title, value=text)
+        await m0.edit(embed=embed)
+        await asyncio.sleep(2)
 
         if len(generation) == 100:
             generation.clear()
             IsOver.pop(0)
-            await ctx.send(f">>> Stopping at Generation 100, you may start a new simulation {ctx.author.mention}")
+            embed = discord.Embed( colour=0xc8dc6c)
+            title = f'Stopping at Generation 100'
+            text = f"You may start a new simulation {ctx.author.mention}"
+            embed.add_field(name=title, value=text)
+            await ctx.send(embed=embed)
             some_count.clear()
             blank_count.clear()
             for people in conway_players:
@@ -647,7 +727,11 @@ async def conway(ctx):
         if len(blank_count) == 200:
             generation.clear()
             IsOver.pop(0)
-            await ctx.send(f">>> No more Cells Remaining, you may start a new simulation {ctx.author.mention}")
+            embed = discord.Embed(colour=0xc8dc6c)
+            title = f'No More Cells Remaining'
+            text = f"You may start a new simulation {ctx.author.mention}"
+            embed.add_field(name=title, value=text)
+            await ctx.send(embed=embed)
             some_count.clear()
             blank_count.clear()
             for people in conway_players:
@@ -700,10 +784,27 @@ async def weather(ctx,*,city: str):
         elif wind["deg"] > 285 and wind["deg"] < 345:
             wind_direction = 'South-East'
 
-        big_message = f'>>> **Weather Forecast in {city.upper()}**\n\n**{detailed_desc.upper()}**\n\n:dash: Wind Speed: {round(wind["speed"] * 1.6)} kilometres/hour {wind_direction} (@ {wind["deg"]}°)\n:thermometer: Current Temperature: {round(temperature["temp"])}°C, Maximum: {round(temperature["temp_max"])}°C, Minimum: {round(temperature["temp_min"])}°C\n:sweat_drops: Humidity: {humidity}% with {cloud_coverage}% cloud coverage\n'
-        await ctx.send(big_message)
+        bigtitle = f"Weather Forecast in {city.capitalize()}"
+        embed = discord.Embed(title=bigtitle,colour=0xc8dc6c)
+        title = f"Observation"
+        text = f"{detailed_desc.capitalize()}"
+        title2 = "Wind Speed"
+        text2 = f'{round(wind["speed"] * 1.6)} kilometres/hour {wind_direction} (@ {wind["deg"]}°)'
+        title3 = "Current Temperature"
+        text3 = f'{round(temperature["temp"])}°C, Maximum: {round(temperature["temp_max"])}°C, Minimum: {round(temperature["temp_min"])}°C'
+        title4 = f"Humidity"
+        text4 = f"{humidity}% humid with {cloud_coverage}% cloud coverage"
+        embed.add_field(name=title, value=text)
+        embed.add_field(name=title2, value=text2)
+        embed.add_field(name=title3, value=text3)
+        embed.add_field(name=title4, value=text4)
+        await ctx.send(embed=embed)
     except Exception as e:
-        await ctx.send(str(e))
+        embed = discord.Embed( colour=0xc8dc6c)
+        title = f"Error"
+        text = f"{str(e)}"
+        embed.add_field(name=title, value=text)
+        await ctx.send(embed=embed)
 
 # Idol Guess
 
@@ -733,9 +834,10 @@ async def idolguess(ctx, *, guess):
         finalNameRaw = finalArrayForm[1]
         theFinalName.append(finalNameRaw[0:len(finalNameRaw) - 4].strip())
 
-        await ctx.send(f">>> Lives remaining: {4 - len(hasStarted)}  ")
-        await ctx.send(">>> Who is this?")
-        await ctx.send(file=discord.File("photos/"+ str(finalFromData)))
+        embed = discord.Embed(title="Who is this?", description=f'Lives remaining: {4 - len(hasStarted)}', colour=0xc8dc6c)
+        file = discord.File(("photos/" + str(finalFromData)), filename="image.jpg")
+        embed.set_image(url="attachment://image.jpg")
+        await ctx.send(file=file, embed=embed)
         await asyncio.sleep(30)
 
     elif guess.lower() == theFinalName[0].lower() and len(hasStarted) != 0:
@@ -754,18 +856,37 @@ async def idolguess(ctx, *, guess):
         finalNameRaw = finalArrayForm[1]
         theFinalName.append(finalNameRaw[0:len(finalNameRaw) - 4].strip())
 
-        await ctx.send(f">>> You are Correct! :white_check_mark: ")
-        await ctx.send(f">>> Lives remaining: {4 - len(hasStarted)}  ")
-        await ctx.send(">>> Who is this?")
-        await ctx.send(file=discord.File("photos/" + str(finalFromData)))
+
+        embedfirst = discord.Embed(colour=0xc8dc6c)
+        titlefirst = f"You are Correct!"
+        textfirst = f"Well done!"
+        embedfirst.add_field(name=titlefirst, value=textfirst)
+        await ctx.send(embed=embedfirst)
+
+        embed = discord.Embed(title="Who is this?", description=f'Lives remaining: {4 - len(hasStarted)}',
+                              colour=0xc8dc6c)
+        file = discord.File(("photos/" + str(finalFromData)), filename="image.jpg")
+        embed.set_image(url="attachment://image.jpg")
+        await ctx.send(file=file, embed=embed)
 
     elif ((guess.lower() != theFinalName[0].lower()) or (guess.lower() == 'skip')) and len(
             hasStarted) != 0 and guess.lower() != 'quit' and guess.lower() != 'start':
         hasStarted.append(0)
-        await ctx.send(f">>> Sorry, the answer was {theFinalName[0]} from {theFinalGroup[0]} ")
+
+        embedsecond = discord.Embed(colour=0xc8dc6c)
+        titlesecond = f"Sorry"
+        textsecond = f"The answer was {theFinalName[0]} from {theFinalGroup[0]}"
+        embedsecond.add_field(name=titlesecond, value=textsecond)
+        await ctx.send(embed=embedsecond)
 
         if len(hasStarted) == 4:
-            await ctx.send(f">>> You have lost...\n\nFinal score: {len(longScore)}")
+
+
+            embedthird = discord.Embed(title="You Have Lost",colour=0xc8dc6c)
+            titlethird = f"Final Score"
+            textthird = f"{len(longScore)}"
+            embedthird.add_field(name=titlethird, value=textthird)
+            await ctx.send(embed=embedthird)
             theFinalName.clear()
             theFinalGroup.clear()
             theFinalPhoto.clear()
@@ -786,13 +907,26 @@ async def idolguess(ctx, *, guess):
         finalNameRaw = finalArrayForm[1]
         theFinalName.append(finalNameRaw[0:len(finalNameRaw) - 4].strip())
 
-        await ctx.send(f">>> Lives remaining: {4 - len(hasStarted)}  ")
-        await ctx.send(">>> Who is this?")
-        await ctx.send(file=discord.File("photos/" + str(finalFromData)))
+        embed = discord.Embed(title="Who is this?", description=f'Lives remaining: {4 - len(hasStarted)}',
+                              colour=0xc8dc6c)
+        file = discord.File(("photos/" + str(finalFromData)), filename="image.jpg")
+        embed.set_image(url="attachment://image.jpg")
+        await ctx.send(file=file, embed=embed)
 
     elif guess.lower() == 'quit':
-        await ctx.send(
-            f">>> You have lost...\nThe answer was {theFinalName[0]} from {theFinalGroup[0]}\n\nFinal score: {len(longScore)}")
+
+        embedsecond = discord.Embed(colour=0xc8dc6c)
+        titlesecond = f"Sorry"
+        textsecond = f"The answer was {theFinalName[0]} from {theFinalGroup[0]}"
+        embedsecond.add_field(name=titlesecond, value=textsecond)
+        await ctx.send(embed=embedsecond)
+
+        embedthird = discord.Embed(title="You Have Lost", colour=0xc8dc6c)
+        titlethird = f"Final Score"
+        textthird = f"{len(longScore)}"
+        embedthird.add_field(name=titlethird, value=textthird)
+        await ctx.send(embed=embedthird)
+
         theFinalName.clear()
         theFinalGroup.clear()
         theFinalPhoto.clear()
@@ -800,7 +934,11 @@ async def idolguess(ctx, *, guess):
         longScore.clear()
 
     else:
-        await ctx.send(f">>> Sorry, that command is invalid for now...")
+        embedzero = discord.Embed(colour=0xc8dc6c)
+        titlezero = f"Sorry"
+        textzero = f"That command is invalid for now"
+        embedzero.add_field(name=titlezero, value=textzero)
+        await ctx.send(embed=embedzero)
 
 # Avalon
 rounds_array = [ [2,3,2,3,3] , [2,3,4,3,4], [2,3,3,4,4] , [3,4,4,5,5], [3,4,4,5,5],[3,4,4,5,5]]
@@ -1652,13 +1790,21 @@ async def reddit_updates():
 
                 # for post in new_kpop:
                 if post.url not in already_posted:
-                    await channel.send(post.title)
-                    await channel.send(post.url)
+                    embed = discord.Embed(title="New Update",colour=0xc8dc6c)
+                    title = f'{post.title}'
+                    embed.add_field(name=title,value="See post below")
+                    await channel.send(embed=embed)
+                    await channel.send(f'>>> {post.url}')
+
                     already_posted.append(post.url)
                     if len(already_posted) >= reset_limit:
                         already_posted.pop(0)
         except Exception as e:
-            await channel.send(str(e))
+            embed = discord.Embed(colour=0xc8dc6c)
+            title = f'An Error Occured'
+            text = str(e)
+            embed.add_field(name=title, value=text)
+            await channel.send(embed=embed)
 
 
 
