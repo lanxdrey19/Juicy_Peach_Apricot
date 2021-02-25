@@ -757,7 +757,11 @@ async def weather(ctx,*,city: str):
         try:
             obs = mgr.weather_at_place(city)
         except Exception as e:
-            await ctx.send(str(e))
+            embed2 = discord.Embed(colour=0xc8dc6c)
+            title2 = f"Error"
+            text2 = f"{str(e)}"
+            embed2.add_field(name=title2, value=text2)
+            await ctx.send(embed=embed2)
             return
         w = obs.weather
         detailed_desc = w.detailed_status
@@ -800,11 +804,11 @@ async def weather(ctx,*,city: str):
         embed.add_field(name=title4, value=text4)
         await ctx.send(embed=embed)
     except Exception as e:
-        embed = discord.Embed( colour=0xc8dc6c)
-        title = f"Error"
-        text = f"{str(e)}"
-        embed.add_field(name=title, value=text)
-        await ctx.send(embed=embed)
+        embed2 = discord.Embed(colour=0xc8dc6c)
+        title2 = f"Error"
+        text2 = f"{str(e)}"
+        embed2.add_field(name=title2, value=text2)
+        await ctx.send(embed=embed2)
 
 # Idol Guess
 
