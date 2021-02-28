@@ -1770,7 +1770,6 @@ async def avalon(ctx, *, command):
 # reddit
 already_posted = []
 
-
 @client.event
 async def reddit_updates():
 
@@ -1810,9 +1809,114 @@ async def reddit_updates():
             embed.add_field(name=title, value=text)
             await channel.send(embed=embed)
 
+@client.event
+async def weather_updates():
+    await client.wait_until_ready()
+    channel = client.get_channel(int(os.getenv("weather_news_channel_id")))
 
+    while not client.is_closed():
+        try:
+            owm = pyowm.OWM(os.getenv("OWM_API_KEY"))
+            mgr = owm.weather_manager()
+            try:
+                obs = mgr.weather_at_place("New Zealand")
+            except Exception as e:
+                embed2 = discord.Embed(colour=0xc8dc6c)
+                title2 = f"Error"
+                text2 = f"{str(e)}"
+                embed2.add_field(name=title2, value=text2)
+                await channel.send(embed=embed2)
+                return
+            w = obs.weather
+            detailed_desc = w.detailed_status
+            temperature = w.temperature('celsius')
+            cloud_coverage = w.clouds
+            wind = w.wind()
+            humidity = w.humidity
 
+            wind_direction = ""
+            if wind["deg"] >= 345 or wind["deg"] <= 15:
+                wind_direction = 'East'
+            elif wind["deg"] > 15 and wind["deg"] < 75:
+                wind_direction = 'North-East'
+            elif wind["deg"] >= 75 and wind["deg"] <= 105:
+                wind_direction = 'North'
+            elif wind["deg"] > 105 and wind["deg"] < 165:
+                wind_direction = 'North-West'
+            elif wind["deg"] >= 165 and wind["deg"] <= 195:
+                wind_direction = 'West'
+            elif wind["deg"] > 195 and wind["deg"] < 255:
+                wind_direction = 'South-West'
+            elif wind["deg"] >= 255 and wind["deg"] <= 285:
+                wind_direction = 'South'
+            elif wind["deg"] > 285 and wind["deg"] < 345:
+                wind_direction = 'South-East'
+
+            bigtitle = f"Weather Forecast in New Zealand"
+            embed = discord.Embed(title=bigtitle, colour=0xc8dc6c)
+            title = f"Observation"
+            text = f"{detailed_desc.capitalize()}"
+            title2 = "Wind Speed"
+            text2 = f'{round(wind["speed"] * 1.6)} kilometres/hour {wind_direction} (@ {wind["deg"]}°)'
+            title3 = "Current Temperature"
+            text3 = f'{round(temperature["temp"])}°C, Maximum: {round(temperature["temp_max"])}°C, Minimum: {round(temperature["temp_min"])}°C'
+            title4 = f"Humidity"
+            text4 = f"{humidity}% humid with {cloud_coverage}% cloud coverage"
+            embed.add_field(name=title, value=text)
+            embed.add_field(name=title2, value=text2)
+            embed.add_field(name=title3, value=text3)
+            embed.add_field(name=title4, value=text4)
+            await channel.send(embed=embed)
+        except Exception as e:
+            embed2 = discord.Embed(colour=0xc8dc6c)
+            title2 = f"Error"
+            text2 = f"{str(e)}"
+            embed2.add_field(name=title2, value=text2)
+            await channel.send(embed=embed2)
+        await asyncio.sleep(int(os.getenv("weather_wait_time")))
+
+@client.event
+async def idolpost_updates():
+    await client.wait_until_ready()
+    channel = client.get_channel(int(os.getenv("idolpost_channel_id")))
+
+    while not client.is_closed():
+        image_list = os.listdir("./photos")
+        counterNumber = len(image_list)
+        theIndex = randint(0, counterNumber - 1)
+        finalFromData = str(image_list[theIndex])
+        finalArrayForm = finalFromData.split(',')
+        finalGroup = finalArrayForm[0].strip()
+        finalNameRaw = finalArrayForm[1]
+        finalName = finalNameRaw[0:len(finalNameRaw) - 4].strip()
+
+        embed = discord.Embed(title="Idol of the Hour", description=f'{finalGroup} {finalName}', colour=0xc8dc6c)
+        file = discord.File(("photos/" + str(finalFromData)), filename="image.jpg")
+        embed.set_image(url="attachment://image.jpg")
+        await channel.send(file=file, embed=embed)
+        await asyncio.sleep(int(os.getenv("idolpost_wait_time")))
+
+@client.event
+async def botstatus_updates():
+    await client.wait_until_ready()
+    channel = client.get_channel(int(os.getenv("botstatus_channel_id")))
+
+    while not client.is_closed():
+        current_time = time.time()
+        difference = int(round(current_time - start_time))
+        text = str(timedelta(seconds=difference))
+        embed = discord.Embed(colour=0xc8dc6c)
+        embed.add_field(name="Uptime", value=text)
+        embed.set_footer(text="Juicy Peach Apricot")
+        try:
+            await channel.send(embed=embed)
+        except discord.HTTPException:
+            await channel.send("Current uptime: " + text)
+        await asyncio.sleep(int(os.getenv("botstatus_wait_time")))
 
 client.loop.create_task(reddit_updates())
+client.loop.create_task(weather_updates())
+client.loop.create_task(idolpost_updates())
+client.loop.create_task(botstatus_updates())
 client.run(my_discord_token)
 
