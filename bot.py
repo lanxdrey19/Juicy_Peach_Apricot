@@ -1852,6 +1852,7 @@ async def weather_updates():
             elif wind["deg"] > 285 and wind["deg"] < 345:
                 wind_direction = 'South-East'
 
+
             bigtitle = f"Weather Forecast in New Zealand"
             embed = discord.Embed(title=bigtitle, colour=0xc8dc6c)
             title = f"Observation"
