@@ -278,7 +278,7 @@ async def rolespage(ctx, amount=1):
 async def commands(ctx):
     await ctx.send(">>> Please check your DMs for the list of all commands :relaxed:")
     await ctx.author.send(
-        '```css\nGeneral Commands:\n\n.8ball {your_question} - Ask the bot a question\n\n.cheerup - Try this one if you are feeling down\n\n.conway - A Conway Game of Life Simulator\n\n.dice - Rolls die\n\n.format {twitter link with embed} - Retrieves images/gif of twitter embed and returns the date it was posted on\n\n.hug {@person} - Try this one on someone. This will only work if you ping the user you want to hug\n\n.isonline - Check whether the bot is online\n\n.match {person1 and person2} - Ship yourself with your crush (For example, type .match Me and Sojin)\n\n.piglatin {your message} - Convert your message to Pig Latin\n\n.ping - Checks latency\n\n.stanloona {your message} - Convert your message to let others know you really stan LOOΠΔ\n\n.weather {city or country} - Get the current weather in the location you have specified\n\n.uptime - Retrieves the uptime of the bot\n\nGame Commands:\n\n.idolguess commands - Displays the Guess the Idol Game commands\n\n.avalon commands - Displays the Avalon commands```')
+        '```css\nGeneral Commands:\n\n.8ball {your_question} - Ask the bot a question\n\n.cheerup - Try this one if you are feeling down\n\n.conway - A Conway Game of Life Simulator\n\n.dice - Rolls die\n\n.format {twitter link with embed} - Retrieves images/gif of twitter embed and returns the date it was posted on\n\n.hug {@person} - Try this one on someone. This will only work if you ping the user you want to hug\n\n.isonline - Check whether the bot is online\n\n.match {person1 and person2} - Ship yourself with your crush (For example, type .match Me and Sojin)\n\n.piglatin {your message} - Convert your message to Pig Latin\n\n.ping - Checks latency\n\n.stanloona {your message} - Convert your message to let others know you really stan LOOΠΔ\n\n.timer {time in minutes} - Set a timer for yourself (in minutes)\n\n.weather {city or country} - Get the current weather in the location you have specified\n\n.uptime - Retrieves the uptime of the bot\n\nGame Commands:\n\n.idolguess commands - Displays the Guess the Idol Game commands\n\n.avalon commands - Displays the Avalon commands```')
 
 
 @client.command(help="Checks Latency")
@@ -436,6 +436,51 @@ async def isonline(ctx):
             await m0.edit(embed=embedlast)
             online_counter.clear()
             return
+
+timer_players = []
+@client.command(help="Set a timer for yourself (in minutes)", aliases=['t'])
+async def timer(ctx, *, minutes):
+    try:
+        for people in timer_players:
+            if people == ctx.author.mention:
+                embedtemp = discord.Embed(colour=0xc8dc6c)
+                titletemp = "Error"
+                texttemp = f"You already have a timer elapsing"
+                embedtemp.add_field(name=titletemp, value=texttemp)
+                await ctx.send(embed=embedtemp)
+                return
+
+        if float(minutes) <= 0:
+            embednew = discord.Embed(title="Error",
+                                     description=f'Negative numbers and zero are not allowed',
+                                     colour=0xc8dc6c)
+            await ctx.send(embed=embednew)
+            return
+        timer_players.append(ctx.author.mention)
+        if float(minutes).is_integer() and int(minutes) == 1 :
+            description = f'You will be notified in {minutes} minute'
+        else:
+            description = f'You will be notified in {minutes} minutes'
+        embednew = discord.Embed(title=f"{ctx.author}: Your timer has started",
+                                 description=description,
+                                 colour=0xc8dc6c)
+        await ctx.send(embed=embednew)
+        await asyncio.sleep(int(60 * float(minutes)))
+        for people in timer_players:
+            if people == ctx.author.mention:
+                timer_players.remove(people)
+        embedlast = discord.Embed(title=f"{ctx.author}: Your timer has ended",
+                                 description=f'You may start a new timer',
+                                 colour=0xc8dc6c)
+        await ctx.author.send(embed=embedlast)
+    except ValueError:
+        embednew = discord.Embed(title="Error",
+                                 description=f'You must enter a number or your number cannot end with a 0',
+                                 colour=0xc8dc6c)
+        await ctx.send(embed=embednew)
+        for people in timer_players:
+            if people == ctx.author.mention:
+                timer_players.remove(people)
 
 cheerup_players = []
 slides = [0]
