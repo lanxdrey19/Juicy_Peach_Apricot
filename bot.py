@@ -37,7 +37,7 @@ dotenv.load_dotenv(override=True)
 import dateutil.parser
 
 # Bot prefix
-client = commands.Bot(command_prefix = '.')
+client = commands.Bot(command_prefix = '.',help_command=None)
 
 # Token
 
@@ -439,7 +439,7 @@ async def isonline(ctx):
 
 
 timer_players = []
-@client.command(help="Set a timer for yourself (in minutes)", aliases=['t'])
+@client.command(help="Set a timer for yourself (in minutes) and ping a role if you want to after the time has elapsed", aliases=['t'])
 async def timer(ctx, *, minutes):
 
     try:
