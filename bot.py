@@ -278,7 +278,7 @@ async def rolespage(ctx, amount=1):
 async def commands(ctx):
     await ctx.send(">>> Please check your DMs for the list of all commands :relaxed:")
     await ctx.author.send(
-        '```css\nGeneral Commands:\n\n.8ball {your_question} - Ask the bot a question\n\n.cheerup - Try this one if you are feeling down\n\n.conway - A Conway Game of Life Simulator\n\n.dice - Rolls die\n\n.format {twitter link with embed} - Retrieves images/gif of twitter embed and returns the date it was posted on\n\n.hug {@person} - Try this one on someone. This will only work if you ping the user you want to hug\n\n.isonline - Check whether the bot is online\n\n.match {person1 and person2} - Ship yourself with your crush (For example, type .match Me and Sojin)\n\n.piglatin {your message} - Convert your message to Pig Latin\n\n.ping - Checks latency\n\n.stanloona {your message} - Convert your message to let others know you really stan LOOΠΔ\n\n.timer {time in minutes} {role to ping} - Set a timer for yourself (in minutes). You can optionally provide an extra argument if you want to ping a role after the timer ends\n\n.weather {city or country} - Get the current weather in the location you have specified\n\n.uptime - Retrieves the uptime of the bot\n\nGame Commands:\n\n.idolguess commands - Displays the Guess the Idol Game commands\n\n.avalon commands - Displays the Avalon commands```')
+        '```css\nGeneral Commands:\n\n.8ball {your_question} - Ask the bot a question\n\n.cheerup - Try this one if you are feeling down\n\n.conway - A Conway Game of Life Simulator\n\n.dice {number}- Rolls {number} sided die\n\n.format {twitter link with embed} - Retrieves images/gif of twitter embed and returns the date it was posted on\n\n.hug {@person} - Try this one on someone. This will only work if you ping the user you want to hug\n\n.isonline - Check whether the bot is online\n\n.match {person1 and person2} - Ship yourself with your crush (For example, type .match Me and Sojin)\n\n.piglatin {your message} - Convert your message to Pig Latin\n\n.ping - Checks latency\n\n.stanloona {your message} - Convert your message to let others know you really stan LOOΠΔ\n\n.timer {time in minutes} {role to ping} - Set a timer for yourself (in minutes). You can optionally provide an extra argument if you want to ping a role after the timer ends\n\n.weather {city or country} - Get the current weather in the location you have specified\n\n.uptime - Retrieves the uptime of the bot\n\nGame Commands:\n\n.idolguess commands - Displays the Guess the Idol Game commands\n\n.avalon commands - Displays the Avalon commands```')
 
 
 @client.command(help="Checks Latency")
@@ -353,12 +353,20 @@ async def match(ctx, *, question):
 
 
 @client.command(help="Rolls die")
-async def dice(ctx):
-    embed = discord.Embed(colour=0xc8dc6c)
-    title = f"Rolls Game Die"
-    text = f'{randint(1, 6)}'
-    embed.add_field(name=title, value=text)
-    await ctx.send(embed=embed)
+async def dice(ctx, *, number):
+    try:
+        realnumber = int(number.strip())
+        embed = discord.Embed(colour=0xc8dc6c)
+        title = f"Rolls Game Die"
+        text = f'{randint(1, realnumber)}'
+        embed.add_field(name=title, value=text)
+        await ctx.send(embed=embed)
+    except Exception as e:
+        embed = discord.Embed(colour=0xc8dc6c)
+        title = f"Error"
+        text = f'You must enter one whole number only greater than 0'
+        embed.add_field(name=title, value=text)
+        await ctx.send(embed=embed)
 
 
 @client.command(help="Convert your message to let others know you really stan LOONA", aliases=['sl'])
