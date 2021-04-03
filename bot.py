@@ -1874,6 +1874,7 @@ async def reddit_updates():
             title = f'An Error Occured'
             text = str(e)
             embed.add_field(name=title, value=text)
+            channel = client.get_channel(int(os.getenv("error_stream_channel_id")))
             await channel.send(embed=embed)
 
 @client.event
