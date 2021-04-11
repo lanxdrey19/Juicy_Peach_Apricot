@@ -46,6 +46,8 @@ my_discord_token = os.getenv("MY_DISCORD_API_KEY")
 # For the bot's status
 cycleMessages = os.getenv("BOT_CYCLE_MESSAGES")
 longCycle = cycleMessages.split(",")
+for i in range(0,len(longCycle)):
+    longCycle[i] = longCycle[i] + os.getenv("BOT_CYCLE_SUFFIX")
 
 status = cycle(longCycle)
 @client.event
