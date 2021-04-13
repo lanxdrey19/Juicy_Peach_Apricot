@@ -426,8 +426,9 @@ async def isonline(ctx):
 
     await asyncio.sleep(interval)
     while not client.is_closed():
-        f = '%H:%M'
-        now = datetime.strftime(datetime.now(), f)
+        country_time_zone = pytz.timezone('NZ')
+        country_time = datetime.now(country_time_zone)
+        final_message_date = country_time.strftime("%B %d %Y at %H:%M:%S")
         await asyncio.sleep(interval)
         emojis = [":rabbit:",":cat:",":dove:",":frog:",":deer:",":owl:",":fish:",":bat:",":swan:",":penguin:",":butterfly:",":wolf:"]
         final_choice = random.choice(emojis)
@@ -442,7 +443,7 @@ async def isonline(ctx):
         online_counter.append(0)
         if len(online_counter) == 5:
             await asyncio.sleep(interval)
-            embedlast = discord.Embed(title="Is the Bot Online",description=f"Bot is online :relaxed:. Last updated at: {now} GMT",colour=0xc8dc6c)
+            embedlast = discord.Embed(title="Is the Bot Online",description=f"Bot is online :relaxed:. Last updated on {final_message_date} NZT",colour=0xc8dc6c)
             await m0.edit(embed=embedlast)
             online_counter.clear()
             return
