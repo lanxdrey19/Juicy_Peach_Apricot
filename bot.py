@@ -406,8 +406,10 @@ async def allidols(ctx):
     for idols in image_list:
         finalArrayForm = idols.split(',')
         finalGroup = finalArrayForm[0].strip()
-        finalNameRaw = finalArrayForm[1]
-        finalName = finalNameRaw[0:len(finalNameRaw) - 4].strip()
+        finalArrayForm[len(finalArrayForm) - 1] = finalArrayForm[len(finalArrayForm) - 1][
+                                                  0:len(finalArrayForm[len(finalArrayForm) - 1]) - 4].strip()
+        finalName = finalArrayForm[1]
+
         await ctx.send(f">>> {finalGroup} {finalName}")
     await ctx.send(f">>> End of List")
 
@@ -527,8 +529,9 @@ async def cheerup(ctx):
     finalFromData = str(image_list[theIndex])
     finalArrayForm = finalFromData.split(',')
     finalGroup = finalArrayForm[0].strip()
-    finalNameRaw = finalArrayForm[1]
-    finalName = finalNameRaw[0:len(finalNameRaw) - 4].strip()
+    finalArrayForm[len(finalArrayForm) - 1] = finalArrayForm[len(finalArrayForm) - 1][
+                                              0:len(finalArrayForm[len(finalArrayForm) - 1]) - 4].strip()
+    finalName = finalArrayForm[1]
 
     cheers = [f'{finalGroup} {finalName} hopes you are having a nice day today! :relaxed:',
               f'Best wishes :smiling_face_with_3_hearts:\nfrom {finalGroup} {finalName}',
@@ -570,15 +573,15 @@ async def cheerup(ctx):
     await asyncio.sleep(interval)
     while not client.is_closed():
 
-
         image_list = os.listdir("./photos")
         counterNumber = len(image_list)
         theIndex = randint(0, counterNumber - 1)
         finalFromData = str(image_list[theIndex])
         finalArrayForm = finalFromData.split(',')
         finalGroup = finalArrayForm[0].strip()
-        finalNameRaw = finalArrayForm[1]
-        finalName = finalNameRaw[0:len(finalNameRaw) - 4].strip()
+        finalArrayForm[len(finalArrayForm) - 1] = finalArrayForm[len(finalArrayForm) - 1][
+                                                  0:len(finalArrayForm[len(finalArrayForm) - 1]) - 4].strip()
+        finalName = finalArrayForm[1]
 
         cheers = [f'{finalGroup} {finalName} hopes you are having a nice day today! :relaxed:',
                   f'Best wishes :smiling_face_with_3_hearts:\nfrom {finalGroup} {finalName}',
@@ -885,7 +888,7 @@ async def weather(ctx,*,city: str):
 # Initialising Variables for Idol Guess
 
 theFinalGroup = []
-theFinalName = []
+theFinalNames = []
 theFinalPhoto = []
 hasStarted = []
 longScore = []
@@ -904,9 +907,13 @@ async def idolguess(ctx, *, guess):
         theIndex = randint(0, counterNumber - 1)
         finalFromData = str(image_list[theIndex])
         finalArrayForm = finalFromData.split(',')
+        finalArrayForm[len(finalArrayForm) - 1] = finalArrayForm[len(finalArrayForm) - 1][0:len(finalArrayForm[len(finalArrayForm) - 1]) - 4].strip()
         theFinalGroup.append(finalArrayForm[0].strip())
-        finalNameRaw = finalArrayForm[1]
-        theFinalName.append(finalNameRaw[0:len(finalNameRaw) - 4].strip())
+
+        finalArrayForm.pop(0)
+        for item in finalArrayForm:
+            theFinalNames.append(item)
+
 
         embed = discord.Embed(title="Who is this?", description=f'Lives remaining: {4 - len(hasStarted)}', colour=0xc8dc6c)
         file = discord.File(("photos/" + str(finalFromData)), filename="image.jpg")
@@ -914,9 +921,9 @@ async def idolguess(ctx, *, guess):
         await ctx.send(file=file, embed=embed)
         await asyncio.sleep(30)
 
-    elif guess.lower() == theFinalName[0].lower() and len(hasStarted) != 0:
+    elif guess.lower() in (name.lower() for name in theFinalNames) and len(hasStarted) != 0:
 
-        theFinalName.clear()
+        theFinalNames.clear()
         theFinalGroup.clear()
         theFinalPhoto.clear()
         longScore.append(0)
@@ -926,10 +933,12 @@ async def idolguess(ctx, *, guess):
         theIndex = randint(0, counterNumber - 1)
         finalFromData = str(image_list[theIndex])
         finalArrayForm = finalFromData.split(',')
+        finalArrayForm[len(finalArrayForm) - 1] = finalArrayForm[len(finalArrayForm) - 1][0:len(finalArrayForm[len(finalArrayForm) - 1]) - 4].strip()
         theFinalGroup.append(finalArrayForm[0].strip())
-        finalNameRaw = finalArrayForm[1]
-        theFinalName.append(finalNameRaw[0:len(finalNameRaw) - 4].strip())
 
+        finalArrayForm.pop(0)
+        for item in finalArrayForm:
+            theFinalNames.append(item)
 
         embedfirst = discord.Embed(colour=0xc8dc6c)
         titlefirst = f"You are Correct!"
@@ -943,13 +952,13 @@ async def idolguess(ctx, *, guess):
         embed.set_image(url="attachment://image.jpg")
         await ctx.send(file=file, embed=embed)
 
-    elif ((guess.lower() != theFinalName[0].lower()) or (guess.lower() == 'skip')) and len(
+    elif ((guess.lower() not in (name.lower() for name in theFinalNames) ) or (guess.lower() == 'skip')) and len(
             hasStarted) != 0 and guess.lower() != 'quit' and guess.lower() != 'start':
         hasStarted.append(0)
 
         embedsecond = discord.Embed(colour=0xc8dc6c)
         titlesecond = f"Sorry"
-        textsecond = f"The answer was {theFinalName[0]} from {theFinalGroup[0]}"
+        textsecond = f"The answer was {theFinalNames[0]} from {theFinalGroup[0]}"
         embedsecond.add_field(name=titlesecond, value=textsecond)
         await ctx.send(embed=embedsecond)
 
@@ -961,14 +970,14 @@ async def idolguess(ctx, *, guess):
             textthird = f"{len(longScore)}"
             embedthird.add_field(name=titlethird, value=textthird)
             await ctx.send(embed=embedthird)
-            theFinalName.clear()
+            theFinalNames.clear()
             theFinalGroup.clear()
             theFinalPhoto.clear()
             hasStarted.clear()
             longScore.clear()
             return
 
-        theFinalName.clear()
+        theFinalNames.clear()
         theFinalGroup.clear()
         theFinalPhoto.clear()
 
@@ -977,9 +986,13 @@ async def idolguess(ctx, *, guess):
         theIndex = randint(0, counterNumber - 1)
         finalFromData = str(image_list[theIndex])
         finalArrayForm = finalFromData.split(',')
+        finalArrayForm[len(finalArrayForm) - 1] = finalArrayForm[len(finalArrayForm) - 1][
+                                                  0:len(finalArrayForm[len(finalArrayForm) - 1]) - 4].strip()
         theFinalGroup.append(finalArrayForm[0].strip())
-        finalNameRaw = finalArrayForm[1]
-        theFinalName.append(finalNameRaw[0:len(finalNameRaw) - 4].strip())
+
+        finalArrayForm.pop(0)
+        for item in finalArrayForm:
+            theFinalNames.append(item)
 
         embed = discord.Embed(title="Who is this?", description=f'Lives remaining: {4 - len(hasStarted)}',
                               colour=0xc8dc6c)
@@ -991,7 +1004,7 @@ async def idolguess(ctx, *, guess):
 
         embedsecond = discord.Embed(colour=0xc8dc6c)
         titlesecond = f"Sorry"
-        textsecond = f"The answer was {theFinalName[0]} from {theFinalGroup[0]}"
+        textsecond = f"The answer was {theFinalNames[0]} from {theFinalGroup[0]}"
         embedsecond.add_field(name=titlesecond, value=textsecond)
         await ctx.send(embed=embedsecond)
 
@@ -1001,7 +1014,7 @@ async def idolguess(ctx, *, guess):
         embedthird.add_field(name=titlethird, value=textthird)
         await ctx.send(embed=embedthird)
 
-        theFinalName.clear()
+        theFinalNames.clear()
         theFinalGroup.clear()
         theFinalPhoto.clear()
         hasStarted.clear()
@@ -1959,8 +1972,9 @@ async def idolpost_updates():
         finalFromData = str(image_list[theIndex])
         finalArrayForm = finalFromData.split(',')
         finalGroup = finalArrayForm[0].strip()
-        finalNameRaw = finalArrayForm[1]
-        finalName = finalNameRaw[0:len(finalNameRaw) - 4].strip()
+        finalArrayForm[len(finalArrayForm) - 1] = finalArrayForm[len(finalArrayForm) - 1][
+                                                  0:len(finalArrayForm[len(finalArrayForm) - 1]) - 4].strip()
+        finalName = finalArrayForm[1]
 
         embed = discord.Embed(title="Idol of the Hour", description=f'{finalGroup} {finalName}', colour=0xc8dc6c)
         file = discord.File(("photos/" + str(finalFromData)), filename="image.jpg")
