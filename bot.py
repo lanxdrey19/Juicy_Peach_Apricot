@@ -428,7 +428,7 @@ async def isonline(ctx):
     while not client.is_closed():
         country_time_zone = pytz.timezone('NZ')
         country_time = datetime.now(country_time_zone)
-        final_message_date = country_time.strftime("%B %d %Y at %H:%M:%S")
+        final_message_date = country_time.strftime("%B %#d %Y at %H:%M:%S")
         await asyncio.sleep(interval)
         emojis = [":rabbit:",":cat:",":dove:",":frog:",":deer:",":owl:",":fish:",":bat:",":swan:",":penguin:",":butterfly:",":wolf:"]
         final_choice = random.choice(emojis)
@@ -1890,7 +1890,7 @@ async def weather_updates():
             owm = pyowm.OWM(os.getenv("OWM_API_KEY"))
             mgr = owm.weather_manager()
             try:
-                obs = mgr.weather_at_place("New Zealand")
+                obs = mgr.weather_at_place(os.getenv("MY_COUNTRY_LONG"))
             except Exception as e:
                 embed2 = discord.Embed(colour=0xc8dc6c)
                 title2 = f"Error"
@@ -1924,7 +1924,7 @@ async def weather_updates():
                 wind_direction = 'South-East'
 
 
-            bigtitle = f"Weather Forecast in New Zealand"
+            bigtitle = "Weather Forecast in " + os.getenv("MY_COUNTRY_LONG")
             embed = discord.Embed(title=bigtitle, colour=0xc8dc6c)
             title = f"Observation"
             text = f"{detailed_desc.capitalize()}"
@@ -1986,9 +1986,49 @@ async def botstatus_updates():
             await channel.send("Current uptime: " + text)
         await asyncio.sleep(int(os.getenv("botstatus_wait_time")))
 
+@client.event
+async def birthday_updates():
+    await client.wait_until_ready()
+    channel = client.get_channel(int(os.getenv("birthday_channel_id")))
+
+    while not client.is_closed():
+
+        country_time_zone = pytz.timezone(os.getenv("MY_COUNTRY_SHORT"))
+        country_time = datetime.now(country_time_zone)
+        final_date = country_time.strftime("%m-%d")
+        final_display_date = country_time.strftime("%B-%#d")
+
+
+        f2 = open('birthdays/currentDate.txt', "r")
+        currentDate = str(f2.readline()).strip()
+        f2.close()
+
+        if currentDate.strip() != final_date.strip():
+
+            # change recorded date to current date
+            f3 = open('birthdays/currentDate.txt', "w")
+            f3.write(final_date.strip())
+            f3.close()
+
+            text = ''
+            f = open(f"birthdays/{final_display_date}.txt", "r")
+
+            for item in f:
+                text = text + item
+
+            f.close()
+
+            embed = discord.Embed(colour=0xc8dc6c)
+            title = f"Birthdays for {final_date}"
+            embed.add_field(name=title, value=text)
+            await channel.send(embed=embed)
+
+        await asyncio.sleep(int(os.getenv("birthday_wait_time")))
+
 client.loop.create_task(reddit_updates())
 client.loop.create_task(weather_updates())
 client.loop.create_task(idolpost_updates())
 client.loop.create_task(botstatus_updates())
+client.loop.create_task(birthday_updates())
 client.run(my_discord_token)
 
