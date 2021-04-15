@@ -408,7 +408,7 @@ async def allidols(ctx):
         finalGroup = finalArrayForm[0].strip()
         finalArrayForm[len(finalArrayForm) - 1] = finalArrayForm[len(finalArrayForm) - 1][
                                                   0:len(finalArrayForm[len(finalArrayForm) - 1]) - 4].strip()
-        finalName = finalArrayForm[1]
+        finalName = finalArrayForm[1].strip()
 
         await ctx.send(f">>> {finalGroup} {finalName}")
     await ctx.send(f">>> End of List")
@@ -531,7 +531,7 @@ async def cheerup(ctx):
     finalGroup = finalArrayForm[0].strip()
     finalArrayForm[len(finalArrayForm) - 1] = finalArrayForm[len(finalArrayForm) - 1][
                                               0:len(finalArrayForm[len(finalArrayForm) - 1]) - 4].strip()
-    finalName = finalArrayForm[1]
+    finalName = finalArrayForm[1].strip()
 
     cheers = [f'{finalGroup} {finalName} hopes you are having a nice day today! :relaxed:',
               f'Best wishes :smiling_face_with_3_hearts:\nfrom {finalGroup} {finalName}',
@@ -581,7 +581,7 @@ async def cheerup(ctx):
         finalGroup = finalArrayForm[0].strip()
         finalArrayForm[len(finalArrayForm) - 1] = finalArrayForm[len(finalArrayForm) - 1][
                                                   0:len(finalArrayForm[len(finalArrayForm) - 1]) - 4].strip()
-        finalName = finalArrayForm[1]
+        finalName = finalArrayForm[1].strip()
 
         cheers = [f'{finalGroup} {finalName} hopes you are having a nice day today! :relaxed:',
                   f'Best wishes :smiling_face_with_3_hearts:\nfrom {finalGroup} {finalName}',
@@ -921,7 +921,7 @@ async def idolguess(ctx, *, guess):
         await ctx.send(file=file, embed=embed)
         await asyncio.sleep(30)
 
-    elif guess.lower() in (name.lower() for name in theFinalNames) and len(hasStarted) != 0:
+    elif guess.lower() in (name.lower().strip() for name in theFinalNames) and len(hasStarted) != 0:
 
         theFinalNames.clear()
         theFinalGroup.clear()
@@ -952,7 +952,7 @@ async def idolguess(ctx, *, guess):
         embed.set_image(url="attachment://image.jpg")
         await ctx.send(file=file, embed=embed)
 
-    elif ((guess.lower() not in (name.lower() for name in theFinalNames) ) or (guess.lower() == 'skip')) and len(
+    elif ((guess.lower() not in (name.lower().strip() for name in theFinalNames) ) or (guess.lower() == 'skip')) and len(
             hasStarted) != 0 and guess.lower() != 'quit' and guess.lower() != 'start':
         hasStarted.append(0)
 
@@ -1974,7 +1974,7 @@ async def idolpost_updates():
         finalGroup = finalArrayForm[0].strip()
         finalArrayForm[len(finalArrayForm) - 1] = finalArrayForm[len(finalArrayForm) - 1][
                                                   0:len(finalArrayForm[len(finalArrayForm) - 1]) - 4].strip()
-        finalName = finalArrayForm[1]
+        finalName = finalArrayForm[1].strip()
 
         embed = discord.Embed(title="Idol of the Hour", description=f'{finalGroup} {finalName}', colour=0xc8dc6c)
         file = discord.File(("photos/" + str(finalFromData)), filename="image.jpg")
@@ -2010,7 +2010,7 @@ async def birthday_updates():
         country_time_zone = pytz.timezone(os.getenv("MY_COUNTRY_SHORT"))
         country_time = datetime.now(country_time_zone)
         final_date = country_time.strftime("%m-%d")
-        final_display_date = country_time.strftime("%B-%#d")
+        final_display_date = country_time.strftime("%B %#d")
 
 
         f2 = open('birthdays/currentDate.txt', "r")
