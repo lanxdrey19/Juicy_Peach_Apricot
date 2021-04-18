@@ -2025,7 +2025,7 @@ async def birthday_updates():
             f3.close()
 
             text = ''
-            f = open(f"birthdays/{final_display_date}.txt", "r")
+            f = open(f"birthdays/{final_date.strip()}.txt", "r")
 
             for item in f:
                 text = text + item
@@ -2033,7 +2033,7 @@ async def birthday_updates():
             f.close()
 
             embed = discord.Embed(colour=0xc8dc6c)
-            title = f"Birthdays for {final_date}"
+            title = f"Birthdays for {final_display_date}"
             embed.add_field(name=title, value=text)
             await channel.send(embed=embed)
 
