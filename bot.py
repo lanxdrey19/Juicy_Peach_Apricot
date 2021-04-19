@@ -2000,6 +2000,7 @@ async def botstatus_updates():
             await channel.send("Current uptime: " + text)
         await asyncio.sleep(int(os.getenv("botstatus_wait_time")))
 
+
 @client.event
 async def birthday_updates():
     await client.wait_until_ready()
@@ -2012,25 +2013,21 @@ async def birthday_updates():
         final_date = country_time.strftime("%m-%d")
         final_display_date = country_time.strftime("%B %#d")
 
+        messages = await channel.history(limit=20).flatten()
 
-        f2 = open('birthdays/currentDate.txt', "r")
-        currentDate = str(f2.readline()).strip()
-        f2.close()
+        not_detected = True;
+        for thing in messages:
+            for embed in thing.embeds:
+                for field in embed.fields:
+                    if str(field.name).strip() == f"Birthdays for {final_display_date.strip()}":
+                        not_detected = False
 
-        if currentDate.strip() != final_date.strip():
-
-            # change recorded date to current date
-            f3 = open('birthdays/currentDate.txt', "w")
-            f3.write(final_date.strip())
-            f3.close()
+        if not_detected:
 
             text = ''
-            f = open(f"birthdays/{final_date.strip()}.txt", "r")
-
-            for item in f:
-                text = text + item
-
-            f.close()
+            with open(f"birthdays/{final_date.strip()}.txt", "r") as f:
+                for item in f:
+                    text = text + item
 
             embed = discord.Embed(colour=0xc8dc6c)
             title = f"Birthdays for {final_display_date}"
