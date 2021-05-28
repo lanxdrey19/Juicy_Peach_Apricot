@@ -27,6 +27,9 @@ from discord.ext.commands import Bot
 import discord
 from discord.utils import get
 
+# pagination
+import DiscordUtils
+
 # Secret stuff
 import sys
 import os
@@ -401,6 +404,10 @@ async def piglatin(ctx, *, arg):
 
 @client.command(help="retrieves all idols in the database", aliases=['ai'])
 async def allidols(ctx):
+    embedsList = []
+    idolGroups = []
+    idolNames = []
+
     image_list = os.listdir("./photos")
     image_list.sort(key=lambda x: x.lower())
     for idols in image_list:
@@ -410,8 +417,32 @@ async def allidols(ctx):
                                                   0:len(finalArrayForm[len(finalArrayForm) - 1]) - 4].strip()
         finalName = finalArrayForm[1].strip()
 
-        await ctx.send(f">>> {finalGroup} {finalName}")
-    await ctx.send(f">>> End of List")
+        idolNames.append(finalName)
+        idolGroups.append(finalGroup)
+
+    finalIdolNames = ''
+    currentIdolGroup = idolGroups[0]
+    for namesIndex in range(0,len(image_list)):
+
+        if currentIdolGroup != idolGroups[namesIndex] or namesIndex == len(idolNames) - 1:
+            embed = discord.Embed(colour=0xc8dc6c).add_field(name=currentIdolGroup, value=finalIdolNames)
+            currentIdolGroup = idolGroups[namesIndex]
+            embedsList.append(embed)
+            finalIdolNames = idolNames[namesIndex] + "\n"
+
+        else:
+            finalIdolNames = finalIdolNames + idolNames[namesIndex] + "\n"
+
+
+    paginator = DiscordUtils.Pagination.CustomEmbedPaginator(ctx, remove_reactions=True)
+    paginator.add_reaction('⏮️', "first")
+    paginator.add_reaction('⏪', "back")
+    paginator.add_reaction('🔐', "lock")
+    paginator.add_reaction('⏩', "next")
+    paginator.add_reaction('⏭️', "last")
+    await paginator.run(embedsList)
+
+
 
 online_counter = [0]
 
