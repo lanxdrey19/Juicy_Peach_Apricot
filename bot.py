@@ -445,11 +445,28 @@ async def allidols(ctx):
 @client.command(help="posts a video from a random K-Pop group", aliases=['rg'])
 async def randomgroup(ctx):
     randomVideos = []
-    text = ''
+    theirTitle = []
+    theGroup = []
     with open("videos.txt", "r") as f:
         for item in f:
-            randomVideos.append(item.split()[0])
-    await ctx.send(randomVideos[randint(0,len(randomVideos)-1)])
+            itemArray = item.split()
+            randomVideos.append(itemArray[0])
+            itemArray.pop(0)
+            finalText = ''
+            for word in itemArray:
+                finalText = finalText + word + " "
+            finalTextArray = finalText.split("-")
+            theGroup.append(finalTextArray[0].strip())
+            theirTitle.append(finalTextArray[1].strip())
+
+    finalIndex = randint(0,len(randomVideos)-1)
+
+    embed = discord.Embed(colour=0xc8dc6c)
+    title = theirTitle[finalIndex]
+    text = f'Artist: {theGroup[finalIndex]}'
+    embed.add_field(name=title, value=text)
+    await ctx.send(embed=embed)
+    await ctx.send(randomVideos[finalIndex])
 
 
 online_counter = [0]
