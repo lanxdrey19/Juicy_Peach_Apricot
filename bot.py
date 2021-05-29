@@ -455,7 +455,7 @@ async def randomgroup(ctx):
             finalText = ''
             for word in itemArray:
                 finalText = finalText + word + " "
-            finalTextArray = finalText.split("-")
+            finalTextArray = finalText.split(",")
             theGroup.append(finalTextArray[0].strip())
             theirTitle.append(finalTextArray[1].strip())
 
