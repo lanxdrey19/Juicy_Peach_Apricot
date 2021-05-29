@@ -449,15 +449,11 @@ async def randomgroup(ctx):
     theGroup = []
     with open("videos.txt", "r") as f:
         for item in f:
-            itemArray = item.split()
+            itemArray = item.split(",")
             randomVideos.append(itemArray[0])
-            itemArray.pop(0)
-            finalText = ''
-            for word in itemArray:
-                finalText = finalText + word + " "
-            finalTextArray = finalText.split(",")
-            theGroup.append(finalTextArray[0].strip())
-            theirTitle.append(finalTextArray[1].strip())
+            theGroup.append(itemArray[1])
+            theirTitle.append(itemArray[2])
+
 
     finalIndex = randint(0,len(randomVideos)-1)
 
