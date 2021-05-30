@@ -459,8 +459,8 @@ async def randomgroup(ctx):
     finalIndex = randint(0,len(Items)-1)
 
     embed = discord.Embed(colour=0xc8dc6c)
-    title = Items[finalIndex][1]
-    text = f'Artist: {Items[finalIndex][2]}'
+    title = Items[finalIndex][2]
+    text = f'Artist: {Items[finalIndex][1]}'
     embed.add_field(name=title, value=text)
     await ctx.send(embed=embed)
     await ctx.send(Items[finalIndex][0])
