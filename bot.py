@@ -39,6 +39,9 @@ dotenv.load_dotenv(override=True)
 # date and time outside of current country
 import dateutil.parser
 
+# set the random seed to system time
+random.seed()
+
 # Bot prefix
 client = commands.Bot(command_prefix = '.',help_command=None)
 
@@ -444,25 +447,23 @@ async def allidols(ctx):
 
 @client.command(help="posts a video from a random K-Pop group", aliases=['rg'])
 async def randomgroup(ctx):
-    randomVideos = []
-    theirTitle = []
-    theGroup = []
+    Items = []
+
     with open("videos.txt", "r") as f:
         for item in f:
             itemArray = item.split(",")
-            randomVideos.append(itemArray[0])
-            theGroup.append(itemArray[1])
-            theirTitle.append(itemArray[2])
+            Items.append(itemArray)
 
+    random.shuffle(Items)
 
-    finalIndex = randint(0,len(randomVideos)-1)
+    finalIndex = randint(0,len(Items)-1)
 
     embed = discord.Embed(colour=0xc8dc6c)
-    title = theirTitle[finalIndex]
-    text = f'Artist: {theGroup[finalIndex]}'
+    title = Items[finalIndex][1]
+    text = f'Artist: {Items[finalIndex][2]}'
     embed.add_field(name=title, value=text)
     await ctx.send(embed=embed)
-    await ctx.send(randomVideos[finalIndex])
+    await ctx.send(Items[finalIndex][0])
 
 
 online_counter = [0]
