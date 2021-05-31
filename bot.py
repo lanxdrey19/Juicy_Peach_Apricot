@@ -445,25 +445,40 @@ async def allidols(ctx):
     paginator.add_reaction('⏭️', "last")
     await paginator.run(embedsList)
 
-@client.command(help="posts a video from a random K-Pop group", aliases=['rg'])
-async def randomgroup(ctx):
-    Items = []
 
-    with open("videos.txt", "r") as f:
-        for item in f:
-            itemArray = item.split(",")
-            Items.append(itemArray)
+rgCounter = 0
+videoStopIndex = 0
+rgPointer = []
+indexArray = []
+Items = []
+with open("videos.txt", "r") as f:
+    for item in f:
+        indexArray.append(rgCounter)
+        rgCounter = rgCounter + 1
+
+        itemArray = item.split(",")
+        Items.append(itemArray)
 
     random.shuffle(Items)
+    videoStopIndex = rgCounter
 
-    finalIndex = randint(0,len(Items)-1)
+@client.command(help="posts a video from a random K-Pop group", aliases=['rg'])
+async def randomgroup(ctx):
 
     embed = discord.Embed(colour=0xc8dc6c)
-    title = Items[finalIndex][2]
-    text = f'Artist: {Items[finalIndex][1]}'
+    title = Items[len(rgPointer)][2]
+    text = f'Artist: {Items[len(rgPointer)][1]}'
     embed.add_field(name=title, value=text)
     await ctx.send(embed=embed)
-    await ctx.send(Items[finalIndex][0])
+    await ctx.send(Items[len(rgPointer)][0])
+
+    rgPointer.append(0)
+
+    if len(rgPointer) == videoStopIndex:
+
+        rgPointer.clear()
+        random.shuffle(Items)
+
 
 
 online_counter = [0]
