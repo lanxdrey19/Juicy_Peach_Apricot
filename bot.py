@@ -2079,7 +2079,7 @@ async def birthday_updates():
         country_time_zone = pytz.timezone(os.getenv("MY_COUNTRY_SHORT"))
         country_time = datetime.now(country_time_zone)
         final_date = country_time.strftime("%m-%d")
-        final_display_date = country_time.strftime("%B %#d")
+        final_display_date = country_time.strftime("%B %-d")
 
         messages = await channel.history(limit=20).flatten()
 
