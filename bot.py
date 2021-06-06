@@ -404,6 +404,20 @@ async def piglatin(ctx, *, arg):
     embed.add_field(name=title, value=text)
     await ctx.send(embed=embed)
 
+@client.command(help="retrieves all idols in the database", aliases=['aib'])
+async def allidolsbackup(ctx):
+    image_list = os.listdir("./photos")
+    image_list.sort(key=lambda x: x.lower())
+    await ctx.send(len(image_list))
+    for idols in image_list:
+        finalArrayForm = idols.split(',')
+        finalGroup = finalArrayForm[0].strip()
+        finalArrayForm[len(finalArrayForm) - 1] = finalArrayForm[len(finalArrayForm) - 1][
+                                                  0:len(finalArrayForm[len(finalArrayForm) - 1]) - 4].strip()
+        finalName = finalArrayForm[1].strip()
+
+        await ctx.send(f"{finalGroup} {finalName}")
+
 
 @client.command(help="retrieves all idols in the database", aliases=['ai'])
 async def allidols(ctx):
@@ -411,8 +425,10 @@ async def allidols(ctx):
     idolGroups = []
     idolNames = []
 
+
     image_list = os.listdir("./photos")
     image_list.sort(key=lambda x: x.lower())
+    await ctx.send(len(image_list))
     for idols in image_list:
         finalArrayForm = idols.split(',')
         finalGroup = finalArrayForm[0].strip()
@@ -425,13 +441,21 @@ async def allidols(ctx):
 
     finalIdolNames = ''
     currentIdolGroup = idolGroups[0]
-    for namesIndex in range(0,len(image_list)):
+    for namesIndex in range(len(image_list)):
 
-        if currentIdolGroup != idolGroups[namesIndex] or namesIndex == len(idolNames) - 1:
+        if currentIdolGroup != idolGroups[namesIndex]:
             embed = discord.Embed(colour=0xc8dc6c).add_field(name=currentIdolGroup, value=finalIdolNames)
-            currentIdolGroup = idolGroups[namesIndex]
             embedsList.append(embed)
+            currentIdolGroup = idolGroups[namesIndex]
             finalIdolNames = idolNames[namesIndex] + "\n"
+
+            if namesIndex == len(idolNames) - 1:
+                embed = discord.Embed(colour=0xc8dc6c).add_field(name=currentIdolGroup, value=finalIdolNames)
+                embedsList.append(embed)
+        elif currentIdolGroup == idolGroups[namesIndex] and namesIndex == len(idolNames) - 1:
+            finalIdolNames = finalIdolNames + idolNames[namesIndex] + "\n"
+            embed = discord.Embed(colour=0xc8dc6c).add_field(name=currentIdolGroup, value=finalIdolNames)
+            embedsList.append(embed)
 
         else:
             finalIdolNames = finalIdolNames + idolNames[namesIndex] + "\n"
