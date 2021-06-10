@@ -211,13 +211,17 @@ async def uptime(ctx):
         except discord.HTTPException:
             await ctx.send("Current uptime: " + text)
 
+
 # adding roles in kpop planet discord server
 @client.command(pass_context=True,aliases=['+'])
 async def addmain(ctx, *, role_name_request):
+    restricted_roles = os.getenv("kpop_nonaddable_roles").split(",")
+    for index in range(len(restricted_roles)):
+        restricted_roles[index] = int(restricted_roles[index].strip())
     final_role = None
     member = ctx.message.author
     for main_role in member.guild.roles:
-        if main_role.id != 689772319362646127 and main_role.id != 689775233325989918 and main_role.id != 745263173518491690 and main_role.id != 691190515043008564 and main_role.id != 700910886612893807:
+        if main_role.id not in restricted_roles:
             if role_name_request.lower() == str(main_role).lower():
                 final_role = discord.utils.get(member.guild.roles, name=str(main_role))
 
@@ -241,10 +245,13 @@ async def addmain(ctx, *, role_name_request):
 
 @client.command(pass_context=True,aliases=['-'])
 async def removemain(ctx, *, role_name_request):
+    restricted_roles = os.getenv("kpop_nonaddable_roles").split(",")
+    for index in range(len(restricted_roles)):
+        restricted_roles[index] = int(restricted_roles[index].strip())
     final_role = None
     member = ctx.message.author
     for main_role in member.guild.roles:
-        if main_role.id != 689772319362646127 and main_role.id != 689775233325989918 and main_role.id != 745263173518491690 and main_role.id != 691190515043008564 and main_role.id != 700910886612893807:
+        if main_role.id not in restricted_roles:
 
             if role_name_request.lower() == str(main_role).lower():
 
@@ -428,7 +435,7 @@ async def allidols(ctx):
 
     image_list = os.listdir("./photos")
     image_list.sort(key=lambda x: x.lower())
-    await ctx.send(len(image_list))
+
     for idols in image_list:
         finalArrayForm = idols.split(',')
         finalGroup = finalArrayForm[0].strip()
@@ -440,33 +447,47 @@ async def allidols(ctx):
         idolGroups.append(finalGroup)
 
     finalIdolNames = ''
-    currentIdolGroup = idolGroups[0]
+    refreshCount = []
+    currentIdolGroup = ''
+
     for namesIndex in range(len(image_list)):
 
-        if currentIdolGroup != idolGroups[namesIndex]:
-            embed = discord.Embed(colour=0xc8dc6c).add_field(name=currentIdolGroup, value=finalIdolNames)
+        if namesIndex == len(idolNames) - 1:
+            finalIdolNames = finalIdolNames + f", {idolNames[namesIndex]}"
+            embed = discord.Embed(title="All Idols",colour=0xc8dc6c).add_field(name=f"Total Idols: {len(image_list)} | Total Groups: {len(set(idolGroups))}", value=f"\n{finalIdolNames}", inline=False)
             embedsList.append(embed)
-            currentIdolGroup = idolGroups[namesIndex]
-            finalIdolNames = idolNames[namesIndex] + "\n"
+        elif currentIdolGroup != idolGroups[namesIndex]:
 
-            if namesIndex == len(idolNames) - 1:
-                embed = discord.Embed(colour=0xc8dc6c).add_field(name=currentIdolGroup, value=finalIdolNames)
+            if len(refreshCount) == 10:
+
+                embed = discord.Embed(title="All Idols", colour=0xc8dc6c).add_field(
+                    name=f"Total Idols: {len(image_list)} | Total Groups: {len(set(idolGroups))}", value=f"\n{finalIdolNames}", inline=False)
                 embedsList.append(embed)
-        elif currentIdolGroup == idolGroups[namesIndex] and namesIndex == len(idolNames) - 1:
-            finalIdolNames = finalIdolNames + idolNames[namesIndex] + "\n"
-            embed = discord.Embed(colour=0xc8dc6c).add_field(name=currentIdolGroup, value=finalIdolNames)
-            embedsList.append(embed)
+                refreshCount.clear()
+                currentIdolGroup = idolGroups[namesIndex]
+                finalIdolNames = f"\n\n__**{idolGroups[namesIndex]}**__\n{idolNames[namesIndex]}"
+
+            else:
+
+                currentIdolGroup = idolGroups[namesIndex]
+                finalIdolNames = finalIdolNames + f"\n\n__**{idolGroups[namesIndex]}**__\n{idolNames[namesIndex]}"
+
+            refreshCount.append(0)
 
         else:
-            finalIdolNames = finalIdolNames + idolNames[namesIndex] + "\n"
+            finalIdolNames = finalIdolNames + f", {idolNames[namesIndex]}"
+
+
 
 
     paginator = DiscordUtils.Pagination.CustomEmbedPaginator(ctx, remove_reactions=True)
+
     paginator.add_reaction('⏮️', "first")
     paginator.add_reaction('⏪', "back")
     paginator.add_reaction('🔐', "lock")
     paginator.add_reaction('⏩', "next")
     paginator.add_reaction('⏭️', "last")
+
     await paginator.run(embedsList)
 
 
