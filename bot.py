@@ -39,6 +39,10 @@ dotenv.load_dotenv(override=True)
 # date and time outside of current country
 import dateutil.parser
 
+# Bias Match Image manipulation
+from PIL import Image
+
+
 # set the random seed to system time
 random.seed()
 
@@ -293,7 +297,7 @@ async def rolespage(ctx, amount=1):
 async def commands(ctx):
     await ctx.send(">>> Please check your DMs for the list of all commands :relaxed:")
     await ctx.author.send(
-        '```css\nGeneral Commands:\n\n.8ball {your_question} - Ask the bot a question\n\n.cheerup - Try this one if you are feeling down\n\n.conway - A Conway Game of Life Simulator\n\n.dice {number}- Rolls {number} sided die\n\n.format {twitter link with embed} - Retrieves images/gif of twitter embed and returns the date it was posted on\n\n.hug {@person} - Try this one on someone. This will only work if you ping the user you want to hug\n\n.isonline - Check whether the bot is online\n\n.match {person1 and person2} - Ship yourself with your crush (For example, type .match Me and Sojin)\n\n.randomgroup - get a music video from a random K-Pop group\n\n.piglatin {your message} - Convert your message to Pig Latin\n\n.ping - Checks latency\n\n.stanloona {your message} - Convert your message to let others know you really stan LOOΠΔ\n\n.timer {time in minutes} {role to ping} - Set a timer for yourself (in minutes). You can optionally provide an extra argument if you want to ping a role after the timer ends\n\n.weather {city or country} - Get the current weather in the location you have specified\n\n.uptime - Retrieves the uptime of the bot\n\nGame Commands:\n\n.idolguess commands - Displays the Guess the Idol Game commands\n\n.avalon commands - Displays the Avalon commands```')
+        '```css\nGeneral Commands:\n\n.8ball {your_question} - Ask the bot a question\n\n.cheerup - Try this one if you are feeling down\n\n.conway - A Conway Game of Life Simulator\n\n.dice {number}- Rolls {number} sided die\n\n.format {twitter link with embed} - Retrieves images/gif of twitter embed and returns the date it was posted on\n\n.hug {@person} - Try this one on someone. This will only work if you ping the user you want to hug\n\n.isonline - Check whether the bot is online\n\n.match {person1 and person2} - Ship yourself with your crush (For example, type .match Me and Sojin)\n\n.randomgroup - get a music video from a random K-Pop group\n\n.piglatin {your message} - Convert your message to Pig Latin\n\n.ping - Checks latency\n\n.stanloona {your message} - Convert your message to let others know you really stan LOOΠΔ\n\n.timer {time in minutes} {role to ping} - Set a timer for yourself (in minutes). You can optionally provide an extra argument if you want to ping a role after the timer ends\n\n.weather {city or country} - Get the current weather in the location you have specified\n\n.uptime - Retrieves the uptime of the bot\n\nGame Commands:\n\n.biasmatch start - Starts up a new multiplayer game of Bias Match\n\n.idolguess commands - Displays the Guess the Idol Game commands\n\n.avalon commands - Displays the Avalon commands```')
 
 
 @client.command(help="Checks Latency")
@@ -996,6 +1000,167 @@ async def weather(ctx,*,city: str):
         embed2.add_field(name=title2, value=text2)
         await ctx.send(embed=embed2)
 
+
+
+
+biasMatchStatus = []
+@client.command(help="Play a multiplayer game of Bias Match", aliases=['bm'])
+async def biasmatch(ctx, *, entry):
+    idol_players = os.listdir("./photos")
+    random.shuffle(idol_players)
+    game_selection = []
+    for index in range(32):
+        game_selection.append(idol_players[index])
+    pre_selection = []
+    current_pointer = []
+
+
+    if entry.lower() == "start" and len(biasMatchStatus) == 0:
+        biasMatchStatus.append(0)
+        while len(biasMatchStatus) == 1:
+
+            finalFromData = str(game_selection[len(current_pointer)])
+            finalArrayForm = finalFromData.split(',')
+            finalGroup = finalArrayForm[0].strip()
+            finalName = finalArrayForm[1].strip()
+            if finalName.lower().endswith(".jpg"):
+                finalName = finalName[0:len(finalName) - 4]
+
+            finalFromData2 = str(game_selection[len(current_pointer) + 1])
+            finalArrayForm2 = finalFromData2.split(',')
+            finalGroup2 = finalArrayForm2[0].strip()
+            finalName2 = finalArrayForm2[1].strip()
+            if finalName2.lower().endswith(".jpg"):
+                finalName2 = finalName2[0:len(finalName2) - 4]
+
+            image1 = Image.open("photos/" + str(finalFromData))
+
+
+            image2 = Image.open("photos/" + str(finalFromData2))
+
+
+            image1 = image1.resize((426, 500))
+            image2 = image2.resize((426, 500))
+
+            image1_size = image1.size
+
+            new_image = Image.new('RGB', (2 * image1_size[0], image1_size[1]), (250, 250, 250))
+
+            new_image.paste(image1, (0, 0))
+
+            new_image.paste(image2, (image1_size[0], 0))
+
+            new_image.save("merged_image.jpg", "JPEG")
+
+            embed = discord.Embed(title="Who will win?", description=f'{finalGroup} {finalName} vs {finalGroup2} {finalName2}', colour=0xc8dc6c)
+            file = discord.File(("merged_image.jpg"), filename="image.jpg")
+            embed.set_image(url="attachment://image.jpg")
+            msg = await ctx.send(file=file, embed=embed)
+
+
+            await msg.add_reaction("⬅")
+            await msg.add_reaction("➡")
+
+
+            await asyncio.sleep(10)
+
+
+            nmsg = await ctx.channel.fetch_message(msg.id)
+
+            #count reactions
+            reaction = discord.utils.get(nmsg.reactions, emoji="⬅")
+            reaction2 = discord.utils.get(nmsg.reactions, emoji="➡")
+
+            if reaction.count > reaction2.count:
+
+                pre_selection.append(game_selection[len(current_pointer)])
+
+            elif reaction2.count > reaction.count:
+
+                pre_selection.append(game_selection[len(current_pointer) + 1])
+
+
+            elif reaction.count == reaction2.count:
+                finalNo = randint(1, 2)
+
+                if finalNo == 1:
+                    await nmsg.add_reaction('⏪')
+
+                    pre_selection.append(game_selection[len(current_pointer)])
+
+
+                else:
+                    await nmsg.add_reaction('⏩')
+                    pre_selection.append(game_selection[len(current_pointer) + 1] )
+
+
+            if len(game_selection) - 1 == len(current_pointer) + 1:
+
+                game_selection.clear()
+                for entry in pre_selection:
+                    game_selection.append(entry)
+
+                pre_selection.clear()
+                current_pointer.clear()
+
+            else:
+
+                current_pointer.append(0)
+                current_pointer.append(0)
+
+
+            await nmsg.delete()
+
+            if len(game_selection) == 1:
+                finalFromData = str(game_selection[0])
+                finalArrayForm = finalFromData.split(',')
+                finalGroup = finalArrayForm[0].strip()
+                finalName = finalArrayForm[1].strip()
+                if finalName.lower().endswith(".jpg"):
+                    finalName = finalName[0:len(finalName) - 4]
+
+                embed = discord.Embed(title="The winner is...",
+                                      description=f'__**{finalGroup} {finalName}**__',
+                                      colour=0xc8dc6c)
+                file = discord.File(("photos/" + str(finalFromData)), filename="image.jpg")
+                embed.set_image(url="attachment://image.jpg")
+                await ctx.send(file=file, embed=embed)
+
+                biasMatchStatus.clear()
+    else:
+        embedsecond = discord.Embed(colour=0xc8dc6c)
+        titlesecond = f"Sorry"
+        textsecond = f"There is a Bias Match session currently running"
+        embedsecond.add_field(name=titlesecond, value=textsecond)
+        await ctx.send(embed=embedsecond)
+
+@client.command()
+async def imagemerge(ctx):
+    await ctx.send("start")
+    image1 = Image.open('photos/DIA,Yebin.JPG')
+    await ctx.send("start")
+
+    image2 = Image.open('photos/DKB,D1.JPG')
+    await ctx.send("start")
+    # resize, first image
+    image1 = image1.resize((426, 500))
+    image2 = image2.resize((426, 500))
+    await ctx.send("start")
+    image1_size = image1.size
+    await ctx.send("start")
+    new_image = Image.new('RGB', (2 * image1_size[0], image1_size[1]), (250, 250, 250))
+    await ctx.send("start")
+    new_image.paste(image1, (0, 0))
+    await ctx.send("start")
+    new_image.paste(image2, (image1_size[0], 0))
+    await ctx.send("start")
+    new_image.save("merged_image.jpg", "JPEG")
+
+    await ctx.send("done")
+
+
+
+
 # Idol Guess
 
 # Initialising Variables for Idol Guess
@@ -1005,7 +1170,6 @@ theFinalNames = []
 theFinalPhoto = []
 hasStarted = []
 longScore = []
-
 
 @client.command(help="Type '.idolguess commands' for more information about how to play Idol Guess", aliases=['ig'])
 async def idolguess(ctx, *, guess):
