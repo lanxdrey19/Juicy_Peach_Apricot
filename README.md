@@ -33,3 +33,5 @@ Dependencies:
 
 * pip install DiscordUtils
 
+* pip install pillow
+
