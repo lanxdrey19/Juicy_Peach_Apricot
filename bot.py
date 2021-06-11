@@ -1066,7 +1066,7 @@ async def biasmatch(ctx):
             await msg.add_reaction("➡")
 
 
-            await asyncio.sleep(10)
+            await asyncio.sleep(8)
 
 
             nmsg = await ctx.channel.fetch_message(msg.id)
@@ -1113,7 +1113,7 @@ async def biasmatch(ctx):
                 current_pointer.append(0)
                 current_pointer.append(0)
 
-
+            await asyncio.sleep(2)
             await nmsg.delete()
 
             if len(game_selection) == 1:
