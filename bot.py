@@ -1001,7 +1001,7 @@ async def weather(ctx,*,city: str):
         await ctx.send(embed=embed2)
 
 
-
+# Bias Match
 
 biasMatchStatus = []
 @client.command(help="Play a multiplayer game of Bias Match", aliases=['bm'])
@@ -1039,12 +1039,14 @@ async def biasmatch(ctx, *, entry):
             image2 = Image.open("photos/" + str(finalFromData2))
 
 
-            image1 = image1.resize((426, 500))
-            image2 = image2.resize((426, 500))
+            image1 = image1.resize((500, 600))
+            image2 = image2.resize((525, 600))
 
             image1_size = image1.size
+            image2_size = image2.size
 
-            new_image = Image.new('RGB', (2 * image1_size[0], image1_size[1]), (250, 250, 250))
+            new_image = Image.new('RGB', ( image1_size[0] + image2_size[0] , image1_size[1]), (250, 250, 250))
+
 
             new_image.paste(image1, (0, 0))
 
@@ -1074,11 +1076,12 @@ async def biasmatch(ctx, *, entry):
             if reaction.count > reaction2.count:
 
                 pre_selection.append(game_selection[len(current_pointer)])
+                await nmsg.add_reaction('⏪')
 
             elif reaction2.count > reaction.count:
 
                 pre_selection.append(game_selection[len(current_pointer) + 1])
-
+                await nmsg.add_reaction('⏩')
 
             elif reaction.count == reaction2.count:
                 finalNo = randint(1, 2)
@@ -1133,33 +1136,6 @@ async def biasmatch(ctx, *, entry):
         textsecond = f"There is a Bias Match session currently running"
         embedsecond.add_field(name=titlesecond, value=textsecond)
         await ctx.send(embed=embedsecond)
-
-@client.command()
-async def imagemerge(ctx):
-    await ctx.send("start")
-    image1 = Image.open('photos/DIA,Yebin.JPG')
-    await ctx.send("start")
-
-    image2 = Image.open('photos/DKB,D1.JPG')
-    await ctx.send("start")
-    # resize, first image
-    image1 = image1.resize((426, 500))
-    image2 = image2.resize((426, 500))
-    await ctx.send("start")
-    image1_size = image1.size
-    await ctx.send("start")
-    new_image = Image.new('RGB', (2 * image1_size[0], image1_size[1]), (250, 250, 250))
-    await ctx.send("start")
-    new_image.paste(image1, (0, 0))
-    await ctx.send("start")
-    new_image.paste(image2, (image1_size[0], 0))
-    await ctx.send("start")
-    new_image.save("merged_image.jpg", "JPEG")
-
-    await ctx.send("done")
-
-
-
 
 # Idol Guess
 
