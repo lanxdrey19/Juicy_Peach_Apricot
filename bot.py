@@ -297,7 +297,7 @@ async def rolespage(ctx, amount=1):
 async def commands(ctx):
     await ctx.send(">>> Please check your DMs for the list of all commands :relaxed:")
     await ctx.author.send(
-        '```css\nGeneral Commands:\n\n.8ball {your_question} - Ask the bot a question\n\n.cheerup - Try this one if you are feeling down\n\n.conway - A Conway Game of Life Simulator\n\n.dice {number}- Rolls {number} sided die\n\n.format {twitter link with embed} - Retrieves images/gif of twitter embed and returns the date it was posted on\n\n.hug {@person} - Try this one on someone. This will only work if you ping the user you want to hug\n\n.isonline - Check whether the bot is online\n\n.match {person1 and person2} - Ship yourself with your crush (For example, type .match Me and Sojin)\n\n.randomgroup - get a music video from a random K-Pop group\n\n.piglatin {your message} - Convert your message to Pig Latin\n\n.ping - Checks latency\n\n.stanloona {your message} - Convert your message to let others know you really stan LOOΠΔ\n\n.timer {time in minutes} {role to ping} - Set a timer for yourself (in minutes). You can optionally provide an extra argument if you want to ping a role after the timer ends\n\n.weather {city or country} - Get the current weather in the location you have specified\n\n.uptime - Retrieves the uptime of the bot\n\nGame Commands:\n\n.biasmatch start - Starts up a new multiplayer game of Bias Match\n\n.idolguess commands - Displays the Guess the Idol Game commands\n\n.avalon commands - Displays the Avalon commands```')
+        '```css\nGeneral Commands:\n\n.8ball {your_question} - Ask the bot a question\n\n.cheerup - Try this one if you are feeling down\n\n.conway - A Conway Game of Life Simulator\n\n.dice {number}- Rolls {number} sided die\n\n.format {twitter link with embed} - Retrieves images/gif of twitter embed and returns the date it was posted on\n\n.hug {@person} - Try this one on someone. This will only work if you ping the user you want to hug\n\n.isonline - Check whether the bot is online\n\n.match {person1 and person2} - Ship yourself with your crush (For example, type .match Me and Sojin)\n\n.randomgroup - get a music video from a random K-Pop group\n\n.piglatin {your message} - Convert your message to Pig Latin\n\n.ping - Checks latency\n\n.stanloona {your message} - Convert your message to let others know you really stan LOOΠΔ\n\n.timer {time in minutes} {role to ping} - Set a timer for yourself (in minutes). You can optionally provide an extra argument if you want to ping a role after the timer ends\n\n.weather {city or country} - Get the current weather in the location you have specified\n\n.uptime - Retrieves the uptime of the bot\n\nGame Commands:\n\n.biasmatch - Starts up a new multiplayer game of Bias Match\n\n.idolguess commands - Displays the Guess the Idol Game commands\n\n.avalon commands - Displays the Avalon commands```')
 
 
 @client.command(help="Checks Latency")
@@ -1003,9 +1003,10 @@ async def weather(ctx,*,city: str):
 
 # Bias Match
 
-biasMatchStatus = []
+
+server_players = []
 @client.command(help="Play a multiplayer game of Bias Match", aliases=['bm'])
-async def biasmatch(ctx, *, entry):
+async def biasmatch(ctx):
     idol_players = os.listdir("./photos")
     random.shuffle(idol_players)
     game_selection = []
@@ -1015,9 +1016,10 @@ async def biasmatch(ctx, *, entry):
     current_pointer = []
 
 
-    if entry.lower() == "start" and len(biasMatchStatus) == 0:
-        biasMatchStatus.append(0)
-        while len(biasMatchStatus) == 1:
+    if ctx.guild.id not in server_players:
+        server_players.append(ctx.guild.id)
+
+        while ctx.guild.id in server_players:
 
             finalFromData = str(game_selection[len(current_pointer)])
             finalArrayForm = finalFromData.split(',')
@@ -1129,11 +1131,11 @@ async def biasmatch(ctx, *, entry):
                 embed.set_image(url="attachment://image.jpg")
                 await ctx.send(file=file, embed=embed)
 
-                biasMatchStatus.clear()
+                server_players.remove(ctx.guild.id)
     else:
         embedsecond = discord.Embed(colour=0xc8dc6c)
         titlesecond = f"Sorry"
-        textsecond = f"There is a Bias Match session currently running"
+        textsecond = f"There is a Bias Match session currently running in this server"
         embedsecond.add_field(name=titlesecond, value=textsecond)
         await ctx.send(embed=embedsecond)
 
