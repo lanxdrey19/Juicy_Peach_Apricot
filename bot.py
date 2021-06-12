@@ -1000,7 +1000,6 @@ async def weather(ctx,*,city: str):
         embed2.add_field(name=title2, value=text2)
         await ctx.send(embed=embed2)
 
-
 # Bias Match
 
 
@@ -1056,7 +1055,13 @@ async def biasmatch(ctx):
 
             new_image.save("merged_image.jpg", "JPEG")
 
-            embed = discord.Embed(title="Who will win?", description=f'{finalGroup} {finalName} vs {finalGroup2} {finalName2}', colour=0xc8dc6c)
+            final_title = "Choose the idol to move on to the next round"
+
+            if len(game_selection) == 2:
+                final_title = "Choose the winner of the final round"
+
+            embed = discord.Embed(title=final_title, description=f'{finalGroup} {finalName} vs {finalGroup2} {finalName2}', colour=0xc8dc6c)
+
             file = discord.File(("merged_image.jpg"), filename="image.jpg")
             embed.set_image(url="attachment://image.jpg")
             msg = await ctx.send(file=file, embed=embed)
@@ -1115,6 +1120,8 @@ async def biasmatch(ctx):
 
             await asyncio.sleep(2)
             await nmsg.delete()
+
+
 
             if len(game_selection) == 1:
                 finalFromData = str(game_selection[0])
