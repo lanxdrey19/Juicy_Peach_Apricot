@@ -6,11 +6,9 @@ A fun discord bot written in python which automates manual processes and increas
 
 * Various activities which are commenced when certain words are mentioned in text-channels
 
-* Guess the K-pop idol
+* Guess the K-Pop Idol and K-Pop Idol Match
 
 * Conway's Game of Life simulation
-
-* Avalon (The Game)
 
 * K-pop bias group role assignment
 
