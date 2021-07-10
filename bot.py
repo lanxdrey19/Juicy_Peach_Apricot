@@ -7,16 +7,13 @@ import asyncio
 # for weather updates
 import pyowm
 
-# reddit
-import praw
-import apraw
-
+# math utilities
 import math
 import random
 from itertools import cycle
 from random import randint
 
-#
+# time utilities
 from datetime import datetime, date, timedelta
 import pytz
 import time
@@ -63,17 +60,11 @@ status = cycle(longCycle)
 @client.event
 async def on_ready():
     try:
-        change_status.start()
-        # await client.change_presence(status=discord.Status.online, activity=discord.Game('Always Be Your Girl (너의 소녀가 되어줄게)'))
         print('Bot is ready.')
         print('We have logged in as {0.user}'.format(client))
     except Exception as e:
         print(str(e))
 
-
-@tasks.loop(seconds=20)
-async def change_status():
-    await client.change_presence(activity=discord.Game(next(status)))
 
 
 # Events that get triggered
@@ -1289,198 +1280,18 @@ async def idolguess(ctx, *, guess):
         embedzero.add_field(name=titlezero, value=textzero)
         await ctx.send(embed=embedzero)
 
-
-# reddit
-already_posted = []
-
-@client.event
-async def reddit_updates():
-
-    #new
-    global post
-    reset_limit = 205
-    await client.wait_until_ready()
-    channel = client.get_channel(int(os.getenv("kpop_news_channel_id")))
-    reddit = apraw.Reddit(client_id=os.getenv("reddit_client_id"), client_secret=os.getenv("reddit_client_secret"),
-                          username=os.getenv("reddit_username"), password=os.getenv("reddit_password"),
-                          user_agent=os.getenv("reddit_user_agent"))
-
-    subreddit = await reddit.subreddit('kpop')
-    #new_kpop = subreddit.new(limit=5)
-
-    while not client.is_closed():
-        try:
-            #  #async for post in subreddit.stream.submissions():
-            async for post in subreddit.hot(limit=10):
-                await asyncio.sleep(int(os.getenv("reddit_wait_time")))
-
-                # for post in new_kpop:
-                if post.url not in already_posted:
-                    embed = discord.Embed(title="New Update",colour=0xc8dc6c)
-                    title = f'{post.title}'
-                    embed.add_field(name=title,value="See post below")
-                    await channel.send(embed=embed)
-                    await channel.send(f'>>> {post.url}')
-
-                    already_posted.append(post.url)
-                    if len(already_posted) >= reset_limit:
-                        already_posted.pop(0)
-        except Exception as e:
-            embed = discord.Embed(colour=0xc8dc6c)
-            title = f'An Error Occured'
-            text = str(e)
-            embed.add_field(name=title, value=text)
-            channel = client.get_channel(int(os.getenv("error_stream_channel_id")))
-            await channel.send(embed=embed)
-
-@client.event
-async def weather_updates():
-    await client.wait_until_ready()
-    channel = client.get_channel(int(os.getenv("weather_news_channel_id")))
-
-    while not client.is_closed():
-        try:
-            owm = pyowm.OWM(os.getenv("OWM_API_KEY"))
-            mgr = owm.weather_manager()
-            try:
-                obs = mgr.weather_at_place(os.getenv("MY_COUNTRY_LONG"))
-            except Exception as e:
-                embed2 = discord.Embed(colour=0xc8dc6c)
-                title2 = f"Error"
-                text2 = f"{str(e)}"
-                embed2.add_field(name=title2, value=text2)
-                await channel.send(embed=embed2)
-                return
-            w = obs.weather
-            detailed_desc = w.detailed_status
-            temperature = w.temperature('celsius')
-            cloud_coverage = w.clouds
-            wind = w.wind()
-            humidity = w.humidity
-
-            wind_direction = ""
-            if wind["deg"] >= 345 or wind["deg"] <= 15:
-                wind_direction = 'East'
-            elif wind["deg"] > 15 and wind["deg"] < 75:
-                wind_direction = 'North-East'
-            elif wind["deg"] >= 75 and wind["deg"] <= 105:
-                wind_direction = 'North'
-            elif wind["deg"] > 105 and wind["deg"] < 165:
-                wind_direction = 'North-West'
-            elif wind["deg"] >= 165 and wind["deg"] <= 195:
-                wind_direction = 'West'
-            elif wind["deg"] > 195 and wind["deg"] < 255:
-                wind_direction = 'South-West'
-            elif wind["deg"] >= 255 and wind["deg"] <= 285:
-                wind_direction = 'South'
-            elif wind["deg"] > 285 and wind["deg"] < 345:
-                wind_direction = 'South-East'
-
-
-            bigtitle = "Weather Forecast in " + os.getenv("MY_COUNTRY_LONG")
-            embed = discord.Embed(title=bigtitle, colour=0xc8dc6c)
-            title = f"Observation"
-            text = f"{detailed_desc.capitalize()}"
-            title2 = "Wind Speed"
-            text2 = f'{round(wind["speed"] * 1.6)} kilometres/hour {wind_direction} (@ {wind["deg"]}°)'
-            title3 = "Current Temperature"
-            text3 = f'{round(temperature["temp"])}°C, Maximum: {round(temperature["temp_max"])}°C, Minimum: {round(temperature["temp_min"])}°C'
-            title4 = f"Humidity"
-            text4 = f"{humidity}% humid with {cloud_coverage}% cloud coverage"
-            embed.add_field(name=title, value=text)
-            embed.add_field(name=title2, value=text2)
-            embed.add_field(name=title3, value=text3)
-            embed.add_field(name=title4, value=text4)
-            await channel.send(embed=embed)
-        except Exception as e:
-            embed2 = discord.Embed(colour=0xc8dc6c)
-            title2 = f"Error"
-            text2 = f"{str(e)}"
-            embed2.add_field(name=title2, value=text2)
-            await channel.send(embed=embed2)
-        await asyncio.sleep(int(os.getenv("weather_wait_time")))
-
-@client.event
-async def idolpost_updates():
-    await client.wait_until_ready()
-    channel = client.get_channel(int(os.getenv("idolpost_channel_id")))
-
-    while not client.is_closed():
-        image_list = os.listdir("./photos")
-        counterNumber = len(image_list)
-        theIndex = randint(0, counterNumber - 1)
-        finalFromData = str(image_list[theIndex])
-        finalArrayForm = finalFromData.split(',')
-        finalGroup = finalArrayForm[0].strip()
-        finalArrayForm[len(finalArrayForm) - 1] = finalArrayForm[len(finalArrayForm) - 1][
-                                                  0:len(finalArrayForm[len(finalArrayForm) - 1]) - 4].strip()
-        finalName = finalArrayForm[1].strip()
-
-        embed = discord.Embed(title="Idol of the Hour", description=f'{finalGroup} {finalName}', colour=0xc8dc6c)
-        file = discord.File(("photos/" + str(finalFromData)), filename="image.jpg")
-        embed.set_image(url="attachment://image.jpg")
-        await channel.send(file=file, embed=embed)
-        await asyncio.sleep(int(os.getenv("idolpost_wait_time")))
-
-@client.event
-async def botstatus_updates():
+@tasks.loop(seconds = 10) # repeat after every 10 seconds
+async def myLoop():
     await client.wait_until_ready()
     channel = client.get_channel(int(os.getenv("botstatus_channel_id")))
-
-    while not client.is_closed():
-        current_time = time.time()
-        difference = int(round(current_time - start_time))
-        text = str(timedelta(seconds=difference))
-        embed = discord.Embed(colour=0xc8dc6c)
-        embed.add_field(name="Uptime", value=text)
-        embed.set_footer(text="Juicy Peach Apricot")
-        try:
-            await channel.send(embed=embed)
-        except discord.HTTPException:
-            await channel.send("Current uptime: " + text)
-        await asyncio.sleep(int(os.getenv("botstatus_wait_time")))
+    try:
+        await channel.send("test")
+    except discord.HTTPException:
+        await channel.send("Current uptime:  fail")
 
 
-@client.event
-async def birthday_updates():
-    await client.wait_until_ready()
-    channel = client.get_channel(int(os.getenv("birthday_channel_id")))
 
-    while not client.is_closed():
+myLoop.start()
 
-        country_time_zone = pytz.timezone(os.getenv("MY_COUNTRY_SHORT"))
-        country_time = datetime.now(country_time_zone)
-        final_date = country_time.strftime("%m-%d")
-        final_display_date = country_time.strftime("%B %-d")
-
-        messages = await channel.history(limit=20).flatten()
-
-        not_detected = True;
-        for thing in messages:
-            for embed in thing.embeds:
-                for field in embed.fields:
-                    if str(field.name).strip() == f"Birthdays for {final_display_date.strip()}":
-                        not_detected = False
-
-        if not_detected:
-
-            text = ''
-            with open(f"birthdays/{final_date.strip()}.txt", "r") as f:
-                for item in f:
-                    text = text + item
-
-            embed = discord.Embed(colour=0xc8dc6c)
-            title = f"Birthdays for {final_display_date}"
-            embed.add_field(name=title, value=text)
-            msg = await channel.send(embed=embed)
-            await msg.add_reaction("🎂")
-
-        await asyncio.sleep(int(os.getenv("birthday_wait_time")))
-
-client.loop.create_task(reddit_updates())
-client.loop.create_task(weather_updates())
-client.loop.create_task(idolpost_updates())
-client.loop.create_task(botstatus_updates())
-client.loop.create_task(birthday_updates())
 client.run(my_discord_token)
 
