@@ -7,13 +7,16 @@ import asyncio
 # for weather updates
 import pyowm
 
-# math utilities
+# reddit
+import praw
+import apraw
+
 import math
 import random
 from itertools import cycle
 from random import randint
 
-# time utilities
+#
 from datetime import datetime, date, timedelta
 import pytz
 import time
@@ -1280,18 +1283,97 @@ async def idolguess(ctx, *, guess):
         embedzero.add_field(name=titlezero, value=textzero)
         await ctx.send(embed=embedzero)
 
-@tasks.loop(seconds = 10) # repeat after every 10 seconds
-async def myLoop():
+@tasks.loop(seconds = 21600)
+async def reddit_updates():
     await client.wait_until_ready()
-    channel = client.get_channel(int(os.getenv("botstatus_channel_id")))
+
+
+    channel = client.get_channel(int(os.getenv("kpop_news_channel_id")))
+    reddit = apraw.Reddit(client_id=os.getenv("reddit_client_id"), client_secret=os.getenv("reddit_client_secret"),
+                          username=os.getenv("reddit_username"), password=os.getenv("reddit_password"),
+                          user_agent=os.getenv("reddit_user_agent"))
+
+    subreddit = await reddit.subreddit('kpop')
+
+
     try:
-        await channel.send("test")
-    except discord.HTTPException:
-        await channel.send("Current uptime:  fail")
+
+        async for post in subreddit.hot(limit=10):
+
+            embed = discord.Embed(title="New Update", colour=0xc8dc6c)
+            title = f'{post.title}'
+            embed.add_field(name=title, value="See post below")
+            await channel.send(embed=embed)
+            await channel.send(f'>>> {post.url}')
 
 
+    except Exception as e:
+        embed = discord.Embed(colour=0xc8dc6c)
+        title = f'An Error Occured'
+        text = str(e)
+        embed.add_field(name=title, value=text)
+        channel = client.get_channel(int(os.getenv("error_stream_channel_id")))
+        await channel.send(embed=embed)
 
-myLoop.start()
+@tasks.loop(seconds = 86400)
+async def idolpost_updates():
+    await client.wait_until_ready()
+    channel = client.get_channel(int(os.getenv("idolpost_channel_id")))
+
+
+    image_list = os.listdir("./photos")
+    counterNumber = len(image_list)
+    theIndex = randint(0, counterNumber - 1)
+    finalFromData = str(image_list[theIndex])
+    finalArrayForm = finalFromData.split(',')
+    finalGroup = finalArrayForm[0].strip()
+    finalArrayForm[len(finalArrayForm) - 1] = finalArrayForm[len(finalArrayForm) - 1][
+                                                  0:len(finalArrayForm[len(finalArrayForm) - 1]) - 4].strip()
+    finalName = finalArrayForm[1].strip()
+
+    embed = discord.Embed(title="Idol of the Day", description=f'{finalGroup} {finalName}', colour=0xc8dc6c)
+    file = discord.File(("photos/" + str(finalFromData)), filename="image.jpg")
+    embed.set_image(url="attachment://image.jpg")
+    await channel.send(file=file, embed=embed)
+
+
+@tasks.loop(seconds=86400)
+async def birthday_updates():
+    await client.wait_until_ready()
+    channel = client.get_channel(int(os.getenv("birthday_channel_id")))
+
+
+    country_time_zone = pytz.timezone(os.getenv("MY_COUNTRY_SHORT"))
+    country_time = datetime.now(country_time_zone)
+    final_date = country_time.strftime("%m-%d")
+    final_display_date = country_time.strftime("%B %-d")
+
+    messages = await channel.history(limit=20).flatten()
+
+    not_detected = True;
+    for thing in messages:
+        for embed in thing.embeds:
+            for field in embed.fields:
+                if str(field.name).strip() == f"Birthdays for {final_display_date.strip()}":
+                    not_detected = False
+
+    if not_detected:
+
+        text = ''
+        with open(f"birthdays/{final_date.strip()}.txt", "r") as f:
+            for item in f:
+                text = text + item
+
+        embed = discord.Embed(colour=0xc8dc6c)
+        title = f"Birthdays for {final_display_date}"
+        embed.add_field(name=title, value=text)
+        msg = await channel.send(embed=embed)
+        await msg.add_reaction("🎂")
+
+
+reddit_updates.start()
+idolpost_updates.start()
+birthday_updates.start()
 
 client.run(my_discord_token)
 
