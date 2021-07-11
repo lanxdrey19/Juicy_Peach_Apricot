@@ -1337,7 +1337,7 @@ async def idolpost_updates():
     await channel.send(file=file, embed=embed)
 
 
-@tasks.loop(seconds=86400)
+@tasks.loop(seconds=21600)
 async def birthday_updates():
     await client.wait_until_ready()
     channel = client.get_channel(int(os.getenv("birthday_channel_id")))
