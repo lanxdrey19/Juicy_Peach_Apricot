@@ -1327,43 +1327,8 @@ async def idolpost_updates():
     await channel.send(file=file, embed=embed)
 
 
-@tasks.loop(seconds=21600)
-async def birthday_updates():
-    await client.wait_until_ready()
-    channel = client.get_channel(int(os.getenv("birthday_channel_id")))
-
-
-    country_time_zone = pytz.timezone(os.getenv("MY_COUNTRY_SHORT"))
-    country_time = datetime.now(country_time_zone)
-    final_date = country_time.strftime("%m-%d")
-    final_display_date = country_time.strftime("%B %-d")
-
-    messages = await channel.history(limit=20).flatten()
-
-    not_detected = True;
-    for thing in messages:
-        for embed in thing.embeds:
-            for field in embed.fields:
-                if str(field.name).strip() == f"Birthdays for {final_display_date.strip()}":
-                    not_detected = False
-
-    if not_detected:
-
-        text = ''
-        with open(f"birthdays/{final_date.strip()}.txt", "r") as f:
-            for item in f:
-                text = text + item
-
-        embed = discord.Embed(colour=0xc8dc6c)
-        title = f"Birthdays for {final_display_date}"
-        embed.add_field(name=title, value=text)
-        msg = await channel.send(embed=embed)
-        await msg.add_reaction("🎂")
-
-
 reddit_updates.start()
 idolpost_updates.start()
-birthday_updates.start()
 
 client.run(my_discord_token)
 
