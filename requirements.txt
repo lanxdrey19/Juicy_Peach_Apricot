@@ -5,6 +5,7 @@ pyowm
 python-dotenv
 pytz
 aPRAW
+pillow
 DiscordUtils
 PyNaCl==1.3.0
 dnspython==1.16.0
