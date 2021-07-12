@@ -32,13 +32,9 @@ from discord.utils import get
 import DiscordUtils
 
 # Secret stuff
-import sys
 import os
 import dotenv
 dotenv.load_dotenv(override=True)
-
-# date and time outside of current country
-import dateutil.parser
 
 # Bias Match Image manipulation
 from PIL import Image
