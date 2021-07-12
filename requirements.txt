@@ -1,0 +1,7 @@
+discord.py
+praw
+pyowm
+python-dotenv
+pytz
+aPRAW
+DiscordUtils
