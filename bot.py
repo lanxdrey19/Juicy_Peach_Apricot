@@ -50,8 +50,6 @@ client = commands.Bot(command_prefix = '.',help_command=None)
 
 my_discord_token = os.getenv("MY_DISCORD_API_KEY")
 
-
-
 @client.event
 async def on_ready():
     try:
