@@ -33,3 +33,12 @@ Dependencies:
 
 * pip install pillow
 
+Dependencies needed when deploying on Heroku:
+
+* PyNaCl==1.3.0
+
+* dnspython==1.16.0
+
+* async-timeout==3.0.1
+
+
