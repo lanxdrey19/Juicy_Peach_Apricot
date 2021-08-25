@@ -1273,37 +1273,37 @@ async def idolguess(ctx, *, guess):
         embedzero.add_field(name=titlezero, value=textzero)
         await ctx.send(embed=embedzero)
 
-@tasks.loop(seconds = 21600)
-async def reddit_updates():
-    await client.wait_until_ready()
-
-
-    channel = client.get_channel(int(os.getenv("kpop_news_channel_id")))
-    reddit = apraw.Reddit(client_id=os.getenv("reddit_client_id"), client_secret=os.getenv("reddit_client_secret"),
-                          username=os.getenv("reddit_username"), password=os.getenv("reddit_password"),
-                          user_agent=os.getenv("reddit_user_agent"))
-
-    subreddit = await reddit.subreddit('kpop')
-
-
-    try:
-
-        async for post in subreddit.hot(limit=10):
-
-            embed = discord.Embed(title="New Update", colour=0xc8dc6c)
-            title = f'{post.title}'
-            embed.add_field(name=title, value="See post below")
-            await channel.send(embed=embed)
-            await channel.send(f'>>> {post.url}')
-
-
-    except Exception as e:
-        embed = discord.Embed(colour=0xc8dc6c)
-        title = f'An Error Occured'
-        text = str(e)
-        embed.add_field(name=title, value=text)
-        channel = client.get_channel(int(os.getenv("error_stream_channel_id")))
-        await channel.send(embed=embed)
+# @tasks.loop(seconds = 21600)
+# async def reddit_updates():
+#     await client.wait_until_ready()
+#
+#
+#     channel = client.get_channel(int(os.getenv("kpop_news_channel_id")))
+#     reddit = apraw.Reddit(client_id=os.getenv("reddit_client_id"), client_secret=os.getenv("reddit_client_secret"),
+#                           username=os.getenv("reddit_username"), password=os.getenv("reddit_password"),
+#                           user_agent=os.getenv("reddit_user_agent"))
+#
+#     subreddit = await reddit.subreddit('kpop')
+#
+#
+#     try:
+#
+#         async for post in subreddit.hot(limit=30):
+#
+#             embed = discord.Embed(title="New Update", colour=0xc8dc6c)
+#             title = f'{post.title}'
+#             embed.add_field(name=title, value="See post below")
+#             await channel.send(embed=embed)
+#             await channel.send(f'>>> {post.url}')
+#
+#
+#     except Exception as e:
+#         embed = discord.Embed(colour=0xc8dc6c)
+#         title = f'An Error Occured'
+#         text = str(e)
+#         embed.add_field(name=title, value=text)
+#         channel = client.get_channel(int(os.getenv("error_stream_channel_id")))
+#         await channel.send(embed=embed)
 
 @tasks.loop(seconds = 86400)
 async def idolpost_updates():
@@ -1327,7 +1327,7 @@ async def idolpost_updates():
     await channel.send(file=file, embed=embed)
 
 
-reddit_updates.start()
+# reddit_updates.start()
 idolpost_updates.start()
 
 client.run(my_discord_token)
