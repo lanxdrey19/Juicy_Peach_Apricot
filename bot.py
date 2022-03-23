@@ -1,3 +1,4 @@
+
 # uptime ping functionality
 import keep_alive
 
@@ -1279,12 +1280,18 @@ async def idolguess(ctx, *, guess):
 # @tasks.loop(seconds = 21600)
 # async def reddit_updates():
 #     await client.wait_until_ready()
+<<<<<<< HEAD
 #
 #
+=======
+
+
+>>>>>>> 824d04a13ee12c22911ea32979d06d70d8ec4403
 #     channel = client.get_channel(int(os.getenv("kpop_news_channel_id")))
 #     reddit = apraw.Reddit(client_id=os.getenv("reddit_client_id"), client_secret=os.getenv("reddit_client_secret"),
 #                           username=os.getenv("reddit_username"), password=os.getenv("reddit_password"),
 #                           user_agent=os.getenv("reddit_user_agent"))
+<<<<<<< HEAD
 #
 #     subreddit = await reddit.subreddit('kpop')
 #
@@ -1293,13 +1300,28 @@ async def idolguess(ctx, *, guess):
 #
 #         async for post in subreddit.hot(limit=30):
 #
+=======
+
+#     subreddit = await reddit.subreddit('kpop')
+
+
+#     try:
+
+#         async for post in subreddit.hot(limit=10):
+
+>>>>>>> 824d04a13ee12c22911ea32979d06d70d8ec4403
 #             embed = discord.Embed(title="New Update", colour=0xc8dc6c)
 #             title = f'{post.title}'
 #             embed.add_field(name=title, value="See post below")
 #             await channel.send(embed=embed)
 #             await channel.send(f'>>> {post.url}')
+<<<<<<< HEAD
 #
 #
+=======
+
+
+>>>>>>> 824d04a13ee12c22911ea32979d06d70d8ec4403
 #     except Exception as e:
 #         embed = discord.Embed(colour=0xc8dc6c)
 #         title = f'An Error Occured'
@@ -1332,6 +1354,7 @@ async def idolpost_updates():
 
 # reddit_updates.start()
 idolpost_updates.start()
+
 
 keep_alive.keep_alive()
 
