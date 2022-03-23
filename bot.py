@@ -1,6 +1,6 @@
 
 # uptime ping functionality
-import keep_alive
+#import keep_alive
 
 # for discord functionality
 
@@ -1303,7 +1303,7 @@ async def idolpost_updates():
 idolpost_updates.start()
 
 
-keep_alive.keep_alive()
+#keep_alive.keep_alive()
 
 
 client.run(my_discord_token)
