@@ -47,8 +47,11 @@ from PIL import Image
 # set the random seed to system time
 random.seed()
 
+
 # Bot prefix
-client = commands.Bot(command_prefix = '.',help_command=None)
+intents = discord.Intents.all()
+intents.members = True
+client = commands.Bot(command_prefix = '.',help_command=None, intents=intents)
 
 # Token
 
@@ -1300,7 +1303,7 @@ async def idolpost_updates():
 
 
 # reddit_updates.start()
-idolpost_updates.start()
+# idolpost_updates.start()
 
 
 keep_alive.keep_alive()
